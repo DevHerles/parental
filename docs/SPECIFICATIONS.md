@@ -282,6 +282,7 @@ adb -s <DEVICE_ID> shell dumpsys window | grep -E "mCurrentFocus|mFocusedApp"
 | **TC-09** | Reinicio del dispositivo móvil | Reactivación automática del centinela tras arranque. | **PASADO** |
 | **TC-10** | Apertura de TikTok en Ventana Flotante (Freeform) | Expulsión inmediata al primer intento (<100ms) mediante BACK prioritario + flick nativo ascendente total (80ms). | **PASADO** |
 | **TC-11** | Apertura de TikTok en Ventana Dividida (Split-Screen) | Colapso inmediato mediante HOME + BACK y presentación de LockScreen. | **PASADO** |
+| **TC-12** | Despliegue y Bloqueo en Android 15 (Lenovo Tab M11, SDK 35) | Intercepción proactiva de TikTok, YouTube y Roblox en modo tableta panorámica (1200x1920) y ZUI. | **PASADO** |
 
 ---
 
@@ -317,4 +318,19 @@ HyperOS genera múltiples sub-ventanas de tipo `TYPE_APPLICATION` para cada app 
 - `REPELLING_LOCK_MS = 250L`: Cooldown de repulsión ultra-corto de 250ms.
 - `REBOUND_COOLDOWN_MS = 300L`.
 - **Cero IPC Bloqueante**: Resolución de paquetes mediante `w.title` en 0ms, prohibiendo el acceso síncrono a `w.root` en el hilo principal para prevenir `APP_SCOUT_HANG`.
+
+---
+
+## 9. Compatibilidad y Validación Multi-Dispositivo (Android 15 y Modo Tableta)
+
+### 9.1. Dispositivos Certificados y Verificados en Vivo
+1. **Xiaomi Redmi Note 12 (`5147be6c`)**:
+   - Sistema: Android 14 / Xiaomi HyperOS 1.0.
+   - Entorno: Teléfono móvil (aspecto 20:9, 1080x2400).
+   - Validaciones: Ventana completa, split-screen, ventanas flotantes freeform y mini-dock.
+2. **Lenovo Tab M11 (`HA23W9WZ`, TB330XU)**:
+   - Sistema: **Android 15** (API 35, ZUI 16).
+   - Entorno: Tableta panorámica (aspecto 16:10, 1200x1920, navegación por barra de tareas).
+   - Validaciones: Neutralización de TikTok (`com.zhiliaoapp.musically`), YouTube (`com.google.android.youtube`) y Roblox (`com.roblox.client`). Retorno limpio al launcher (`com.zui.launcher`) y blindaje Device Admin.
+
 
