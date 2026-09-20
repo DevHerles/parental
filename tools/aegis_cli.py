@@ -441,6 +441,7 @@ class AegisHtopMonitor:
         self.settings = None
         self.apps = []
         self.tamper_logs = []
+        self.device_history = []
         self.last_ping_rtt = None
         self.status_msg = "Aegis Monitor Conectado a Turso Cloud"
         self.status_time = time.time()
@@ -509,10 +510,106 @@ class AegisHtopMonitor:
 
             all_apps.sort(key=lambda x: (x.get("app_name") or x.get("package_name")).lower())
 
-            log_rows = self.turso.query(
-                "SELECT * FROM tamper_logs WHERE device_id = ? ORDER BY timestamp DESC LIMIT 6;",
+            # Consultar registros de evasión e incidentes en el dispositivo
+            tamper_rows = self.turso.query(
+                "SELECT * FROM tamper_logs WHERE device_id = ? ORDER BY timestamp DESC LIMIT 40;",
                 [self.dev_id]
-            )
+            ) or []
+
+            # Consultar comandos y órdenes despachadas/ejecutadas en el dispositivo
+            cmd_rows = self.turso.query(
+                "SELECT * FROM commands WHERE target_device_id = ? ORDER BY created_at DESC LIMIT 40;",
+                [self.dev_id]
+            ) or []
+
+            history = []
+            for t in tamper_rows:
+                ts = t.get("timestamp", 0)
+                detail = t.get("detail", "")
+                d_lower = detail.lower()
+                if "packageinstaller" in d_lower or "uninstall" in d_lower:
+                    icon = "🚨"
+                    tag = "INTENTO DESINSTALACIÓN"
+                    msg = "Intento de desinstalar app repelido por el centinela"
+                elif "settings" in d_lower or "spaactivity" in d_lower or "installedapp" in d_lower:
+                    icon = "⚠️ "
+                    tag = "INTENTO AJUSTES"
+                    msg = "Acceso a Ajustes del sistema bloqueado en 0ms"
+                elif "ui text" in d_lower:
+                    icon = "🛡️ "
+                    tag = "MANIPULACIÓN UI"
+                    msg = "Texto prohibido interceptado en pantalla"
+                else:
+                    icon = "🛡️ "
+                    tag = t.get("event_type", "EVASIÓN")
+                    msg = detail[:65]
+                history.append({
+                    "ts": ts,
+                    "color_pair": 3,
+                    "icon": icon,
+                    "tag": tag,
+                    "msg": msg
+                })
+
+            for c in cmd_rows:
+                ts = c.get("executed_at") or c.get("created_at") or 0
+                ctype = c.get("command_type", "")
+                status = c.get("status", "PENDING")
+                payload_str = c.get("payload", "{}")
+                if ctype == "LOCK_NOW":
+                    icon = "🔒"
+                    tag = "BLOQUEO TOTAL"
+                    msg = f"Orden de bloqueo total ejecutada en tablet ({status})"
+                    pair = 3
+                elif ctype == "UNLOCK_TEMPORARY":
+                    icon = "⏱️ "
+                    tag = "RECREO TEMPORAL"
+                    msg = f"Pausa temporal de recreo concedida ({status})"
+                    pair = 4
+                elif ctype == "CLEAR_LOCK":
+                    icon = "🛡️ "
+                    tag = "REANUDAR MODO"
+                    msg = f"Protección estándar reanudada ({status})"
+                    pair = 2
+                elif ctype == "UPDATE_APP":
+                    try:
+                        p = json.loads(payload_str)
+                        pkg = p.get("package", "")
+                        b = p.get("blocked", True)
+                        app_name = pkg.split(".")[-1].capitalize()
+                        for a, pk in APP_ALIASES.items():
+                            if pk == pkg:
+                                app_name = a.capitalize()
+                                break
+                        icon = "🚫" if b else "✅"
+                        tag = "APP BLOQUEADA" if b else "APP PERMITIDA"
+                        msg = f"{app_name} ({pkg}) -> {'BLOQUEADA' if b else 'PERMITIDA'}"
+                        pair = 3 if b else 2
+                    except Exception:
+                        icon = "⚡"
+                        tag = "RESTRICCIÓN APP"
+                        msg = payload_str[:60]
+                        pair = 4
+                elif ctype == "PING":
+                    icon = "🏓"
+                    tag = "TEST LATENCIA"
+                    msg = f"Ping de presencia respondido por tablet ({status})"
+                    pair = 2
+                else:
+                    icon = "⚡"
+                    tag = ctype
+                    msg = f"Acción remota ({status})"
+                    pair = 7
+
+                history.append({
+                    "ts": ts,
+                    "color_pair": pair,
+                    "icon": icon,
+                    "tag": tag,
+                    "msg": msg
+                })
+
+            history.sort(key=lambda x: x["ts"], reverse=True)
 
             with self.lock:
                 if devs:
@@ -520,7 +617,8 @@ class AegisHtopMonitor:
                 if settings:
                     self.settings = settings[0]
                 self.apps = all_apps
-                self.tamper_logs = log_rows or []
+                self.tamper_logs = tamper_rows
+                self.device_history = history
                 self.is_connected = True
         except Exception:
             with self.lock:
@@ -811,6 +909,7 @@ class AegisHtopMonitor:
             settings = dict(self.settings) if self.settings else {}
             apps = [dict(a) for a in self.apps]
             logs = [dict(l) for l in self.tamper_logs]
+            history_events = [dict(h) for h in self.device_history]
             rtt = self.last_ping_rtt
             is_conn = self.is_connected
             status_msg = self.status_msg
@@ -889,16 +988,17 @@ class AegisHtopMonitor:
         # Fila 4: Separador
         self._safe_addstr(stdscr, 4, 0, f"├{'─'*(max_x - 2)}┤", curses.color_pair(1), max_x)
 
-        # 2. TABLA PRINCIPAL DE APLICACIONES (Uso dinámico del ancho)
-        log_panel_height = 4 if max_y >= 22 else 2
-        footer_height = 2
+        # 2. SECCIÓN PRINCIPAL: 60% TABLA DE APPS / 40% HISTORIAL DE ACCIONES
+        data_rows = max(4, max_y - 10)
+        available_table_rows = max(3, int(data_rows * 0.60))
+        history_lines_count = max(2, data_rows - available_table_rows)
+
         table_rows_start_y = 6
-        table_end_y = max_y - log_panel_height - footer_height - 1
-        available_table_rows = max(2, table_end_y - table_rows_start_y)
+        table_end_y = table_rows_start_y + available_table_rows
 
         pkg_col_w = max(25, max_x - 56)
 
-        # Encabezados de columnas de la tabla
+        # Encabezados de columnas de la tabla de apps
         header_fmt = f"│  {'IDX':<4} {'ESTADO':<15} {'APLICACIÓN':<26} {'PAQUETE':<{pkg_col_w}}"
         self._safe_addstr(stdscr, 5, 0, header_fmt, curses.color_pair(1) | curses.A_BOLD, max_x - 1)
         self._safe_addstr(stdscr, 5, max_x - 1, "│", curses.color_pair(1))
@@ -942,29 +1042,38 @@ class AegisHtopMonitor:
 
             self._safe_addstr(stdscr, curr_y, max_x - 1, "│", curses.color_pair(1))
 
-        # Separador antes de logs
+        # Separador antes de historial
         self._safe_addstr(stdscr, table_end_y, 0, f"├{'─'*(max_x - 2)}┤", curses.color_pair(1), max_x)
 
-        # 3. REGISTRO DE SEGURIDAD Y ANTI-TAMPERING
+        # 3. HISTORIAL DE ACCIONES Y SEGURIDAD EN EL DISPOSITIVO (40% de alto)
         log_title_y = table_end_y + 1
         self._safe_addstr(stdscr, log_title_y, 0, "│ ", curses.color_pair(1))
-        self._safe_addstr(stdscr, log_title_y, 2, "🛡️  REGISTRO DE SEGURIDAD Y ANTI-TAMPERING (TURSO CLOUD):", curses.color_pair(1) | curses.A_BOLD)
+        hist_title = "🛡️  HISTORIAL DE ACCIONES Y SEGURIDAD EN EL DISPOSITIVO (TURSO CLOUD):"
+        self._safe_addstr(stdscr, log_title_y, 2, hist_title, curses.color_pair(1) | curses.A_BOLD)
         self._safe_addstr(stdscr, log_title_y, max_x - 1, "│", curses.color_pair(1))
 
-        log_lines_count = log_panel_height - 1
-        for li in range(log_lines_count):
+        for li in range(history_lines_count):
             log_y = log_title_y + 1 + li
             self._safe_addstr(stdscr, log_y, 0, "│ ", curses.color_pair(1))
-            if li < len(logs):
-                l_item = logs[li]
-                ts = l_item.get("timestamp", 0)
+            if li < len(history_events):
+                h_item = history_events[li]
+                ts = h_item.get("ts", 0)
                 t_str = datetime.fromtimestamp(ts / 1000).strftime("%H:%M:%S") if ts else "00:00:00"
-                etype = l_item.get("event_type", "INCIDENTE")
-                detail = l_item.get("detail", "")
-                log_text = f"[{t_str}] 🛡️ {etype}: {detail}"
-                self._safe_addstr(stdscr, log_y, 4, log_text[:max_x - 6], curses.color_pair(3))
-            elif li == 0 and not logs:
-                self._safe_addstr(stdscr, log_y, 4, "✅ Cero violaciones recientes. El dispositivo está seguro.", curses.color_pair(2))
+                icon = h_item.get("icon", "🛡️")
+                tag = h_item.get("tag", "ACCIÓN")
+                msg = h_item.get("msg", "")
+                pair = h_item.get("color_pair", 7)
+
+                self._safe_addstr(stdscr, log_y, 3, f"[{t_str}]", curses.A_DIM)
+                tag_label = f"{icon} {tag:<22} : "
+                self._safe_addstr(stdscr, log_y, 14, tag_label, curses.color_pair(pair) | curses.A_BOLD)
+                msg_x = 14 + len(tag_label)
+                self._safe_addstr(stdscr, log_y, msg_x, f"{msg}"[:max_x - msg_x - 2], curses.color_pair(pair))
+            elif li == 0 and not history_events:
+                self._safe_addstr(stdscr, log_y, 3, "✅ Cero incidentes o acciones recientes. Dispositivo seguro.", curses.color_pair(2))
+            else:
+                self._safe_addstr(stdscr, log_y, 2, " " * (max_x - 4))
+
             self._safe_addstr(stdscr, log_y, max_x - 1, "│", curses.color_pair(1))
 
         # 4. BORDE INFERIOR CON MENSAJE DE ESTADO
