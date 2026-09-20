@@ -128,16 +128,34 @@ class ParentalAccessibilityService : AccessibilityService() {
 
         if (packageName == applicationContext.packageName) return
 
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            trackForegroundTransition(packageName)
-        }
-
-        if (com.parental.control.core.utils.PermissionHelper.isSystemEssentialPackage(applicationContext, packageName)) return
-
+        // 1. Pre-interceptación de clics (Launcher, Ajustes, Diálogos de desinstalación)
+        // Se evalúa ANTES de cualquier descarte de launcher o apps del sistema
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             handleViewClicked(event)
             return
         }
+
+        // 2. Detección Anti-Tampering Prioritaria (PackageInstaller, Ajustes, Administradores)
+        if (repository.settings.value.isAntiUninstallActive) {
+            if (AntiTamperWatchdog.isTamperAttempt(packageName, className)) {
+                Log.w(TAG, "Intento de manipulación bloqueado en onAccessibilityEvent: pkg=$packageName, cls=$className")
+                repelTamperAttempt(packageName, className, "Ajustes / Desinstalación Protegidos")
+                return
+            }
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+                event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+                if (inspectSettingsOrInstallerNodes(rootInActiveWindow, packageName)) {
+                    return
+                }
+            }
+        }
+
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            trackForegroundTransition(packageName)
+        }
+
+        // 3. Paquetes esenciales del sistema (IME, Launchers en modo pasivo, Teléfono)
+        if (com.parental.control.core.utils.PermissionHelper.isSystemEssentialPackage(applicationContext, packageName)) return
 
         if (LockScreenActivity.isLockScreenVisible && !repository.isPackageBlocked(packageName)) return
 
@@ -160,8 +178,8 @@ class ParentalAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Intercepta clics en los iconos del Launcher, Barra lateral de MIUI o Multitarea
-     * ANTES de que la aplicación restringida termine su animación de apertura.
+     * Intercepta clics en los iconos del Launcher, menús contextuales, botones de desinstalación
+     * ANTES de que la aplicación o diálogo termine su procesamiento.
      */
     private fun handleViewClicked(event: AccessibilityEvent) {
         try {
@@ -170,6 +188,13 @@ class ParentalAccessibilityService : AccessibilityService() {
             val sourceText = event.source?.text?.toString() ?: ""
             val sourceDesc = event.source?.contentDescription?.toString() ?: ""
             val clicked = "$text $desc $sourceText $sourceDesc".lowercase()
+
+            // Pre-interceptación Anti-Tampering: si el clic es sobre "Desinstalar", "Borrar datos", "Desactivar", etc.
+            if (repository.settings.value.isAntiUninstallActive && AntiTamperWatchdog.isTamperText(clicked)) {
+                Log.w(TAG, "Pre-interceptado clic peligroso en UI (desinstalación/ajustes): '$clicked'")
+                repelTamperAttempt(event.packageName?.toString() ?: "com.android.settings", clicked, "Desinstalación y Modificación Protegidas")
+                return
+            }
 
             if (clicked.contains("tiktok") && isBlocked(DistractionConstants.PKG_TIKTOK)) {
                 Log.i(TAG, "Pre-interceptado clic en icono TikTok en UI/Launcher!")
@@ -204,8 +229,7 @@ class ParentalAccessibilityService : AccessibilityService() {
         // 1. Detección Anti-Tampering (Ajustes, Desinstalador, Administrador de Dispositivos)
         if (repository.settings.value.isAntiUninstallActive && AntiTamperWatchdog.isTamperAttempt(packageName, className)) {
             Log.w(TAG, "Intento de manipulación bloqueado: pkg=$packageName, cls=$className")
-            repository.recordTamperAttempt("Intento de acceso a Ajustes/Desinstalación: $className")
-            closeAndRepel(packageName, "Ajustes del Sistema Protegidos")
+            repelTamperAttempt(packageName, className, "Ajustes del Sistema Protegidos")
             return
         }
 
@@ -276,8 +300,19 @@ class ParentalAccessibilityService : AccessibilityService() {
         try {
             val win = windows
 
-            watchdogTick++
-            if (watchdogTick % 10 == 0) logWindows(win)
+            // 0) Detección Anti-Tampering proactiva en ventana enfocada
+            if (repository.settings.value.isAntiUninstallActive) {
+                for (w in win) {
+                    if (w.isFocused || w.isActive) {
+                        val pkg = getPackageFromWindow(w) ?: ""
+                        if (pkg.contains("packageinstaller")) {
+                            Log.w(TAG, "[$reason] Watchdog detectó PackageInstaller enfocado -> Repulsión!")
+                            repelTamperAttempt(pkg, "Watchdog PackageInstaller", "Desinstalación Protegida")
+                            return
+                        }
+                    }
+                }
+            }
 
             // 1) App bloqueada enfocada o ventana flotante con paquete identificado
             for (w in win) {
@@ -416,11 +451,73 @@ class ParentalAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Cierre de raíz de la app restringida:
-     * 1. HOME + BACK (colapsa Split-Screen y cualquier app normal)
-     * 2. Descarte limpio y certero de ventanas flotantes (gestos HyperOS probados)
-     * 3. Pantalla de bloqueo informativa a pantalla completa
+     * Expulsión fulminante de intentos de manipulación, desinstalación o acceso a ajustes sensibles.
      */
+    private fun repelTamperAttempt(packageName: String, detail: String, reason: String) {
+        try {
+            Log.w(TAG, "¡REPULSIÓN ANTI-TAMPERING! Intento detectado: pkg=$packageName ($detail)")
+            repository.recordTamperAttempt("Intento de manipulación o desinstalación: $detail")
+
+            val am = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+            // 1. Expulsar de inmediato con BACK y HOME para cerrar el diálogo o activity
+            performGlobalAction(GLOBAL_ACTION_BACK)
+            performGlobalAction(GLOBAL_ACTION_HOME)
+
+            // 2. Liquidar procesos de desinstalación de inmediato
+            am?.killBackgroundProcesses(packageName)
+            am?.killBackgroundProcesses("com.google.android.packageinstaller")
+            am?.killBackgroundProcesses("com.android.packageinstaller")
+            am?.killBackgroundProcesses("com.miui.packageinstaller")
+
+            // 3. Superponer pantalla de bloqueo al instante (30ms)
+            mainHandler.postDelayed({
+                launchLockScreen(packageName, reason)
+            }, 30L)
+
+            // 4. Barrido de seguridad a 120ms
+            mainHandler.postDelayed({
+                performGlobalAction(GLOBAL_ACTION_BACK)
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }, 120L)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error en repelTamperAttempt", e)
+        }
+    }
+
+    /**
+     * Inspecciona los nodos de UI en Ajustes y PackageInstaller para detectar textos de desinstalación o referencias a Aegis.
+     */
+    private fun inspectSettingsOrInstallerNodes(rootNode: AccessibilityNodeInfo?, packageName: String): Boolean {
+        if (rootNode == null) return false
+        val lowerPkg = packageName.lowercase()
+        val isCritical = DistractionConstants.CRITICAL_SYSTEM_SETTINGS_PACKAGES.any { lowerPkg.contains(it) } ||
+                lowerPkg.contains("settings") || lowerPkg.contains("safecenter") || lowerPkg.contains("packageinstaller")
+
+        if (!isCritical) return false
+
+        if (hasTamperNode(rootNode)) {
+            Log.w(TAG, "Detectado contenido de tamper en UI de $packageName")
+            repelTamperAttempt(packageName, "UI Text Tamper", "Ajustes y Desinstalación Protegidos")
+            return true
+        }
+        return false
+    }
+
+    private fun hasTamperNode(node: AccessibilityNodeInfo?, depth: Int = 0): Boolean {
+        if (node == null || depth > 8) return false
+        val text = node.text?.toString() ?: ""
+        val desc = node.contentDescription?.toString() ?: ""
+        if (AntiTamperWatchdog.isTamperText(text) || AntiTamperWatchdog.isTamperText(desc)) {
+            return true
+        }
+        val count = node.childCount
+        for (i in 0 until count) {
+            val child = node.getChild(i) ?: continue
+            if (hasTamperNode(child, depth + 1)) return true
+        }
+        return false
+    }
+
     /**
      * Cierre de raíz de la app restringida:
      * - Si es Ventana Flotante / PiP: Gesto flick de 90ms a 0ms SIN invocar HOME antes (evita que la animación del Launcher devore el toque).

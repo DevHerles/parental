@@ -52,15 +52,38 @@ object DistractionConstants {
         "com.android.settings",
         "com.google.android.packageinstaller",
         "com.android.packageinstaller",
+        "com.miui.packageinstaller",
         "com.samsung.android.app.telephonyui",
-        "com.miui.securitycenter"
+        "com.miui.securitycenter",
+        "com.zui.safecenter",
+        "com.coloros.safecenter",
+        "com.oppo.safe",
+        "com.iqoo.secure",
+        "com.vivo.permissionmanager",
+        "com.huawei.systemmanager"
     )
 
-    // Clases específicas dentro de Ajustes que intentan desinstalar o borrar datos
+    // Clases específicas dentro de Ajustes que intentan desinstalar, alterar accesibilidad o borrar datos
     val SETTINGS_TAMPER_TARGETS = listOf(
         "uninstall",
         "clear_data",
-        "deleteapp"
+        "delete",
+        "installedapp",
+        "appdetail",
+        "manageapp",
+        "application",
+        "appinfo",
+        "accessibility",
+        "deviceadmin",
+        "device_admin",
+        "specialaccess",
+        "manage_applications",
+        "spaactivity",
+        "appbuttons",
+        "appsinfo",
+        "appdetails",
+        "runningapplications",
+        "usageaccess"
     )
 
     /**

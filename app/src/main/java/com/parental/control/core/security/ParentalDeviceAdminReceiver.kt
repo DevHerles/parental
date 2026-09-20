@@ -21,7 +21,25 @@ class ParentalDeviceAdminReceiver : DeviceAdminReceiver() {
 
     override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
         Log.w(TAG, "Intento de desactivar Device Admin detectado.")
-        return "¡ATENCIÓN! La desactivación del Administrador de Aegis requiere autorización de los padres. Cualquier intento quedará registrado."
+        try {
+            // Expulsar de inmediato a HOME para desestimar el diálogo de desactivación
+            val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(homeIntent)
+
+            // Superponer pantalla de bloqueo pidiendo autorización parental
+            val lockIntent = Intent(context, com.parental.control.ui.child.LockScreenActivity::class.java).apply {
+                putExtra(com.parental.control.ui.child.LockScreenActivity.EXTRA_BLOCKED_PACKAGE, context.packageName)
+                putExtra(com.parental.control.ui.child.LockScreenActivity.EXTRA_BLOCK_REASON, "Desactivación de Administrador de Dispositivo Protegida")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            context.startActivity(lockIntent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error repeliendo desactivación en onDisableRequested", e)
+        }
+        return "¡ATENCIÓN! La desactivación del Administrador de Aegis requiere autorización de los padres. Cualquier intento de evasión queda bloqueado y registrado."
     }
 
     override fun onDisabled(context: Context, intent: Intent) {
