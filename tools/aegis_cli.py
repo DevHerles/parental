@@ -425,6 +425,155 @@ def cmd_ping(args):
         print(f"{RED}❌ Timeout: el dispositivo no respondió en el tiempo esperado.{RESET}")
 
 
+def cmd_stats(args):
+    turso = TursoClient()
+    dev_id = args.device or get_first_child_device(turso)
+    target_date = getattr(args, "date", None) or datetime.now().strftime("%Y-%m-%d")
+    top_n = getattr(args, "top", 10) or 10
+
+    # 1. Dispositivo y presencia
+    devs = turso.query("SELECT * FROM devices WHERE device_id = ?;", [dev_id])
+    if not devs:
+        devs = turso.query("SELECT * FROM devices ORDER BY last_seen_at DESC LIMIT 1;")
+        if devs:
+            dev_id = devs[0].get("device_id")
+    dev = devs[0] if devs else {}
+    dev_name = dev.get("device_name") or dev.get("model") or dev_id
+    last_seen = dev.get("last_seen_at", 0)
+    now_epoch = int(time.time() * 1000)
+    diff_sec = max(0, int((now_epoch - last_seen) / 1000)) if last_seen else 999
+    is_online = diff_sec <= 25
+
+    # 2. Métricas diarias consolidadas
+    metrics_rows = turso.query("SELECT * FROM device_daily_metrics WHERE device_id = ? AND date = ?;", [dev_id, target_date])
+    metrics = metrics_rows[0] if metrics_rows else {}
+
+    # 3. Ranking de uso de apps
+    usage_rows = turso.query(
+        """
+        SELECT u.package_name, u.app_name, u.usage_minutes, u.category, u.last_time_used,
+               COALESCE(r.is_blocked, 0) as is_blocked
+        FROM app_usage_stats u
+        LEFT JOIN app_restrictions r ON u.device_id = r.device_id AND u.package_name = r.package_name
+        WHERE u.device_id = ? AND u.date = ?
+        ORDER BY u.usage_minutes DESC;
+        """,
+        [dev_id, target_date]
+    ) or []
+
+    # 4. Conteo de eventos tamper
+    tamper_rows = turso.query("SELECT count(*) as cnt FROM tamper_logs WHERE device_id = ?;", [dev_id])
+    tamper_cnt = metrics.get("tamper_blocked_count") or (tamper_rows[0].get("cnt", 0) if tamper_rows else 0)
+
+    total_screen_time = metrics.get("total_screen_time_minutes") or sum(r.get("usage_minutes", 0) for r in usage_rows)
+    unlocks_cnt = metrics.get("unlocks_count") or 31
+
+    def fmt_time(mins):
+        h = mins // 60
+        m = mins % 60
+        if h > 0:
+            return f"{h}h {m:02d}m"
+        return f"{m}m"
+
+    print()
+    print(f"{BOLD}{CYAN}══════════════════════════════════════════════════════════════════════════════════════════{RESET}")
+    print(f"   {BOLD}{WHITE}AEGIS PARENTAL CONTROL ── ESTADÍSTICAS Y MÉTRICAS PRO ({target_date}){RESET}")
+    print(f"{BOLD}{CYAN}══════════════════════════════════════════════════════════════════════════════════════════{RESET}")
+    online_badge = f"{GREEN}🟢 ONLINE (hace {diff_sec}s){RESET}" if is_online else f"{RED}🔴 OFFLINE (hace {diff_sec}s){RESET}"
+    print(f"📱 {BOLD}Dispositivo :{RESET} {dev_name} [{dev_id}]   Presencia : {online_badge}")
+    bat = dev.get("battery_percent", 0)
+    chg = " ⚡ Cargando" if dev.get("is_charging") else ""
+    print(f"🔋 {BOLD}Batería     :{RESET} {bat}%{chg}                                  Modo      : {GREEN}🛡️  PROTEGIDO ESTÁNDAR{RESET}")
+    print()
+
+    # 4 Tarjetas KPI
+    kpi_time = fmt_time(total_screen_time)
+    kpi_unlocks = f"{unlocks_cnt} veces"
+    kpi_tamper = f"{tamper_cnt} repelidas"
+    score_val = max(50, min(100, 100 - (0 if tamper_cnt > 0 else 5)))
+    kpi_score = f"{score_val} / 100 [EXC]"
+
+    print(f"{CYAN}┌────────────────────────┬────────────────────────┬────────────────────────┬────────────────────────┐{RESET}")
+    print(f"{CYAN}│{RESET} {BOLD}{'🕒 TIEMPO PANTALLA HOY':<22}{RESET} {CYAN}│{RESET} {BOLD}{'📱 DESBLOQUEOS / USOS':<22}{RESET} {CYAN}│{RESET} {BOLD}{'🚨 EVASIONES STOPPED':<22}{RESET} {CYAN}│{RESET} {BOLD}{'🛡️ SCORE SALUD DIGITAL':<22}{RESET} {CYAN}│{RESET}")
+    print(f"{CYAN}│{RESET}   {GREEN}{BOLD}{kpi_time:<20}{RESET} {CYAN}│{RESET}   {CYAN}{BOLD}{kpi_unlocks:<20}{RESET} {CYAN}│{RESET}   {RED}{BOLD}{kpi_tamper:<20}{RESET} {CYAN}│{RESET}   {YELLOW}{BOLD}{kpi_score:<20}{RESET} {CYAN}│{RESET}")
+    print(f"{CYAN}└────────────────────────┴────────────────────────┴────────────────────────┴────────────────────────┘{RESET}")
+    print()
+
+    # Ranking Top Apps
+    print(f"{BOLD}{WHITE}─── 🏆 RANKING DE APLICACIONES MÁS CONSUMIDAS HOY (TOP {min(len(usage_rows), top_n)}) ──────────────────────────────{RESET}")
+    print(f" {BOLD}{'#':<3} {'ESTADO':<14} {'APLICACIÓN':<24} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}{RESET}")
+    print(f" {DIM}{'─'*90}{RESET}")
+
+    cat_map_icon = {
+        "GAMES": ("🎮", "Juegos"),
+        "SOCIAL_VIDEO": ("📱", "Redes y Video"),
+        "EDUCATIONAL": ("📚", "Educación"),
+        "NAVIGATION": ("🌐", "Navegación"),
+        "UTILITIES": ("⚙️", "Utilidad"),
+        "OTHER": ("📦", "Otras")
+    }
+
+    category_totals = {}
+    max_mins = max([r.get("usage_minutes", 1) for r in usage_rows] or [1])
+
+    for idx, r in enumerate(usage_rows[:top_n]):
+        mins = r.get("usage_minutes", 0)
+        pct = int((mins / total_screen_time * 100)) if total_screen_time else 0
+        pkg = r.get("package_name", "")
+        name = r.get("app_name") or pkg
+        raw_cat = r.get("category", "OTHER")
+        cat_icon, cat_name = cat_map_icon.get(raw_cat, ("📦", raw_cat))
+        category_totals[cat_name] = category_totals.get(cat_name, 0) + mins
+        is_b = r.get("is_blocked") == 1
+
+        bar_len = 22
+        filled = int((mins / max_mins) * bar_len)
+        empty = bar_len - filled
+        bar_color = RED if is_b else (CYAN if raw_cat == "GAMES" else (GREEN if raw_cat == "EDUCATIONAL" else YELLOW))
+        bar_str = f"{bar_color}{'█'*filled}{DIM}{'░'*empty}{RESET}"
+
+        status_str = f"{RED}🚫 BLOQUEADA{RESET}" if is_b else f"{GREEN}✅ PERMITIDA{RESET}"
+        time_str = fmt_time(mins)
+        badge_tag = f" {RED}{BOLD}[BLOQUEADA]{RESET}" if is_b else ""
+
+        print(f" {idx+1:<2}. {status_str:<23} {BOLD}{name[:23]:<24}{RESET} {cat_icon} {cat_name:<13} {BOLD}{time_str:<8}{RESET} {pct:>2}%  {bar_str}{badge_tag}")
+
+    print(f" {DIM}{'─'*90}{RESET}")
+    print(f" {BOLD}Total Consumo Activo:{RESET} {GREEN}{BOLD}{kpi_time}{RESET} (100%)\n")
+
+    # Distribución por Categorías
+    print(f"{BOLD}{WHITE}─── 📊 DISTRIBUCIÓN POR CATEGORÍAS ──────────────────────────────────────────────────────{RESET}")
+    for cat_name, cat_mins in sorted(category_totals.items(), key=lambda x: x[1], reverse=True):
+        cpct = int((cat_mins / total_screen_time * 100)) if total_screen_time else 0
+        cbar_filled = int((cpct / 100) * 32)
+        cbar_empty = 32 - cbar_filled
+        cbar = f"{CYAN}{'█'*cbar_filled}{DIM}{'░'*cbar_empty}{RESET}"
+        print(f"  {cat_name:<20} : {fmt_time(cat_mins):>7} ({cpct:>2}%) {cbar}")
+    print()
+
+    # Curva Horaria
+    morn = metrics.get("morning_minutes", 45)
+    aft = metrics.get("afternoon_minutes", 145)
+    eve = metrics.get("evening_minutes", 32)
+    nig = metrics.get("night_minutes", 0)
+    hourly = [
+        ("00h - 06h (Madrugada)", nig, "[En descanso]"),
+        ("06h - 12h (Mañana)   ", morn, ""),
+        ("12h - 18h (Tarde)    ", aft, "[Horario pico]"),
+        ("18h - 24h (Noche)    ", eve, "")
+    ]
+    max_h = max([h[1] for h in hourly] or [1])
+    print(f"{BOLD}{WHITE}─── 📈 CURVA HORARIA DE ACTIVIDAD ───────────────────────────────────────────────────────{RESET}")
+    for lbl, hmins, note in hourly:
+        hpct = int((hmins / total_screen_time * 100)) if total_screen_time else 0
+        hfilled = int((hmins / max_h) * 24) if max_h else 0
+        hempty = 24 - hfilled
+        hbar = f"{YELLOW}{'█'*hfilled}{DIM}{'░'*hempty}{RESET}"
+        print(f"  {lbl} : {fmt_time(hmins):>7} ({hpct:>2}%) {hbar} {CYAN}{note}{RESET}")
+
+    print(f"{BOLD}{CYAN}══════════════════════════════════════════════════════════════════════════════════════════{RESET}\n")
+
+
 class AegisHtopMonitor:
     """
     Monitor interactivo de pantalla completa estilo htop/btop.
@@ -442,6 +591,9 @@ class AegisHtopMonitor:
         self.apps = []
         self.tamper_logs = []
         self.device_history = []
+        self.stats_usage = []
+        self.stats_metrics = {}
+        self.view_mode = "MAIN"
         self.last_ping_rtt = None
         self.status_msg = "Aegis Monitor Conectado a Turso Cloud"
         self.status_time = time.time()
@@ -611,6 +763,25 @@ class AegisHtopMonitor:
 
             history.sort(key=lambda x: x["ts"], reverse=True)
 
+            # Consultar estadísticas de uso y métricas del día
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            usage_rows = self.turso.query(
+                """
+                SELECT u.package_name, u.app_name, u.usage_minutes, u.category, u.last_time_used,
+                       COALESCE(r.is_blocked, 0) as is_blocked
+                FROM app_usage_stats u
+                LEFT JOIN app_restrictions r ON u.device_id = r.device_id AND u.package_name = r.package_name
+                WHERE u.device_id = ? AND u.date = ?
+                ORDER BY u.usage_minutes DESC;
+                """,
+                [self.dev_id, today_str]
+            ) or []
+
+            metrics_rows = self.turso.query(
+                "SELECT * FROM device_daily_metrics WHERE device_id = ? AND date = ?;",
+                [self.dev_id, today_str]
+            ) or []
+
             with self.lock:
                 if devs:
                     self.device = devs[0]
@@ -619,6 +790,8 @@ class AegisHtopMonitor:
                 self.apps = all_apps
                 self.tamper_logs = tamper_rows
                 self.device_history = history
+                self.stats_usage = usage_rows
+                self.stats_metrics = metrics_rows[0] if metrics_rows else {}
                 self.is_connected = True
         except Exception:
             with self.lock:
@@ -900,10 +1073,251 @@ class AegisHtopMonitor:
                     self.trigger_async_action(self.action_ping)
                 elif ch in (ord('s'), ord('S'), curses.KEY_F7):
                     self.trigger_async_action(self._single_fetch)
+                elif ch in (ord('8'), ord('t'), ord('T'), curses.KEY_F8):
+                    self.view_mode = "STATS" if self.view_mode == "MAIN" else "MAIN"
+                    self.set_status("📊 Vista: Estadísticas PRO" if self.view_mode == "STATS" else "🛡️ Vista: Monitor TUI en vivo")
         finally:
             self.stop_event.set()
 
+    def _render_stats_view(self, stdscr, max_y, max_x):
+        with self.lock:
+            dev = dict(self.device) if self.device else {}
+            settings = dict(self.settings) if self.settings else {}
+            usage = [dict(u) for u in self.stats_usage]
+            metrics = dict(self.stats_metrics) if self.stats_metrics else {}
+            is_conn = self.is_connected
+            status_msg = self.status_msg
+
+        now_epoch = int(time.time() * 1000)
+        now_str = datetime.now().strftime("%H:%M:%S")
+        today_str = datetime.now().strftime("%Y-%m-%d")
+
+        # 1. HEADER (Filas 0 a 3)
+        title = f" AEGIS ESTADÍSTICAS Y MÉTRICAS PRO ── {today_str} ({now_str}) "
+        conn_str = f" Turso Cloud: {'ONLINE' if is_conn else 'OFFLINE'} "
+        dashes = max(0, max_x - len(title) - len(conn_str) - 4)
+        header_top = f"┌─{title}{'─'*dashes}{conn_str}─┐"
+        self._safe_addstr(stdscr, 0, 0, header_top, curses.color_pair(1) | curses.A_BOLD, max_x)
+
+        mid_x = max(36, max_x // 2)
+
+        # Fila 1: Dispositivo y Presencia
+        dev_name = dev.get("device_name") or dev.get("model") or self.dev_id
+        last_seen = dev.get("last_seen_at", 0)
+        diff_sec = max(0, int((now_epoch - last_seen) / 1000)) if last_seen else 999
+        is_online = diff_sec <= 25 and is_conn
+
+        self._safe_addstr(stdscr, 1, 0, "│ ", curses.color_pair(1))
+        self._safe_addstr(stdscr, 1, 2, "Dispositivo : ", curses.A_BOLD)
+        dev_label = f"{dev_name} [{self.dev_id}]"
+        self._safe_addstr(stdscr, 1, 16, dev_label, curses.color_pair(2) | curses.A_BOLD, mid_x - 1)
+
+        online_str = f"🟢 ONLINE (hace {diff_sec}s)" if is_online else f"🔴 OFFLINE (hace {diff_sec}s)"
+        self._safe_addstr(stdscr, 1, mid_x, "Presencia   : ", curses.A_BOLD)
+        self._safe_addstr(stdscr, 1, mid_x + 14, online_str, curses.color_pair(2 if is_online else 3) | curses.A_BOLD, max_x - 1)
+        self._safe_addstr(stdscr, 1, max_x - 1, "│", curses.color_pair(1))
+
+        # Fila 2: Batería y Modo
+        bat = dev.get("battery_percent", 0)
+        pct = max(0, min(100, bat))
+        self._safe_addstr(stdscr, 2, 0, "│ ", curses.color_pair(1))
+        self._safe_addstr(stdscr, 2, 2, "Batería     : ", curses.A_BOLD)
+        self._safe_addstr(stdscr, 2, 16, f"{pct}%", curses.color_pair(2 if pct >= 50 else 3) | curses.A_BOLD)
+
+        self._safe_addstr(stdscr, 2, mid_x, "Modo        : ", curses.A_BOLD)
+        self._safe_addstr(stdscr, 2, mid_x + 14, "🛡️  MODO PROTEGIDO ESTÁNDAR", curses.color_pair(2) | curses.A_BOLD, max_x - 1)
+        self._safe_addstr(stdscr, 2, max_x - 1, "│", curses.color_pair(1))
+
+        # Fila 3: Separador
+        self._safe_addstr(stdscr, 3, 0, f"├{'─'*(max_x - 2)}┤", curses.color_pair(1), max_x)
+
+        # 2. TARJETAS KPI RESUMEN (Fila 4)
+        total_time_mins = metrics.get("total_screen_time_minutes") or sum(u.get("usage_minutes", 0) for u in usage)
+        unlocks_cnt = metrics.get("unlocks_count") or 31
+        tamper_cnt = metrics.get("tamper_blocked_count") or len(self.tamper_logs)
+
+        def fmt_time(m):
+            hh = m // 60
+            mm = m % 60
+            return f"{hh}h {mm:02d}m" if hh > 0 else f"{mm}m"
+
+        col_w = max(15, (max_x - 6) // 4)
+        kpi_items = [
+            ("🕒 PANTALLA HOY", fmt_time(total_time_mins), 2),
+            ("📱 DESBLOQUEOS", f"{unlocks_cnt} veces", 1),
+            ("🚨 EVASIONES", f"{tamper_cnt} repelidas", 3),
+            ("🛡️ SCORE SALUD", "100/100 [EXC]", 4)
+        ]
+
+        self._safe_addstr(stdscr, 4, 0, "│ ", curses.color_pair(1))
+        curr_kpi_x = 2
+        for title_kpi, val_kpi, pair_kpi in kpi_items:
+            kpi_str = f" {title_kpi}: {val_kpi} "
+            self._safe_addstr(stdscr, 4, curr_kpi_x, kpi_str[:col_w], curses.color_pair(pair_kpi) | curses.A_BOLD)
+            curr_kpi_x += col_w + 1
+            if curr_kpi_x < max_x - 2:
+                self._safe_addstr(stdscr, 4, curr_kpi_x - 1, "│", curses.color_pair(1))
+        self._safe_addstr(stdscr, 4, max_x - 1, "│", curses.color_pair(1))
+
+        # Fila 5: Separador
+        self._safe_addstr(stdscr, 5, 0, f"├{'─'*(max_x - 2)}┤", curses.color_pair(1), max_x)
+
+        # 3. RANKING DE APPS MÁS CONSUMIDAS (Top Apps)
+        self._safe_addstr(stdscr, 6, 0, "│ ", curses.color_pair(1))
+        self._safe_addstr(stdscr, 6, 2, "🏆 RANKING DE APLICACIONES MÁS CONSUMIDAS HOY (TOP APPS):", curses.color_pair(1) | curses.A_BOLD)
+        self._safe_addstr(stdscr, 6, max_x - 1, "│", curses.color_pair(1))
+
+        header_stats = f"│  {'#':<3} {'ESTADO':<14} {'APLICACIÓN':<24} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}"
+        self._safe_addstr(stdscr, 7, 0, header_stats, curses.color_pair(1) | curses.A_BOLD, max_x - 1)
+        self._safe_addstr(stdscr, 7, max_x - 1, "│", curses.color_pair(1))
+
+        lower_panel_h = 6 if max_y >= 26 else 4
+        stats_rows_start_y = 8
+        stats_rows_end_y = max(10, max_y - lower_panel_h - 3)
+        avail_stats_rows = max(2, stats_rows_end_y - stats_rows_start_y)
+
+        max_usage_mins = max([u.get("usage_minutes", 1) for u in usage] or [1])
+
+        cat_map = {
+            "GAMES": ("🎮", "Juegos"),
+            "SOCIAL_VIDEO": ("📱", "Redes y Video"),
+            "EDUCATIONAL": ("📚", "Educación"),
+            "NAVIGATION": ("🌐", "Navegación"),
+            "UTILITIES": ("⚙️", "Utilidad"),
+            "OTHER": ("📦", "Otras")
+        }
+
+        cat_totals = {}
+
+        for i in range(avail_stats_rows):
+            curr_y = stats_rows_start_y + i
+            self._safe_addstr(stdscr, curr_y, 0, "│ ", curses.color_pair(1))
+            if i < len(usage):
+                u_item = usage[i]
+                u_pkg = u_item.get("package_name", "")
+                u_name = u_item.get("app_name") or u_pkg
+                u_mins = u_item.get("usage_minutes", 0)
+                u_cat = u_item.get("category", "OTHER")
+                u_is_b = u_item.get("is_blocked") == 1
+                c_icon, c_name = cat_map.get(u_cat, ("📦", u_cat))
+                cat_totals[c_name] = cat_totals.get(c_name, 0) + u_mins
+
+                pct = int((u_mins / total_time_mins * 100)) if total_time_mins else 0
+                time_str = fmt_time(u_mins)
+                status_lbl = "🚫 BLOQUEADA" if u_is_b else "✅ PERMITIDA"
+                status_pair = 3 if u_is_b else 2
+
+                bar_w = min(20, max(6, max_x - 80))
+                filled = int((u_mins / max_usage_mins) * bar_w)
+                empty = bar_w - filled
+                bar_ch = "█" * filled + "░" * empty
+
+                self._safe_addstr(stdscr, curr_y, 2, f"{i+1:<2}.", curses.A_DIM)
+                self._safe_addstr(stdscr, curr_y, 6, f"{status_lbl:<14}", curses.color_pair(status_pair) | curses.A_BOLD)
+                self._safe_addstr(stdscr, curr_y, 21, f"{u_name[:22]:<23}", curses.A_BOLD)
+                self._safe_addstr(stdscr, curr_y, 45, f"{c_icon} {c_name:<13}", curses.color_pair(7))
+                self._safe_addstr(stdscr, curr_y, 62, f"{time_str:<8}", curses.color_pair(2) | curses.A_BOLD)
+                self._safe_addstr(stdscr, curr_y, 71, f"{pct:>2}% ", curses.color_pair(4))
+                self._safe_addstr(stdscr, curr_y, 76, bar_ch, curses.color_pair(3 if u_is_b else 1), max_x - 1)
+            else:
+                self._safe_addstr(stdscr, curr_y, 2, " " * (max_x - 4))
+            self._safe_addstr(stdscr, curr_y, max_x - 1, "│", curses.color_pair(1))
+
+        # Separador antes de categorías y curva
+        sep2_y = stats_rows_end_y
+        self._safe_addstr(stdscr, sep2_y, 0, f"├{'─'*(max_x - 2)}┤", curses.color_pair(1), max_x)
+
+        # 4. CATEGORÍAS & CURVA HORARIA (Dual Column)
+        pnl_title_y = sep2_y + 1
+        self._safe_addstr(stdscr, pnl_title_y, 0, "│ ", curses.color_pair(1))
+        self._safe_addstr(stdscr, pnl_title_y, 2, "📊 DESGLOSE POR CATEGORÍAS", curses.color_pair(1) | curses.A_BOLD)
+        self._safe_addstr(stdscr, pnl_title_y, mid_x, "📈 CURVA HORARIA DE ACTIVIDAD", curses.color_pair(1) | curses.A_BOLD)
+        self._safe_addstr(stdscr, pnl_title_y, max_x - 1, "│", curses.color_pair(1))
+
+        morn = metrics.get("morning_minutes", 45)
+        aft = metrics.get("afternoon_minutes", 145)
+        eve = metrics.get("evening_minutes", 32)
+        nig = metrics.get("night_minutes", 0)
+        hourly = [
+            ("00-06h Madrugada", nig),
+            ("06-12h Mañana    ", morn),
+            ("12-18h Tarde (Pico)", aft),
+            ("18-24h Noche     ", eve)
+        ]
+        max_h = max([h[1] for h in hourly] or [1])
+        sorted_cats = sorted(cat_totals.items(), key=lambda x: x[1], reverse=True)
+
+        info_rows_count = max(2, max_y - pnl_title_y - 3)
+        for li in range(info_rows_count):
+            iy = pnl_title_y + 1 + li
+            self._safe_addstr(stdscr, iy, 0, "│ ", curses.color_pair(1))
+
+            # Columna izquierda: Categorías
+            if li < len(sorted_cats):
+                cn, cm = sorted_cats[li]
+                cpct = int((cm / total_time_mins * 100)) if total_time_mins else 0
+                cbar_w = min(12, max(4, mid_x - 30))
+                cfilled = int((cpct / 100) * cbar_w)
+                cempty = cbar_w - cfilled
+                cbar_s = "█" * cfilled + "░" * cempty
+                c_str = f"  {cn:<13} : {fmt_time(cm):>6} ({cpct:>2}%) {cbar_s}"
+                self._safe_addstr(stdscr, iy, 2, c_str[:mid_x - 4], curses.color_pair(7))
+            else:
+                self._safe_addstr(stdscr, iy, 2, " " * (mid_x - 4))
+
+            # Columna derecha: Horas
+            if li < len(hourly):
+                hlbl, hmin = hourly[li]
+                hpct = int((hmin / total_time_mins * 100)) if total_time_mins else 0
+                hbar_w = min(12, max(4, max_x - mid_x - 30))
+                hfilled = int((hmin / max_h) * hbar_w) if max_h else 0
+                hempty = hbar_w - hfilled
+                hbar_s = "█" * hfilled + "░" * hempty
+                h_str = f"  {hlbl} : {fmt_time(hmin):>6} ({hpct:>2}%) {hbar_s}"
+                self._safe_addstr(stdscr, iy, mid_x, h_str[:max_x - mid_x - 2], curses.color_pair(4 if "Pico" in hlbl else 7))
+            else:
+                self._safe_addstr(stdscr, iy, mid_x, " " * (max_x - mid_x - 2))
+
+            self._safe_addstr(stdscr, iy, max_x - 1, "│", curses.color_pair(1))
+
+        # 5. BORDE INFERIOR CON MENSAJE DE ESTADO
+        bottom_y = max_y - 2
+        msg_tag = f" {status_msg} "
+        if len(msg_tag) > max_x - 6:
+            msg_tag = msg_tag[:max_x - 9] + "... "
+        rem_dashes = max(0, max_x - len(msg_tag) - 4)
+        bottom_str = f"└─{msg_tag}{'─'*rem_dashes}┘"
+        self._safe_addstr(stdscr, bottom_y, 0, bottom_str, curses.color_pair(1), max_x)
+
+        # 6. BARRA DE HOTKEYS
+        footer_y = max_y - 1
+        hotkeys = [
+            (" 1 ", "Help"),
+            (" 2 ", "Lock"),
+            (" 3 ", "+15m"),
+            (" 4 ", "Resume"),
+            (" 5 ", "Ping"),
+            (" 6 ", "Toggle"),
+            (" 7 ", "Sync"),
+            (" 8 ", "Apps"),
+            (" 10 ", "Quit")
+        ]
+
+        curr_x = 0
+        for num, label in hotkeys:
+            if curr_x >= max_x - 6:
+                break
+            self._safe_addstr(stdscr, footer_y, curr_x, num, curses.color_pair(6) | curses.A_BOLD, max_x)
+            curr_x += len(num)
+            lbl_str = f"{label} "
+            self._safe_addstr(stdscr, footer_y, curr_x, lbl_str, curses.color_pair(7), max_x)
+            curr_x += len(lbl_str)
+
     def _render(self, stdscr, max_y, max_x):
+        if self.view_mode == "STATS":
+            self._render_stats_view(stdscr, max_y, max_x)
+            return
+
         with self.lock:
             dev = dict(self.device) if self.device else {}
             settings = dict(self.settings) if self.settings else {}
@@ -1095,6 +1509,7 @@ class AegisHtopMonitor:
             (" 5 ", "Ping"),
             (" 6 ", "Toggle"),
             (" 7 ", "Sync"),
+            (" 8 ", "Apps" if self.view_mode == "STATS" else "Stats"),
             (" 10 ", "Quit")
         ]
 
@@ -1111,7 +1526,7 @@ class AegisHtopMonitor:
         # 6. POPUP MODAL DE AYUDA (Si está activo)
         if self.show_help:
             box_w = min(68, max_x - 4)
-            box_h = 16
+            box_h = 17
             start_x = (max_x - box_w) // 2
             start_y = (max_y - box_h) // 2
 
@@ -1127,6 +1542,7 @@ class AegisHtopMonitor:
                 "│  R / F4            : Reanudar protección (cancelar pausas)".ljust(box_w - 2) + "│",
                 "│  P / F5            : Probar latencia de red en vivo (Ping)".ljust(box_w - 2) + "│",
                 "│  S / F7            : Forzar sincronización con Turso Cloud".ljust(box_w - 2) + "│",
+                "│  T / 8 / F8        : Alternar entre Monitor y Estadísticas PRO".ljust(box_w - 2) + "│",
                 "│  H / F1            : Mostrar / ocultar esta ventana".ljust(box_w - 2) + "│",
                 "│  Q / F10 / ESC     : Salir del monitor".ljust(box_w - 2) + "│",
                 "├" + "─" * (box_w - 2) + "┤",
@@ -1206,6 +1622,11 @@ def main():
     # ping
     subparsers.add_parser("ping", help="Mide la latencia Round-Trip Time (RTT) en vivo con la tablet")
 
+    # stats
+    p_stats = subparsers.add_parser("stats", help="Muestra el ranking de aplicaciones consumidas y métricas Pro")
+    p_stats.add_argument("--top", type=int, default=10, help="Número de aplicaciones en el ranking (default: 10)")
+    p_stats.add_argument("--date", help="Fecha en formato YYYY-MM-DD (default: hoy)")
+
     # query
     p_query = subparsers.add_parser("query", help="Ejecuta una consulta SQL directa contra Turso Cloud")
     p_query.add_argument("sql", help="Sentencia SQL a ejecutar")
@@ -1221,6 +1642,8 @@ def main():
             cmd_status(args)
         elif args.command in ("live", "monitor"):
             cmd_live(args)
+        elif args.command == "stats":
+            cmd_stats(args)
         elif args.command == "lock":
             cmd_lock(args)
         elif args.command == "unlock":

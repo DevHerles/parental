@@ -245,6 +245,7 @@ class ParentalAccessibilityService : AccessibilityService() {
 
     private fun handleWindowStateChanged(packageName: String, className: String) {
         repository.updateTelemetry { it.copy(currentForegroundApp = packageName) }
+        com.parental.control.sync.AppUsageTracker.recordForegroundTransition(packageName)
 
         // 1. Detección Anti-Tampering (Ajustes, Desinstalador, Administrador de Dispositivos)
         if (repository.settings.value.isAntiUninstallActive && AntiTamperWatchdog.isTamperAttempt(packageName, className)) {

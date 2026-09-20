@@ -37,6 +37,8 @@ class TursoSyncManager private constructor(private val context: Context) {
 
     private var lastKnownSettingsVersion: Long = -1L
     private var lastReportedTamperCount: Int = 0
+    private var lastUsageSyncTimestamp: Long = 0L
+    private val USAGE_SYNC_INTERVAL_MS: Long = 25000L
 
     private fun getOrCreateDeviceId(): String {
         val prefs = context.getSharedPreferences("aegis_device_prefs", Context.MODE_PRIVATE)
@@ -158,6 +160,9 @@ class TursoSyncManager private constructor(private val context: Context) {
 
         // 4. Reportar nuevos intentos de manipulación si hubieron
         reportTamperLogsIfNeeded()
+
+        // 5. Reportar métricas de uso diario y ranking a Turso Cloud
+        reportDailyUsageStatsIfNeeded()
     }
 
     private fun processRemoteCommand(row: Map<String, Any?>) {
@@ -299,6 +304,94 @@ class TursoSyncManager private constructor(private val context: Context) {
             } catch (e: Exception) {
                 // Ignore
             }
+        }
+    }
+
+    private fun reportDailyUsageStatsIfNeeded() {
+        val now = System.currentTimeMillis()
+        if (now - lastUsageSyncTimestamp < USAGE_SYNC_INTERVAL_MS) {
+            return
+        }
+        lastUsageSyncTimestamp = now
+
+        try {
+            val currentTamperCount = repository.telemetry.value.tamperingAttemptsCount
+            val (usageList, dailyMetrics) = AppUsageTracker.collectDailyUsage(context, currentTamperCount)
+
+            val statements = mutableListOf<TursoStatement>()
+
+            // 1. Sentencia para device_daily_metrics
+            statements.add(
+                TursoStatement(
+                    """
+                    INSERT INTO device_daily_metrics (
+                        device_id, date, total_screen_time_minutes, unlocks_count,
+                        tamper_blocked_count, morning_minutes, afternoon_minutes,
+                        evening_minutes, night_minutes, updated_at
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(device_id, date) DO UPDATE SET
+                        total_screen_time_minutes = excluded.total_screen_time_minutes,
+                        unlocks_count = excluded.unlocks_count,
+                        tamper_blocked_count = excluded.tamper_blocked_count,
+                        morning_minutes = excluded.morning_minutes,
+                        afternoon_minutes = excluded.afternoon_minutes,
+                        evening_minutes = excluded.evening_minutes,
+                        night_minutes = excluded.night_minutes,
+                        updated_at = excluded.updated_at;
+                    """.trimIndent(),
+                    listOf(
+                        deviceId,
+                        dailyMetrics.date,
+                        dailyMetrics.totalScreenTimeMinutes,
+                        dailyMetrics.unlocksCount,
+                        dailyMetrics.tamperBlockedCount,
+                        dailyMetrics.morningMinutes,
+                        dailyMetrics.afternoonMinutes,
+                        dailyMetrics.eveningMinutes,
+                        dailyMetrics.nightMinutes,
+                        now
+                    )
+                )
+            )
+
+            // 2. Sentencias para app_usage_stats (Top 25)
+            for (usage in usageList.take(25)) {
+                statements.add(
+                    TursoStatement(
+                        """
+                        INSERT INTO app_usage_stats (
+                            device_id, package_name, app_name, date,
+                            usage_minutes, last_time_used, category, updated_at
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(device_id, package_name, date) DO UPDATE SET
+                            app_name = excluded.app_name,
+                            usage_minutes = excluded.usage_minutes,
+                            last_time_used = excluded.last_time_used,
+                            category = excluded.category,
+                            updated_at = excluded.updated_at;
+                        """.trimIndent(),
+                        listOf(
+                            deviceId,
+                            usage.packageName,
+                            usage.appName,
+                            usage.date,
+                            usage.usageMinutes,
+                            usage.lastTimeUsed,
+                            usage.category,
+                            now
+                        )
+                    )
+                )
+            }
+
+            if (statements.isNotEmpty()) {
+                tursoClient.pipeline(statements)
+                Log.d(TAG, "Telemetría de uso diario sincronizada con Turso Cloud (${usageList.size} apps, ${dailyMetrics.totalScreenTimeMinutes}m total)")
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Error sincronizando estadísticas de uso con Turso: ${e.message}")
         }
     }
 

@@ -82,7 +82,8 @@ Para un monitor de dimensiones `(max_y, max_x)`:
 4. **Borde Inferior con Notificación de Estado** (Fila `max_y - 2`):
    - Marco inferior embebido `└─[ Mensaje de estado en vivo ]──────┘`.
 5. **Footer Hotkey Bar** (Fila `max_y - 1`):
-   - Barra de teclas de función idéntica a `htop`: ` 1 Help  2 Lock  3 +15m  4 Resume  5 Ping  6 Toggle  7 Sync  10 Quit `.
+   - Barra de teclas de función idéntica a `htop`: ` 1 Help  2 Lock  3 +15m  4 Resume  5 Ping  6 Toggle  7 Sync  8 Stats  10 Quit `.
+   - Atajo táctico `[8]` o `[T]`: Conmuta dinámicamente entre la vista de monitor principal y el panel analítico de estadísticas Pro.
 
 ---
 
