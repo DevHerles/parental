@@ -60,22 +60,29 @@ Esta especificación define la arquitectura del nuevo **Monitor TUI de Pantalla 
 ## 4. Distribución Visual de Pantalla (*Layout Grid*)
 
 Para un monitor de dimensiones `(max_y, max_x)`:
-1. **Header Panel** (Filas 0 a 5):
+1. **Header Panel** (Filas 0 a 4):
    - Fila 0: Barra de título con versión y estado de conexión Turso Cloud.
-   - Fila 1: Dispositivo objetivo, presencia con indicador online/offline y modo de protección actual.
-   - Fila 2: Indicador gráfico de batería (barra progresiva coloreada), estado de carga y latencia RTT.
-   - Fila 3: Aplicación actualmente en primer plano en la tablet de la niña.
-   - Fila 4: Separador horizontal adaptable.
-2. **Main Apps Table** (Filas 5 a `max_y - 7`):
-   - Encabezados de columnas: `IDX`, `ESTADO`, `APLICACIÓN`, `PAQUETE`, `CATEGORÍA`.
-   - Filas de aplicaciones con cursor de selección resaltado (fondo cyan/blanco).
-   - Soporte de scroll vertical si la lista supera el alto disponible.
-3. **Security & Tamper Events Panel** (Filas `max_y - 6` a `max_y - 2`):
-   - Muestra los últimos incidentes de evasión interceptados en la tablet con marcas de tiempo.
-4. **Status & Notification Bar** (Fila `max_y - 2`):
-   - Avisos efímeros de comandos enviados y confirmados.
+   - Fila 1: Panel dividido en dos columnas: Dispositivo objetivo y Presencia con contador en vivo de segundos.
+   - Fila 2: Indicador gráfico de batería con barra progresiva coloreada y Modo de protección actual.
+   - Fila 3: Aplicación en primer plano en la tablet de la niña y latencia Ping RTT.
+   - Fila 4: Separador horizontal adaptable `├──────┤`.
+2. **Main Apps Table (60% del alto disponible)** (Filas 5 a `table_end_y`):
+   - Fila 5: Encabezados de columnas (`IDX`, `ESTADO`, `APLICACIÓN`, `PAQUETE` dinámico).
+   - Filas 6 a `table_end_y - 1`: Filas de aplicaciones con cursor de selección resaltado (fondo azul/cyan), scroll vertical y estado estricto.
+3. **Historial de Acciones y Seguridad en el Dispositivo (40% del alto disponible)**:
+   - Fila `table_end_y`: Separador horizontal `├──────┤`.
+   - Fila `table_end_y + 1`: Encabezado `🛡️  HISTORIAL DE ACCIONES Y SEGURIDAD EN EL DISPOSITIVO (TURSO CLOUD):`.
+   - Filas siguientes: Feed unificado y cronológico inverso de eventos en tiempo real:
+     - 🚨 *Intentos de desinstalación o manipulación de PackageInstaller repelidos en 0ms*.
+     - ⚠️  *Intentos de acceso a Ajustes del sistema bloqueados*.
+     - 🛡️ *Detección de textos o interfaces prohibidas*.
+     - 🚫 / ✅ *Aplicaciones bloqueadas o permitidas remotamente*.
+     - 🔒 / ⏱️ / 🛡️ *Órdenes de Bloqueo Total, Pausas de Recreo o Reanudaciones ejecutadas*.
+     - 🏓 *Pruebas de latencia Ping respondidas por la tablet*.
+4. **Borde Inferior con Notificación de Estado** (Fila `max_y - 2`):
+   - Marco inferior embebido `└─[ Mensaje de estado en vivo ]──────┘`.
 5. **Footer Hotkey Bar** (Fila `max_y - 1`):
-   - Barra de teclas de función idéntica a `htop`: `1:Help 2:Lock 3:Unlock+15m 4:Resume 5:Ping 6:ToggleApp 7:Refresh 10:Quit`.
+   - Barra de teclas de función idéntica a `htop`: ` 1 Help  2 Lock  3 +15m  4 Resume  5 Ping  6 Toggle  7 Sync  10 Quit `.
 
 ---
 
