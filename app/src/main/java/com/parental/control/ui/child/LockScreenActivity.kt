@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
 import com.parental.control.core.data.ParentalRepository
 import com.parental.control.core.model.DistractionConstants
 import com.parental.control.ui.theme.AegisParentalTheme
+import kotlinx.coroutines.launch
 
 /**
  * Pantalla de bloqueo Activity a pantalla completa.
@@ -43,6 +45,23 @@ class LockScreenActivity : ComponentActivity() {
                 sendToHome()
             }
         })
+
+        // Observar en caliente si el padre autoriza o desbloquea desde Turso Cloud
+        lifecycleScope.launch {
+            repository.settings.collect { settings ->
+                val blockedPkg = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE) ?: ""
+                if (settings.isTemporarilyUnlocked && !settings.isInstantLockActive) {
+                    android.util.Log.i("LockScreen", "Autorización del padre detectada -> Cerrando pantalla de bloqueo automáticamente")
+                    finish()
+                } else if (blockedPkg.isNotEmpty() && !repository.isPackageBlocked(blockedPkg)) {
+                    android.util.Log.i("LockScreen", "Paquete desbloqueado -> Cerrando pantalla de bloqueo automáticamente")
+                    finish()
+                }
+            }
+        }
+
+        // Forzar sincronización inmediata con Turso Cloud al desplegar el bloqueo
+        com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).forceSync()
 
         setContent {
             AegisParentalTheme {

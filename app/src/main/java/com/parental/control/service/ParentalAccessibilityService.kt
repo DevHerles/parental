@@ -106,17 +106,20 @@ class ParentalAccessibilityService : AccessibilityService() {
         }
 
         startWatchdog()
-        Log.i(TAG, "Centinela conectado (Heartbeat ${WATCHDOG_INTERVAL_MS}ms + Reactivo StateFlow + TYPE_VIEW_CLICKED).")
+        com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).start()
+        Log.i(TAG, "Centinela conectado (Heartbeat ${WATCHDOG_INTERVAL_MS}ms + Reactivo StateFlow + Turso Cloud Sync).")
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         stopWatchdog()
+        com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).stop()
         return super.onUnbind(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         stopWatchdog()
+        com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).stop()
         serviceScope.cancel()
     }
 

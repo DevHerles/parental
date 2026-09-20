@@ -17,4 +17,6 @@
 *.log
 *.png
 !app/src/main/res/**/*.png
-!core/src/main/res/**/*.png
+# Environment configuration
+.env
+__pycache__/
