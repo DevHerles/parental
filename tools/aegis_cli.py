@@ -503,7 +503,7 @@ class AegisHtopMonitor:
                     all_apps.append({
                         "package_name": pkg,
                         "app_name": alias.capitalize(),
-                        "is_blocked": 0
+                        "is_blocked": 1
                     })
                     seen.add(pkg)
 
@@ -790,7 +790,7 @@ class AegisHtopMonitor:
                     with self.lock:
                         num_apps = len(self.apps)
                     self.selected_idx = max(0, num_apps - 1)
-                elif ch in (ord(' '), ord('a'), ord('A'), 10, 13, curses.KEY_F6):
+                elif ch in (ord(' '), ord('a'), ord('A'), curses.KEY_F6):
                     self.trigger_async_action(self.action_toggle_selected_app)
                 elif ch in (ord('l'), ord('L'), curses.KEY_F2):
                     self.trigger_async_action(self.action_lock)
@@ -1012,7 +1012,7 @@ class AegisHtopMonitor:
                 "├" + "─" * (box_w - 2) + "┤",
                 "│  ↑ / ↓ o j / k     : Navegar por la lista de aplicaciones".ljust(box_w - 2) + "│",
                 "│  PgUp / PgDn       : Desplazamiento rápido por páginas".ljust(box_w - 2) + "│",
-                "│  Espacio / Enter / A: Conmutar Bloqueo/Permiso de app".ljust(box_w - 2) + "│",
+                "│  Espacio / A / F6 : Conmutar Bloqueo/Permiso de app".ljust(box_w - 2) + "│",
                 "│  L / F2            : Bloqueo total inmediato de la tablet".ljust(box_w - 2) + "│",
                 "│  U / F3            : Conceder 15 minutos de recreo temporal".ljust(box_w - 2) + "│",
                 "│  R / F4            : Reanudar protección (cancelar pausas)".ljust(box_w - 2) + "│",
