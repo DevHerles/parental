@@ -70,7 +70,10 @@ class AntiTamperWatchdogTest {
         assertTrue(AntiTamperWatchdog.isTamperText("Borrar almacenamiento"))
         assertTrue(AntiTamperWatchdog.isTamperText("Clear storage"))
         assertTrue(AntiTamperWatchdog.isTamperText("Desactivar esta aplicación de administración"))
-        assertTrue(AntiTamperWatchdog.isTamperText("com.parental.control"))
+        assertTrue(AntiTamperWatchdog.isTamperText("Aegis Control Parental", inSettingsOrInstaller = true))
+        assertTrue(AntiTamperWatchdog.isTamperText("com.parental.control", inSettingsOrInstaller = true))
+        // En el launcher el clic al icono para abrir la app no debe ser bloqueado:
+        assertFalse(AntiTamperWatchdog.isTamperText("Aegis Control Parental", inSettingsOrInstaller = false))
     }
 
     @Test

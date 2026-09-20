@@ -189,8 +189,12 @@ class ParentalAccessibilityService : AccessibilityService() {
             val sourceDesc = event.source?.contentDescription?.toString() ?: ""
             val clicked = "$text $desc $sourceText $sourceDesc".lowercase()
 
+            val pkg = event.packageName?.toString()?.lowercase() ?: ""
+            val isSettingsOrInstaller = DistractionConstants.CRITICAL_SYSTEM_SETTINGS_PACKAGES.any { pkg.contains(it) } ||
+                    pkg.contains("settings") || pkg.contains("safecenter") || pkg.contains("packageinstaller")
+
             // Pre-interceptación Anti-Tampering: si el clic es sobre "Desinstalar", "Borrar datos", "Desactivar", etc.
-            if (repository.settings.value.isAntiUninstallActive && AntiTamperWatchdog.isTamperText(clicked)) {
+            if (repository.settings.value.isAntiUninstallActive && AntiTamperWatchdog.isTamperText(clicked, inSettingsOrInstaller = isSettingsOrInstaller)) {
                 Log.w(TAG, "Pre-interceptado clic peligroso en UI (desinstalación/ajustes): '$clicked'")
                 repelTamperAttempt(event.packageName?.toString() ?: "com.android.settings", clicked, "Desinstalación y Modificación Protegidas")
                 return
@@ -507,7 +511,7 @@ class ParentalAccessibilityService : AccessibilityService() {
         if (node == null || depth > 8) return false
         val text = node.text?.toString() ?: ""
         val desc = node.contentDescription?.toString() ?: ""
-        if (AntiTamperWatchdog.isTamperText(text) || AntiTamperWatchdog.isTamperText(desc)) {
+        if (AntiTamperWatchdog.isTamperText(text, inSettingsOrInstaller = true) || AntiTamperWatchdog.isTamperText(desc, inSettingsOrInstaller = true)) {
             return true
         }
         val count = node.childCount

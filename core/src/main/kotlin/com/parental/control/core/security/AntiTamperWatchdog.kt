@@ -45,18 +45,19 @@ object AntiTamperWatchdog {
     /**
      * Evalúa si un texto o descripción visible en un nodo de UI o en un evento de clic
      * revela un intento inminente de desinstalar, detener, desactivar permisos o manipular la app.
+     * @param inSettingsOrInstaller indica si el contexto actual es Ajustes o PackageInstaller.
      */
-    fun isTamperText(content: CharSequence?): Boolean {
+    fun isTamperText(content: CharSequence?, inSettingsOrInstaller: Boolean = false): Boolean {
         if (content.isNullOrBlank()) return false
         val text = content.toString().lowercase()
 
-        // 1. Mención a la aplicación Aegis / Parental Control dentro de pantallas críticas
-        if (text.contains("aegis") || text.contains("com.parental.control")) {
+        // 1. Mención a la aplicación Aegis dentro de Ajustes o PackageInstaller (intento de entrar a detalles o permisos)
+        if (inSettingsOrInstaller && (text.contains("aegis") || text.contains("com.parental.control"))) {
             return true
         }
 
-        // 2. Intento de desinstalación explícita
-        if (text.contains("desinstalar") || text.contains("uninstall")) {
+        // 2. Intento de desinstalación explícita (en Launcher, diálogos o ajustes)
+        if (text.contains("desinstalar") || text.contains("uninstall") || text.contains("eliminar app") || text.contains("delete app")) {
             return true
         }
 
