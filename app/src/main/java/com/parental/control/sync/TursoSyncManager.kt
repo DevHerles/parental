@@ -51,8 +51,13 @@ class TursoSyncManager private constructor(private val context: Context) {
 
     fun start() {
         if (isRunning) return
+        if (repository.settings.value.isParentMode) {
+            Log.i(TAG, "Dispositivo en MODO PADRES: TursoSyncManager de hija omitido.")
+            return
+        }
         isRunning = true
         Log.i(TAG, "Iniciando TursoSyncManager para dispositivo: $deviceId")
+
 
         syncJob = syncScope.launch {
             // Inicializar registro del dispositivo en Turso en el primer inicio

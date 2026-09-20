@@ -88,6 +88,11 @@ class ParentalAccessibilityService : AccessibilityService() {
         // Observador reactivo de settings (reacciona en caliente si se cancela el desbloqueo temporal o se activa bloqueo)
         serviceScope.launch {
             repository.settings.collect { settings ->
+                if (settings.isParentMode) {
+                    stopWatchdog()
+                    com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).stop()
+                    return@collect
+                }
                 if (!settings.isTemporarilyUnlocked || settings.isInstantLockActive) {
                     Log.i(TAG, "Cambio reactivo en settings (bloqueo activo o fin de pausa) -> forzar inspección inmediata")
                     lastBlockedPackage = null
@@ -99,15 +104,21 @@ class ParentalAccessibilityService : AccessibilityService() {
         // Observador reactivo de restricciones individuales de apps
         serviceScope.launch {
             repository.restrictions.collect {
+                if (repository.settings.value.isParentMode) return@collect
                 Log.i(TAG, "Cambio reactivo en restricciones -> forzar inspección inmediata")
                 lastBlockedPackage = null
                 inspectWindows("restrictionsChanged")
             }
         }
 
-        startWatchdog()
-        com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).start()
-        Log.i(TAG, "Centinela conectado (Heartbeat ${WATCHDOG_INTERVAL_MS}ms + Reactivo StateFlow + Turso Cloud Sync).")
+        if (!repository.settings.value.isParentMode) {
+            startWatchdog()
+            com.parental.control.sync.TursoSyncManager.getInstance(applicationContext).start()
+            Log.i(TAG, "Centinela conectado (Heartbeat ${WATCHDOG_INTERVAL_MS}ms + Reactivo StateFlow + Turso Cloud Sync).")
+        } else {
+            Log.i(TAG, "Dispositivo en MODO PADRES: Centinela desactivado.")
+        }
+
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -125,8 +136,10 @@ class ParentalAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null) return
+        if (repository.settings.value.isParentMode) return
 
         val packageName = event.packageName?.toString() ?: return
+
         val className = event.className?.toString() ?: ""
 
         if (packageName == applicationContext.packageName) return
@@ -304,8 +317,10 @@ class ParentalAccessibilityService : AccessibilityService() {
      * aunque su root sea NULL.
      */
     private fun inspectWindows(reason: String) {
+        if (repository.settings.value.isParentMode) return
         try {
             val win = windows
+
 
             // 0) Detección Anti-Tampering proactiva en ventana enfocada
             if (repository.settings.value.isAntiUninstallActive) {

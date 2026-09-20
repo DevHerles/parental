@@ -62,6 +62,7 @@ class ParentalRepository private constructor(private val context: Context) {
         val instantLock = false
         val unlockUntil = prefs.getLong(KEY_UNLOCK_UNTIL, 0L)
         val pairedId = prefs.getString(KEY_PAIRED_ID, "child-device-01") ?: "child-device-01"
+        val deviceRole = prefs.getString(KEY_DEVICE_ROLE, "UNSET") ?: "UNSET"
 
         return ParentalSettings(
             pinHash = pinHash,
@@ -71,9 +72,17 @@ class ParentalRepository private constructor(private val context: Context) {
             isWebFilterActive = webFilter,
             isInstantLockActive = instantLock,
             temporaryUnlockUntil = unlockUntil,
-            pairedChildId = pairedId
+            pairedChildId = pairedId,
+            deviceRole = deviceRole
         )
     }
+
+    fun setDeviceRole(role: String) {
+        prefs.edit().putString(KEY_DEVICE_ROLE, role).apply()
+        _settings.value = _settings.value.copy(deviceRole = role)
+        Log.i(TAG, "Rol del dispositivo actualizado a: $role")
+    }
+
 
     fun savePin(pin: String): String {
         val salt = PinSecurityManager.generateSalt()
@@ -271,6 +280,7 @@ class ParentalRepository private constructor(private val context: Context) {
         private const val KEY_INSTANT_LOCK = "key_instant_lock"
         private const val KEY_UNLOCK_UNTIL = "key_unlock_until"
         private const val KEY_PAIRED_ID = "key_paired_id"
+        private const val KEY_DEVICE_ROLE = "key_device_role"
 
         @Volatile
         private var INSTANCE: ParentalRepository? = null

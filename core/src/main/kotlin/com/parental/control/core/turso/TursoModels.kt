@@ -88,3 +88,15 @@ data class TursoAppRestriction(
     val isAllowedInBedtime: Boolean = false,
     val updatedAt: Long = System.currentTimeMillis()
 )
+
+/**
+ * Registro de evasión o manipulación indebida interceptada en el dispositivo de la hija.
+ */
+data class TursoTamperLog(
+    val id: Long = 0,
+    val deviceId: String,
+    val eventType: String,
+    val detail: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
+

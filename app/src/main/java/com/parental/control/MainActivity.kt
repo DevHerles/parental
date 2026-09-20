@@ -50,10 +50,12 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val settings by repository.settings.collectAsState()
 
-                val startDestination = if (settings.isConfigured) {
-                    Screen.ChildStatus.route
-                } else {
-                    Screen.RoleSelection.route
+                val startDestination = when {
+                    settings.isParentMode -> Screen.ParentDashboard.route
+                    settings.isChildMode && settings.isConfigured -> Screen.ChildStatus.route
+                    settings.isChildMode && !settings.isConfigured -> Screen.ChildSetup.route
+                    settings.isConfigured -> Screen.ChildStatus.route
+                    else -> Screen.RoleSelection.route
                 }
 
                 NavHost(
@@ -63,10 +65,14 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.RoleSelection.route) {
                         RoleSelectionScreen(
                             onSelectChildMode = {
+                                repository.setDeviceRole("CHILD")
                                 navController.navigate(Screen.ChildSetup.route)
                             },
                             onSelectParentMode = {
-                                navController.navigate(Screen.ParentDashboard.route)
+                                repository.setDeviceRole("PARENT")
+                                navController.navigate(Screen.ParentDashboard.route) {
+                                    popUpTo(Screen.RoleSelection.route) { inclusive = true }
+                                }
                             }
                         )
                     }
@@ -86,6 +92,7 @@ class MainActivity : ComponentActivity() {
                         ChildProtectedStatusScreen(
                             repository = repository,
                             onParentAccessGranted = {
+                                repository.setDeviceRole("PARENT")
                                 navController.navigate(Screen.ParentDashboard.route)
                             }
                         )
@@ -101,18 +108,14 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(Screen.ParentSchedules.route)
                             },
                             onBack = {
-                                if (settings.isConfigured) {
-                                    navController.navigate(Screen.ChildStatus.route) {
-                                        popUpTo(Screen.ParentDashboard.route) { inclusive = true }
-                                    }
-                                } else {
-                                    navController.navigate(Screen.RoleSelection.route) {
-                                        popUpTo(Screen.ParentDashboard.route) { inclusive = true }
-                                    }
+                                repository.setDeviceRole("UNSET")
+                                navController.navigate(Screen.RoleSelection.route) {
+                                    popUpTo(Screen.ParentDashboard.route) { inclusive = true }
                                 }
                             }
                         )
                     }
+
 
                     composable(Screen.ParentAppManagement.route) {
                         AppManagementScreen(
