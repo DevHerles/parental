@@ -1,0 +1,9 @@
+<resources>
+    <color name="purple_primary">#6750A4</color>
+    <color name="purple_on_primary">#FFFFFF</color>
+    <color name="teal_secondary">#006A60</color>
+    <color name="shield_accent">#3F51B5</color>
+    <color name="background_light">#FDF7FF</color>
+    <color name="lock_screen_bg">#131B2E</color>
+    <color name="warning_yellow">#FBC02D</color>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Aegis Control Parental</string>
+    <string name="accessibility_service_name">Servicio de Protección Parental Aegis</string>
+    <string name="accessibility_service_description">Protege a tu hija bloqueando aplicaciones adictivas (TikTok, YouTube, redes sociales) y previniendo la desinstalación no autorizada del control parental.</string>
+    <string name="device_admin_description">Mantiene activa la protección e impide la desinstalación no autorizada de la aplicación.</string>
+    <string name="notification_channel_name">Protección Activa</string>
+    <string name="notification_channel_desc">Mantiene el servicio de control parental funcionando en segundo plano.</string>
+    <string name="notification_title">Aegis Control Parental Activo</string>
+    <string name="notification_text">Protegiendo el dispositivo contra distracciones.</string>
+</resources>
