@@ -161,6 +161,23 @@ class ParentalRepository private constructor(private val context: Context) {
         return minutesToGrant
     }
 
+    fun claimVocabularyQuizReward(result: com.parental.control.core.model.VocabQuizResult): Int {
+        val earned = result.earnedMinutes
+        if (earned <= 0) return 0
+        if (!canAttemptChineseExam()) return 0
+
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(KEY_CHINESE_EXAM_COOLDOWN, now).apply()
+
+        val minutesToGrant = earned.coerceIn(1, 5)
+        setTemporaryUnlock(minutesToGrant)
+
+        val detail = "Quiz de Vocabulario YCT 1 aprobado: ${result.correctCount}/${result.totalQuestions} aciertos (${result.stars} ⭐) -> +${minutesToGrant}m recreativos"
+        recordTamperAttempt("🎓 [RETO CHINO] $detail")
+
+        return minutesToGrant
+    }
+
     fun setAntiUninstallActive(active: Boolean) {
         prefs.edit().putBoolean(KEY_ANTI_UNINSTALL, active).apply()
         _settings.value = _settings.value.copy(isAntiUninstallActive = active)

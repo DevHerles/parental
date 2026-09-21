@@ -30,6 +30,10 @@ class ChineseTtsHelper(context: Context) : TextToSpeech.OnInitListener {
         }
     }
 
+    fun speak(text: String, onDone: (() -> Unit)? = null) {
+        speakOnce(text, onDone)
+    }
+
     fun speakOnce(text: String, onDone: (() -> Unit)? = null) {
         if (!isInitialized || text.isBlank()) {
             onDone?.invoke()

@@ -34,7 +34,7 @@ fun LockOverlayContent(
     var unlockDuration by remember { mutableStateOf(15) }
     var pinError by remember { mutableStateOf(false) }
 
-    var showExamRunner by remember { mutableStateOf(false) }
+    var showVocabQuiz by remember { mutableStateOf(false) }
     var showFlashcards by remember { mutableStateOf(false) }
     var cooldownRemainingMs by remember { mutableStateOf(repository.getChineseExamCooldownRemainingMs()) }
     var canAttemptExam by remember { mutableStateOf(repository.canAttemptChineseExam()) }
@@ -47,15 +47,19 @@ fun LockOverlayContent(
         }
     }
 
-    if (showExamRunner) {
-        com.parental.control.ui.child.mandarin.YctExamRunnerScreen(
-            onClose = { showExamRunner = false },
+    if (showVocabQuiz) {
+        com.parental.control.ui.child.mandarin.VocabularyQuizScreen(
+            onClose = { showVocabQuiz = false },
             onClaimReward = { result ->
-                val granted = repository.claimChineseExamReward(result)
+                val granted = repository.claimVocabularyQuizReward(result)
                 if (granted > 0) {
-                    showExamRunner = false
+                    showVocabQuiz = false
                     onDismissToHome()
                 }
+            },
+            onNavigateToFlashcards = {
+                showVocabQuiz = false
+                showFlashcards = true
             }
         )
         return
@@ -149,7 +153,7 @@ fun LockOverlayContent(
 
             if (canAttemptExam) {
                 Button(
-                    onClick = { showExamRunner = true },
+                    onClick = { showVocabQuiz = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
                     shape = RoundedCornerShape(14.dp),
                     modifier = Modifier
@@ -159,7 +163,7 @@ fun LockOverlayContent(
                     Icon(Icons.Default.School, contentDescription = null, tint = Color.White)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "🎯 ¡Rendir Examen YCT 1 y Ganar 5 min!",
+                        text = "🎯 ¡Reto de Vocabulario (15 preguntas) y Gana 5 min!",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         color = Color.White
@@ -180,7 +184,7 @@ fun LockOverlayContent(
                     Icon(Icons.Default.HourglassTop, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "⏳ Próximo examen en ${String.format("%02d:%02d", cMins, cSecs)}",
+                        text = "⏳ Próximo reto en ${String.format("%02d:%02d", cMins, cSecs)}",
                         color = Color(0xFF94A3B8),
                         fontSize = 13.sp
                     )
