@@ -26,10 +26,47 @@ fun LockOverlayContent(
     onDismissToHome: () -> Unit,
     onParentUnlock: (pin: String, durationMinutes: Int) -> Boolean
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val repository = remember { com.parental.control.core.data.ParentalRepository.getInstance(context) }
+
     var showPinDialog by remember { mutableStateOf(false) }
     var pinText by remember { mutableStateOf("") }
     var unlockDuration by remember { mutableStateOf(15) }
     var pinError by remember { mutableStateOf(false) }
+
+    var showExamRunner by remember { mutableStateOf(false) }
+    var showFlashcards by remember { mutableStateOf(false) }
+    var cooldownRemainingMs by remember { mutableStateOf(repository.getChineseExamCooldownRemainingMs()) }
+    var canAttemptExam by remember { mutableStateOf(repository.canAttemptChineseExam()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            cooldownRemainingMs = repository.getChineseExamCooldownRemainingMs()
+            canAttemptExam = repository.canAttemptChineseExam()
+            kotlinx.coroutines.delay(1000L)
+        }
+    }
+
+    if (showExamRunner) {
+        com.parental.control.ui.child.mandarin.YctExamRunnerScreen(
+            onClose = { showExamRunner = false },
+            onClaimReward = { result ->
+                val granted = repository.claimChineseExamReward(result)
+                if (granted > 0) {
+                    showExamRunner = false
+                    onDismissToHome()
+                }
+            }
+        )
+        return
+    }
+
+    if (showFlashcards) {
+        com.parental.control.ui.child.mandarin.YctFlashcardsScreen(
+            onClose = { showFlashcards = false }
+        )
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -107,7 +144,69 @@ fun LockOverlayContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(36.dp))
+            // SECCIÓN EDUCATIVA CHINO MANDARÍN (YCT 1)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (canAttemptExam) {
+                Button(
+                    onClick = { showExamRunner = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Icon(Icons.Default.School, contentDescription = null, tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "🎯 ¡Rendir Examen YCT 1 y Ganar 5 min!",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+            } else {
+                val totalSecs = (cooldownRemainingMs / 1000L).coerceAtLeast(0L)
+                val cMins = totalSecs / 60
+                val cSecs = totalSecs % 60
+                OutlinedButton(
+                    onClick = { },
+                    enabled = false,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(46.dp)
+                ) {
+                    Icon(Icons.Default.HourglassTop, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "⏳ Próximo examen en ${String.format("%02d:%02d", cMins, cSecs)}",
+                        color = Color(0xFF94A3B8),
+                        fontSize = 13.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = { showFlashcards = true },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF38BDF8)),
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+            ) {
+                Icon(Icons.Default.MenuBook, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "📖 Repasar Vocabulario Oficial (83 Flashcards)",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Botón principal: Salir a Inicio
             Button(

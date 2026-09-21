@@ -1,0 +1,666 @@
+[
+  {
+    "chinese": "家",
+    "pinyin": "jiā",
+    "spanish": "Casa / Familia",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Radical 宀 (techo) + 豕 (cerdo): la casa como refugio donde vive la familia. Puede significar 'casa' (lugar) o 'familia' (grupo). Clasificador 个 (一个家). No confundir 家人 (jiārén, miembro de la familia).<br>📚 <strong>Ejemplos:</strong><br>1. 我家有四个人。 <em>Wǒ jiā yǒu sì gè rén.</em> - Mi familia tiene cuatro personas.<br>2. 他在家。 <em>Tā zài jiā.</em> - Él está en casa.<br>3. 你家在哪儿？ <em>Nǐ jiā zài nǎr?</em> - ¿Dónde está tu casa?<br>4. 我家很大。 <em>Wǒ jiā hěn dà.</em> - Mi casa es grande.<br>5. 我回家。 <em>Wǒ huí jiā.</em> - Vuelvo a casa.",
+    "literal_translation": "家 (jiā) = casa, hogar, familia"
+  },
+  {
+    "chinese": "学校",
+    "pinyin": "xué xiào",
+    "spanish": "Escuela",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 学 (estudiar) + 校 (plantel). Lugar donde se estudia. Clasificador 个 (一个学校). Se combina con 老师/学生. Error común: escribir 学校 para referirse a una clase (eso es 上课).<br>📚 <strong>Ejemplos:</strong><br>1. 我去学校。 <em>Wǒ qù xuéxiào.</em> - Voy a la escuela.<br>2. 学校很大。 <em>Xuéxiào hěn dà.</em> - La escuela es grande.<br>3. 他在学校。 <em>Tā zài xuéxiào.</em> - Él está en la escuela.<br>4. 我们学校有老师。 <em>Wǒmen xuéxiào yǒu lǎoshī.</em> - Nuestra escuela tiene maestros.<br>5. 学校在这儿。 <em>Xuéxiào zài zhèr.</em> - La escuela está aquí.",
+    "literal_translation": "学 (xué) estudiar + 校 (xiào) centro -> centro de estudio"
+  },
+  {
+    "chinese": "商店",
+    "pinyin": "shāng diàn",
+    "spanish": "Tienda",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 商 (negocio) + 店 (local). Establecimiento donde se compran cosas. Clasificador 个 (一个商店). Muy frecuente en el examen con 去商店买…<br>📚 <strong>Ejemplos:</strong><br>1. 我去商店。 <em>Wǒ qù shāngdiàn.</em> - Voy a la tienda.<br>2. 商店里有苹果。 <em>Shāngdiàn lǐ yǒu píngguǒ.</em> - En la tienda hay manzanas.<br>3. 这个商店很大。 <em>Zhège shāngdiàn hěn dà.</em> - Esta tienda es grande.<br>4. 妈妈去商店买牛奶。 <em>Māma qù shāngdiàn mǎi niúnǎi.</em> - Mamá va a la tienda a comprar leche.<br>5. 商店里有很多人。 <em>Shāngdiàn lǐ yǒu hěn duō rén.</em> - En la tienda hay mucha gente.",
+    "literal_translation": "商 (shāng) comercio + 店 (diàn) tienda -> tienda de comercio"
+  },
+  {
+    "chinese": "中国人",
+    "pinyin": "Zhōng guó rén",
+    "spanish": "Chino / China (persona)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 中国 (China) + 人 (persona). Gentilicio. Se usa con 是: 我是中国人. No se usa como adjetivo de nacionalidad para cosas; para idioma se dice 中文/汉语.<br>📚 <strong>Ejemplos:</strong><br>1. 我是中国人。 <em>Wǒ shì Zhōngguórén.</em> - Soy chino.<br>2. 他是中国人。 <em>Tā shì Zhōngguórén.</em> - Él es chino.<br>3. 她是中国人。 <em>Tā shì Zhōngguórén.</em> - Ella es china.<br>4. 我妈妈是中国人。 <em>Wǒ māma shì Zhōngguórén.</em> - Mi mamá es china.<br>5. 这个老师是中国人。 <em>Zhège lǎoshī shì Zhōngguórén.</em> - Este maestro es chino.",
+    "literal_translation": "中 (Zhōng) medio + 国 (guó) país + 人 (rén) persona -> persona del país del centro"
+  },
+  {
+    "chinese": "爸爸",
+    "pinyin": "bà ba",
+    "spanish": "Papá / Padre",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Reduplicación cariñosa de 爸. Se usa para el padre en contextos familiares; 父亲 (fùqīn) es la forma formal. Clasificador 个. No lleva 的 al decir 我爸爸.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我爸爸。 <em>Zhè shì wǒ bàba.</em> - Este es mi papá.<br>2. 我爸爸是老师。 <em>Wǒ bàba shì lǎoshī.</em> - Mi papá es maestro.<br>3. 爸爸在家。 <em>Bàba zài jiā.</em> - Papá está en casa.<br>4. 我爱爸爸。 <em>Wǒ ài bàba.</em> - Amo a mi papá.<br>5. 爸爸喝水。 <em>Bàba hē shuǐ.</em> - Papá bebe agua.",
+    "literal_translation": "爸 (bà) papá, reduplicado -> papá (trato familiar)"
+  },
+  {
+    "chinese": "妈妈",
+    "pinyin": "mā ma",
+    "spanish": "Mamá / Madre",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Reduplicación cariñosa de 妈. 母亲 (mǔqīn) es la forma formal. Clasificador 个. Al decir 我妈妈 no se intercala 的.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我妈妈。 <em>Zhè shì wǒ māma.</em> - Esta es mi mamá.<br>2. 妈妈是中国人。 <em>Māma shì Zhōngguórén.</em> - Mamá es china.<br>3. 妈妈去商店。 <em>Māma qù shāngdiàn.</em> - Mamá va a la tienda.<br>4. 我爱妈妈。 <em>Wǒ ài māma.</em> - Amo a mi mamá.<br>5. 妈妈吃米饭。 <em>Māma chī mǐfàn.</em> - Mamá come arroz.",
+    "literal_translation": "妈 (mā) mamá, reduplicado -> mamá (trato familiar)"
+  },
+  {
+    "chinese": "哥哥",
+    "pinyin": "gē ge",
+    "spanish": "Hermano mayor",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 哥哥 = hermano mayor (varón). El chino distingue edad: 哥哥 (mayor), 弟弟 (menor). Clasificador 个. Error común: usar 哥哥 para cualquier hermano.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一个哥哥。 <em>Wǒ yǒu yí gè gēge.</em> - Tengo un hermano mayor.<br>2. 我哥哥很高。 <em>Wǒ gēge hěn gāo.</em> - Mi hermano mayor es alto.<br>3. 哥哥在学校。 <em>Gēge zài xuéxiào.</em> - Mi hermano está en la escuela.<br>4. 哥哥喜欢猫。 <em>Gēge xǐhuan māo.</em> - A mi hermano le gustan los gatos.<br>5. 这是我哥哥。 <em>Zhè shì wǒ gēge.</em> - Este es mi hermano mayor.",
+    "literal_translation": "哥 (gē) hermano mayor, reduplicado -> hermano mayor"
+  },
+  {
+    "chinese": "姐姐",
+    "pinyin": "jiě jie",
+    "spanish": "Hermana mayor",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 姐姐 = hermana mayor. 妹妹 (mèimei) = hermana menor. Clasificador 个. Muy usado en el examen para presentar a la familia.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一个姐姐。 <em>Wǒ yǒu yí gè jiějie.</em> - Tengo una hermana mayor.<br>2. 我姐姐很高。 <em>Wǒ jiějie hěn gāo.</em> - Mi hermana mayor es alta.<br>3. 姐姐是老师。 <em>Jiějie shì lǎoshī.</em> - Mi hermana es maestra.<br>4. 姐姐喜欢苹果。 <em>Jiějie xǐhuan píngguǒ.</em> - A mi hermana le gustan las manzanas.<br>5. 姐姐在家。 <em>Jiějie zài jiā.</em> - Mi hermana está en casa.",
+    "literal_translation": "姐 (jiě) hermana mayor, reduplicado -> hermana mayor"
+  },
+  {
+    "chinese": "老师",
+    "pinyin": "lǎo shī",
+    "spanish": "Maestro / Profesor",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 老 aquí no significa 'viejo' sino respeto/veneración; 师 = maestro. Sirve para hombre o mujer. Clasificador 个 o 位 (respetuoso).<br>📚 <strong>Ejemplos:</strong><br>1. 他是我的老师。 <em>Tā shì wǒ de lǎoshī.</em> - Él es mi maestro.<br>2. 老师在学校。 <em>Lǎoshī zài xuéxiào.</em> - El maestro está en la escuela.<br>3. 老师很好。 <em>Lǎoshī hěn hǎo.</em> - El maestro es muy bueno.<br>4. 我认识这个老师。 <em>Wǒ rènshi zhège lǎoshī.</em> - Conozco a este maestro.<br>5. 老师喝牛奶。 <em>Lǎoshī hē niúnǎi.</em> - El maestro bebe leche.",
+    "literal_translation": "老 (lǎo) viejo, venerable + 师 (shī) maestro -> maestro"
+  },
+  {
+    "chinese": "手",
+    "pinyin": "shǒu",
+    "spanish": "Mano",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Pictograma de una mano con dedos. Parte del cuerpo. Clasificador 只 (一只 hand) pero en YCT1 basta 个. Aparece en el examen al nombrar partes del cuerpo.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我的手。 <em>Zhè shì wǒ de shǒu.</em> - Esta es mi mano.<br>2. 我的手很大。 <em>Wǒ de shǒu hěn dà.</em> - Mis manos son grandes.<br>3. 他的手很小。 <em>Tā de shǒu hěn xiǎo.</em> - Sus manos son pequeñas.<br>4. 我喜欢我的手。 <em>Wǒ xǐhuan wǒ de shǒu.</em> - Me gustan mis manos.<br>5. 手在这儿。 <em>Shǒu zài zhèr.</em> - La mano está aquí.",
+    "literal_translation": "手 (shǒu) = mano"
+  },
+  {
+    "chinese": "口",
+    "pinyin": "kǒu",
+    "spanish": "Boca",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 口 es la forma culta de 'boca'; en el habla diaria se usa más 嘴 (zuǐ). En YCT1 aparece 口 como parte del cuerpo. También es clasificador de personas (一口人).<br>📚 <strong>Ejemplos:</strong><br>1. 这是我的口。 <em>Zhè shì wǒ de kǒu.</em> - Esta es mi boca.<br>2. 他张口。 <em>Tā zhāng kǒu.</em> - Él abre la boca.<br>3. 口在这儿。 <em>Kǒu zài zhèr.</em> - La boca está aquí.<br>4. 你的口很小。 <em>Nǐ de kǒu hěn xiǎo.</em> - Tu boca es pequeña.<br>5. 我用口吃饭。 <em>Wǒ yòng kǒu chīfàn.</em> - Uso la boca para comer.",
+    "literal_translation": "口 (kǒu) = boca (pictograma de una boca abierta)"
+  },
+  {
+    "chinese": "眼睛",
+    "pinyin": "yǎn jing",
+    "spanish": "Ojo(s)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 眼 = ojo; 睛 refuerza el globo ocular. En chino suele usarse en plural implícito. Clasificador 只 / 双. Parte del cuerpo muy preguntada en el examen.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我的眼睛。 <em>Zhè shì wǒ de yǎnjing.</em> - Estos son mis ojos.<br>2. 她的眼睛很大。 <em>Tā de yǎnjing hěn dà.</em> - Sus ojos son grandes.<br>3. 我的眼睛很小。 <em>Wǒ de yǎnjing hěn xiǎo.</em> - Mis ojos son pequeños.<br>4. 猫的眼睛很大。 <em>Māo de yǎnjing hěn dà.</em> - Los ojos del gato son grandes.<br>5. 眼睛在这儿。 <em>Yǎnjing zài zhèr.</em> - Los ojos están aquí.",
+    "literal_translation": "眼 (yǎn) ojo + 睛 (jīng) globo ocular -> ojos"
+  },
+  {
+    "chinese": "头发",
+    "pinyin": "tóu fa",
+    "spanish": "Cabello / Pelo",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 头 (cabeza) + 发 (pelo). Es incontable: no se usa con números directamente. Se describe con 长/短. Cuidado: 发 aquí se lee fà (no fā).<br>📚 <strong>Ejemplos:</strong><br>1. 我的头发很长。 <em>Wǒ de tóufa hěn cháng.</em> - Mi cabello es muy largo.<br>2. 她的头发很短。 <em>Tā de tóufa hěn duǎn.</em> - Su cabello es corto.<br>3. 这是他的头发。 <em>Zhè shì tā de tóufa.</em> - Este es su cabello.<br>4. 我洗头发。 <em>Wǒ xǐ tóufa.</em> - Me lavo el cabello.<br>5. 姐姐的头发很长。 <em>Jiějie de tóufa hěn cháng.</em> - El cabello de mi hermana es largo.",
+    "literal_translation": "头 (tóu) cabeza + 发 (fà) pelo -> pelo de la cabeza"
+  },
+  {
+    "chinese": "耳朵",
+    "pinyin": "ěr duo",
+    "spanish": "Oreja(s)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 耳 (oreja) + 朵 (clasificador/forma redondeada). Se usa en plural implícito. Clasificador 只 / 双. Parte del cuerpo.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我的耳朵。 <em>Zhè shì wǒ de ěrduo.</em> - Estas son mis orejas.<br>2. 兔子的耳朵很长。 <em>Tùzi de ěrduo hěn cháng.</em> - Las orejas del conejo son largas.<br>3. 他的耳朵很大。 <em>Tā de ěrduo hěn dà.</em> - Sus orejas son grandes.<br>4. 耳朵在这儿。 <em>Ěrduo zài zhèr.</em> - Las orejas están aquí.<br>5. 我有一只耳朵。 <em>Wǒ yǒu yì zhī ěrduo.</em> - Tengo una oreja.",
+    "literal_translation": "耳 (ěr) oreja + 朵 (duǒ) lóbulo -> orejas"
+  },
+  {
+    "chinese": "鼻子",
+    "pinyin": "bí zi",
+    "spanish": "Nariz",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 鼻 es el carácter de nariz; 子 es sufijo nominal. Clasificador 个. Parte del cuerpo.<br>📚 <strong>Ejemplos:</strong><br>1. 这是我的鼻子。 <em>Zhè shì wǒ de bízi.</em> - Esta es mi nariz.<br>2. 他的鼻子很大。 <em>Tā de bízi hěn dà.</em> - Su nariz es grande.<br>3. 狗的鼻子很小。 <em>Gǒu de bízi hěn xiǎo.</em> - La nariz del perro es pequeña.<br>4. 鼻子在这儿。 <em>Bízi zài zhèr.</em> - La nariz está aquí.<br>5. 我的鼻子不大。 <em>Wǒ de bízi bú dà.</em> - Mi nariz no es grande.",
+    "literal_translation": "鼻 (bí) nariz + 子 (zi) sufijo -> nariz"
+  },
+  {
+    "chinese": "个子",
+    "pinyin": "gè zi",
+    "spanish": "Estatura / Talla",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Se usa para la altura de una persona: 个子高 / 个子矮 (alto/bajo de estatura). No se usa para objetos. Muy frecuente en el examen oral y de lectura.<br>📚 <strong>Ejemplos:</strong><br>1. 他个子很高。 <em>Tā gèzi hěn gāo.</em> - Él es alto.<br>2. 我个子不高。 <em>Wǒ gèzi bù gāo.</em> - No soy alto.<br>3. 哥哥的个子很高。 <em>Gēge de gèzi hěn gāo.</em> - La estatura de mi hermano es alta.<br>4. 这个孩子个子小。 <em>Zhège háizi gèzi xiǎo.</em> - Este niño es bajo.<br>5. 老师个子高。 <em>Lǎoshī gèzi gāo.</em> - El maestro es alto.",
+    "literal_translation": "个 (gè) cuerpo/estatura + 子 (zi) sufijo -> estatura"
+  },
+  {
+    "chinese": "猫",
+    "pinyin": "māo",
+    "spanish": "Gato",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Radical 犭 (animal) + 苗 (miao, fonético). Clasificador 只 (一只猫). Animal doméstico típico en el examen.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一只猫。 <em>Wǒ yǒu yì zhī māo.</em> - Tengo un gato.<br>2. 猫很小。 <em>Māo hěn xiǎo.</em> - El gato es pequeño.<br>3. 猫喜欢鱼。 <em>Māo xǐhuan yú.</em> - Al gato le gusta el pescado.<br>4. 猫在这儿。 <em>Māo zài zhèr.</em> - El gato está aquí.<br>5. 这是猫。 <em>Zhè shì māo.</em> - Esto es un gato.",
+    "literal_translation": "猫 (māo) = gato"
+  },
+  {
+    "chinese": "狗",
+    "pinyin": "gǒu",
+    "spanish": "Perro",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Radical 犭 (animal) + 句 (fonético). Clasificador 只 (一只狗). Animal doméstico.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一只狗。 <em>Wǒ yǒu yì zhī gǒu.</em> - Tengo un perro.<br>2. 狗很大。 <em>Gǒu hěn dà.</em> - El perro es grande.<br>3. 狗喜欢水。 <em>Gǒu xǐhuan shuǐ.</em> - Al perro le gusta el agua.<br>4. 狗在这儿。 <em>Gǒu zài zhèr.</em> - El perro está aquí.<br>5. 这是我的狗。 <em>Zhè shì wǒ de gǒu.</em> - Este es mi perro.",
+    "literal_translation": "狗 (gǒu) = perro"
+  },
+  {
+    "chinese": "鸟",
+    "pinyin": "niǎo",
+    "spanish": "Pájaro / Ave",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Pictograma de un ave. Clasificador 只 (一只鸟). Aparece en el examen con 飞 (volar), aunque 飞 no sea YCT1.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一只鸟。 <em>Wǒ yǒu yì zhī niǎo.</em> - Tengo un pájaro.<br>2. 鸟很小。 <em>Niǎo hěn xiǎo.</em> - El pájaro es pequeño.<br>3. 鸟在这儿。 <em>Niǎo zài zhèr.</em> - El pájaro está aquí.<br>4. 这是鸟。 <em>Zhè shì niǎo.</em> - Esto es un pájaro.<br>5. 鸟喜欢水。 <em>Niǎo xǐhuan shuǐ.</em> - Al pájaro le gusta el agua.",
+    "literal_translation": "鸟 (niǎo) = pájaro"
+  },
+  {
+    "chinese": "鱼",
+    "pinyin": "yú",
+    "spanish": "Pez / Pescado",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Pictograma de un pez. Clasificador 条 (一条鱼). Animal y alimento a la vez. El gato lo come: 猫吃鱼.<br>📚 <strong>Ejemplos:</strong><br>1. 我吃鱼。 <em>Wǒ chī yú.</em> - Como pescado.<br>2. 鱼在水里。 <em>Yú zài shuǐ lǐ.</em> - El pez está en el agua.<br>3. 猫喜欢鱼。 <em>Māo xǐhuan yú.</em> - Al gato le gusta el pescado.<br>4. 这是鱼。 <em>Zhè shì yú.</em> - Esto es un pez.<br>5. 鱼很小。 <em>Yú hěn xiǎo.</em> - El pez es pequeño.",
+    "literal_translation": "鱼 (yú) = pez, pescado"
+  },
+  {
+    "chinese": "水",
+    "pinyin": "shuǐ",
+    "spanish": "Agua",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Incontable: no se cuenta con números directamente (se usa 杯/瓶). Aparece en 喝水 / 水果. No confundir 水 (agua) con 睡 (dormir), distinto tono.<br>📚 <strong>Ejemplos:</strong><br>1. 我喝水。 <em>Wǒ hē shuǐ.</em> - Bebo agua.<br>2. 水很好。 <em>Shuǐ hěn hǎo.</em> - El agua es buena.<br>3. 这是水。 <em>Zhè shì shuǐ.</em> - Esto es agua.<br>4. 猫不喝水。 <em>Māo bù hē shuǐ.</em> - El gato no bebe agua.<br>5. 我要水。 <em>Wǒ yào shuǐ.</em> - Quiero agua.",
+    "literal_translation": "水 (shuǐ) = agua"
+  },
+  {
+    "chinese": "牛奶",
+    "pinyin": "niú nǎi",
+    "spanish": "Leche",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 牛 (vaca) + 奶 (leche). Incontable (se mide con 杯). Muy común en el desayuno: 我喝牛奶.<br>📚 <strong>Ejemplos:</strong><br>1. 我喝牛奶。 <em>Wǒ hē niúnǎi.</em> - Bebo leche.<br>2. 牛奶很好。 <em>Niúnǎi hěn hǎo.</em> - La leche es buena.<br>3. 这是牛奶。 <em>Zhè shì niúnǎi.</em> - Esto es leche.<br>4. 妈妈买牛奶。 <em>Māma mǎi niúnǎi.</em> - Mamá compra leche.<br>5. 我不喝牛奶。 <em>Wǒ bù hē niúnǎi.</em> - No bebo leche.",
+    "literal_translation": "牛 (niú) vaca + 奶 (nǎi) leche -> leche de vaca"
+  },
+  {
+    "chinese": "米饭",
+    "pinyin": "mǐ fàn",
+    "spanish": "Arroz (cocido)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 米 = arroz (grano crudo); 饭 = comida cocida. 米饭 es el arroz servido. Incontable; se mide con 碗. Común: 我吃米饭.<br>📚 <strong>Ejemplos:</strong><br>1. 我吃米饭。 <em>Wǒ chī mǐfàn.</em> - Como arroz.<br>2. 米饭很好吃。 <em>Mǐfàn hěn hǎochī.</em> - El arroz está muy rico.<br>3. 这是米饭。 <em>Zhè shì mǐfàn.</em> - Esto es arroz.<br>4. 妈妈做米饭。 <em>Māma zuò mǐfàn.</em> - Mamá prepara arroz.<br>5. 我不要米饭。 <em>Wǒ bú yào mǐfàn.</em> - No quiero arroz.",
+    "literal_translation": "米 (mǐ) arroz crudo + 饭 (fàn) comida -> arroz cocido"
+  },
+  {
+    "chinese": "面条",
+    "pinyin": "miàn tiáo",
+    "spanish": "Fideos / Tallarines",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 面 (harina) + 条 (tira, clasificador de cosas alargadas). Incontable; se mide con 碗. Común: 我吃面条.<br>📚 <strong>Ejemplos:</strong><br>1. 我吃面条。 <em>Wǒ chī miàntiáo.</em> - Como fideos.<br>2. 面条很好吃。 <em>Miàntiáo hěn hǎochī.</em> - Los fideos están ricos.<br>3. 这是面条。 <em>Zhè shì miàntiáo.</em> - Estos son fideos.<br>4. 妈妈做面条。 <em>Māma zuò miàntiáo.</em> - Mamá prepara fideos.<br>5. 我喜欢面条。 <em>Wǒ xǐhuan miàntiáo.</em> - Me gustan los fideos.",
+    "literal_translation": "面 (miàn) harina/fideo + 条 (tiáo) tira -> fideos en tiras"
+  },
+  {
+    "chinese": "苹果",
+    "pinyin": "píng guǒ",
+    "spanish": "Manzana",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 苹 lleva el radical 艹 (hierba) y 果 significa 'fruto'. Clasificador 个 (一个苹果). No confundir con 果汁 (jugo). Fruta típica del examen.<br>📚 <strong>Ejemplos:</strong><br>1. 我爱吃苹果。 <em>Wǒ ài chī píngguǒ.</em> - Me encanta comer manzanas.<br>2. 这是苹果。 <em>Zhè shì píngguǒ.</em> - Esto es una manzana.<br>3. 苹果很大。 <em>Píngguǒ hěn dà.</em> - La manzana es grande.<br>4. 我吃了一个苹果。 <em>Wǒ chī le yí gè píngguǒ.</em> - Me comí una manzana.<br>5. 苹果在桌子上。 <em>Píngguǒ zài zhuōzi shàng.</em> - La manzana está sobre la mesa.",
+    "literal_translation": "苹 (píng) manzana + 果 (guǒ) fruto -> fruto manzana"
+  },
+  {
+    "chinese": "今天",
+    "pinyin": "jīn tiān",
+    "spanish": "Hoy",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 今 (presente) + 天 (día). Funciona como adverbio de tiempo y va antes del verbo. Frecuente: 今天几号？/ 今天星期几？<br>📚 <strong>Ejemplos:</strong><br>1. 今天很好。 <em>Jīntiān hěn hǎo.</em> - Hoy está bien.<br>2. 今天几号？ <em>Jīntiān jǐ hào?</em> - ¿Qué fecha es hoy?<br>3. 今天星期几？ <em>Jīntiān xīngqī jǐ?</em> - ¿Qué día de la semana es hoy?<br>4. 今天我上学。 <em>Jīntiān wǒ shàngxué.</em> - Hoy voy a la escuela.<br>5. 今天我在家。 <em>Jīntiān wǒ zài jiā.</em> - Hoy estoy en casa.",
+    "literal_translation": "今 (jīn) actual + 天 (tiān) día -> el día de hoy"
+  },
+  {
+    "chinese": "明天",
+    "pinyin": "míng tiān",
+    "spanish": "Mañana",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 明 (siguiente, claro) + 天 (día). Adverbio de tiempo, va antes del verbo. Paralelo de 今天 (hoy) y 昨天 (ayer).<br>📚 <strong>Ejemplos:</strong><br>1. 明天见。 <em>Míngtiān jiàn.</em> - Nos vemos mañana.<br>2. 明天我上学。 <em>Míngtiān wǒ shàngxué.</em> - Mañana voy a la escuela.<br>3. 明天你来吗？ <em>Míngtiān nǐ lái ma?</em> - ¿Vienes mañana?<br>4. 明天是星期天。 <em>Míngtiān shì xīngqītiān.</em> - Mañana es domingo.<br>5. 明天我在家。 <em>Míngtiān wǒ zài jiā.</em> - Mañana estoy en casa.",
+    "literal_translation": "明 (míng) brillante/próximo + 天 (tiān) día -> el día siguiente"
+  },
+  {
+    "chinese": "现在",
+    "pinyin": "xiàn zài",
+    "spanish": "Ahora",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 现 (actual) + 在 (en). Adverbio de tiempo; se coloca antes del verbo. Muy usado: 现在几点？<br>📚 <strong>Ejemplos:</strong><br>1. 现在几点了？ <em>Xiànzài jǐ diǎn le?</em> - ¿Qué hora es ahora?<br>2. 现在我回家。 <em>Xiànzài wǒ huí jiā.</em> - Ahora vuelvo a casa.<br>3. 现在我在学校。 <em>Xiànzài wǒ zài xuéxiào.</em> - Ahora estoy en la escuela.<br>4. 现在很好。 <em>Xiànzài hěn hǎo.</em> - Ahora está bien.<br>5. 现在他不在家。 <em>Xiànzài tā bú zài jiā.</em> - Ahora él no está en casa.",
+    "literal_translation": "现 (xiàn) presente + 在 (zài) en -> en el presente"
+  },
+  {
+    "chinese": "月",
+    "pinyin": "yuè",
+    "spanish": "Mes / Luna",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Originalmente 'luna'; pasó a significar 'mes'. Se usa para fechas: 一月 (enero) ... 十二月. En fecha: 三月八号.<br>📚 <strong>Ejemplos:</strong><br>1. 一年有十二个月。 <em>Yì nián yǒu shí'èr gè yuè.</em> - Un año tiene doce meses.<br>2. 现在是五月。 <em>Xiànzài shì wǔ yuè.</em> - Ahora es mayo.<br>3. 我的生日是三月。 <em>Wǒ de shēngrì shì sān yuè.</em> - Mi cumpleaños es en marzo.<br>4. 这个月我在学校。 <em>Zhège yuè wǒ zài xuéxiào.</em> - Este mes estoy en la escuela.<br>5. 月很大。 <em>Yuè hěn dà.</em> - La luna es grande.",
+    "literal_translation": "月 (yuè) = luna, mes"
+  },
+  {
+    "chinese": "号",
+    "pinyin": "hào",
+    "spanish": "Número / Fecha (día del mes)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Se usa para el día del mes: 三月八号 (8 de marzo). También 'número/talla'. No confundir con 几 (jǐ). Pregunta típica: 今天几号？<br>📚 <strong>Ejemplos:</strong><br>1. 今天几号？ <em>Jīntiān jǐ hào?</em> - ¿Qué fecha es hoy?<br>2. 今天是五月一号。 <em>Jīntiān shì wǔ yuè yī hào.</em> - Hoy es 1 de mayo.<br>3. 我的生日是六月十号。 <em>Wǒ de shēngrì shì liù yuè shí hào.</em> - Mi cumpleaños es el 10 de junio.<br>4. 今天三号。 <em>Jīntiān sān hào.</em> - Hoy es el 3.<br>5. 你的号码是多少？ <em>Nǐ de hàomǎ shì duōshǎo?</em> - ¿Cuál es tu número?",
+    "literal_translation": "号 (hào) = número, día del mes"
+  },
+  {
+    "chinese": "星期",
+    "pinyin": "xīng qī",
+    "spanish": "Semana",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> 星期 = semana. Combinado da los días: 星期一 (lunes) ... 星期日/天 (domingo). Pregunta: 今天星期几？ No lleva clasificador al decir el día.<br>📚 <strong>Ejemplos:</strong><br>1. 今天星期几？ <em>Jīntiān xīngqī jǐ?</em> - ¿Qué día es hoy?<br>2. 今天星期三。 <em>Jīntiān xīngqīsān.</em> - Hoy es miércoles.<br>3. 一个星期有七天。 <em>Yí gè xīngqī yǒu qī tiān.</em> - Una semana tiene siete días.<br>4. 星期天我在家。 <em>Xīngqītiān wǒ zài jiā.</em> - El domingo estoy en casa.<br>5. 明天星期六。 <em>Míngtiān xīngqīliù.</em> - Mañana es sábado.",
+    "literal_translation": "星 (xīng) astro + 期 (qī) período -> semana (los siete astros)"
+  },
+  {
+    "chinese": "点",
+    "pinyin": "diǎn",
+    "spanish": "Hora (en punto) / Punto",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Sustantivo.</strong> Para la hora: 三点 (las 3 en punto). También 'punto' en general. Pregunta: 现在几点？ No se usa 个 con 点 para la hora.<br>📚 <strong>Ejemplos:</strong><br>1. 现在几点？ <em>Xiànzài jǐ diǎn?</em> - ¿Qué hora es?<br>2. 现在三点。 <em>Xiànzài sān diǎn.</em> - Ahora son las tres.<br>3. 我七点上学。 <em>Wǒ qī diǎn shàngxué.</em> - Voy a la escuela a las siete.<br>4. 现在十二点。 <em>Xiànzài shí'èr diǎn.</em> - Ahora son las doce.<br>5. 我八点吃早饭。 <em>Wǒ bā diǎn chī zǎofàn.</em> - Desayuno a las ocho.",
+    "literal_translation": "点 (diǎn) = punto, marca -> hora"
+  },
+  {
+    "chinese": "谢谢",
+    "pinyin": "xiè xie",
+    "spanish": "Gracias / Agradecer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo / interjección.</strong> Reduplicación de 谢. Se usa solo o con 你: 谢谢你. Respuesta: 不客气 (de nada). El segundo 谢 es tono neutro.<br>📚 <strong>Ejemplos:</strong><br>1. 谢谢你。 <em>Xièxie nǐ.</em> - Gracias a ti.<br>2. 谢谢老师。 <em>Xièxie lǎoshī.</em> - Gracias, maestro.<br>3. 谢谢妈妈。 <em>Xièxie māma.</em> - Gracias, mamá.<br>4. 谢谢你爸爸。 <em>Xièxie nǐ bàba.</em> - Gracias a tu papá.<br>5. 不客气，谢谢。 <em>Bú kèqi, xièxie.</em> - De nada, gracias.",
+    "literal_translation": "谢 (xiè) agradecer, reduplicado -> gracias"
+  },
+  {
+    "chinese": "再见",
+    "pinyin": "zài jiàn",
+    "spanish": "Adiós / Hasta luego",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo / interjección.</strong> 再 (otra vez) + 见 (ver). Despedida estándar. Se puede duplicar 再见再见 con afecto. No se usa al recibir, solo al despedirse.<br>📚 <strong>Ejemplos:</strong><br>1. 再见！ <em>Zàijiàn!</em> - ¡Adiós!<br>2. 老师再见。 <em>Lǎoshī zàijiàn.</em> - Adiós, maestro.<br>3. 妈妈再见。 <em>Māma zàijiàn.</em> - Adiós, mamá.<br>4. 明天再见。 <em>Míngtiān zàijiàn.</em> - Hasta mañana.<br>5. 我先走了，再见。 <em>Wǒ xiān zǒu le, zàijiàn.</em> - Me voy primero, adiós.",
+    "literal_translation": "再 (zài) otra vez + 见 (jiàn) ver -> nos vemos otra vez"
+  },
+  {
+    "chinese": "是",
+    "pinyin": "shì",
+    "spanish": "Ser / Sí",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Cópula entre dos sustantivos: A 是 B. No se usa con adjetivos (se dice 我很好, no 我是好). En respuesta afirmativa: 是。Su negación es 不是.<br>📚 <strong>Ejemplos:</strong><br>1. 我是老师。 <em>Wǒ shì lǎoshī.</em> - Soy maestro.<br>2. 他是中国人。 <em>Tā shì Zhōngguórén.</em> - Él es chino.<br>3. 这是苹果。 <em>Zhè shì píngguǒ.</em> - Esto es una manzana.<br>4. 她是中国人吗？ <em>Tā shì Zhōngguórén ma?</em> - ¿Ella es china?<br>5. 不是，他是中国人。 <em>Bú shì, tā shì Zhōngguórén.</em> - No, él es chino.",
+    "literal_translation": "是 (shì) = ser, es"
+  },
+  {
+    "chinese": "有",
+    "pinyin": "yǒu",
+    "spanish": "Tener / Haber",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Posesión: 我有… ; existencia: 桌上有… . Negación irregular: 没有 (no 不有). Estructura de existencia: Lugar + 有 + cosa.<br>📚 <strong>Ejemplos:</strong><br>1. 我有一个哥哥。 <em>Wǒ yǒu yí gè gēge.</em> - Tengo un hermano mayor.<br>2. 我有猫。 <em>Wǒ yǒu māo.</em> - Tengo un gato.<br>3. 桌子上有苹果。 <em>Zhuōzi shàng yǒu píngguǒ.</em> - Sobre la mesa hay una manzana.<br>4. 我没有狗。 <em>Wǒ méiyǒu gǒu.</em> - No tengo perro.<br>5. 你有牛奶吗？ <em>Nǐ yǒu niúnǎi ma?</em> - ¿Tienes leche?",
+    "literal_translation": "有 (yǒu) = tener, haber"
+  },
+  {
+    "chinese": "看",
+    "pinyin": "kàn",
+    "spanish": "Ver / Mirar / Leer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> 看 = mirar/ver; también 'leer' (看书) y 'visitar'. Estructura: 看 + objeto. No confundir 看 (kàn, mirar) con 听 (tīng, escuchar).<br>📚 <strong>Ejemplos:</strong><br>1. 我看书。 <em>Wǒ kàn shū.</em> - Leo un libro.<br>2. 你看，猫在那儿。 <em>Nǐ kàn, māo zài nàr.</em> - Mira, el gato está allí.<br>3. 我看电视。 <em>Wǒ kàn diànshì.</em> - Veo televisión.<br>4. 老师看学生。 <em>Lǎoshī kàn xuésheng.</em> - El maestro mira a los estudiantes.<br>5. 我喜欢看书。 <em>Wǒ xǐhuan kàn shū.</em> - Me gusta leer.",
+    "literal_translation": "看 (kàn) = ver, mirar"
+  },
+  {
+    "chinese": "吃",
+    "pinyin": "chī",
+    "spanish": "Comer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Radical 口 (boca) + 乞 (fonético). 吃 + comida. Común: 吃饭 (comer), 吃苹果. No se usa para beber (eso es 喝).<br>📚 <strong>Ejemplos:</strong><br>1. 我吃饭。 <em>Wǒ chīfàn.</em> - Como.<br>2. 我吃苹果。 <em>Wǒ chī píngguǒ.</em> - Como una manzana.<br>3. 猫吃鱼。 <em>Māo chī yú.</em> - El gato come pescado.<br>4. 我不吃肉。 <em>Wǒ bù chī ròu.</em> - No como carne.<br>5. 你想吃什么？ <em>Nǐ xiǎng chī shénme?</em> - ¿Qué quieres comer?",
+    "literal_translation": "吃 (chī) = comer"
+  },
+  {
+    "chinese": "喝",
+    "pinyin": "hē",
+    "spanish": "Beber / Tomar",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Radical 口 (boca) + 曷 (fonético). Específico para líquidos: 喝水, 喝牛奶. No se usa con comida sólida (para eso 吃).<br>📚 <strong>Ejemplos:</strong><br>1. 我喝水。 <em>Wǒ hē shuǐ.</em> - Bebo agua.<br>2. 我喝牛奶。 <em>Wǒ hē niúnǎi.</em> - Bebo leche.<br>3. 你喝什么？ <em>Nǐ hē shénme?</em> - ¿Qué bebes?<br>4. 他不喝茶。 <em>Tā bù hē chá.</em> - Él no bebe té.<br>5. 妈妈喝水。 <em>Māma hē shuǐ.</em> - Mamá bebe agua.",
+    "literal_translation": "喝 (hē) = beber"
+  },
+  {
+    "chinese": "去",
+    "pinyin": "qù",
+    "spanish": "Ir",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> 去 + lugar = ir a un lugar. Contraste: 去 (ir allí) vs 来 (lái, venir aquí). Común: 我去学校.<br>📚 <strong>Ejemplos:</strong><br>1. 我去学校。 <em>Wǒ qù xuéxiào.</em> - Voy a la escuela.<br>2. 他去商店。 <em>Tā qù shāngdiàn.</em> - Él va a la tienda.<br>3. 你去哪儿？ <em>Nǐ qù nǎr?</em> - ¿A dónde vas?<br>4. 我不去。 <em>Wǒ bú qù.</em> - No voy.<br>5. 我们去中国。 <em>Wǒmen qù Zhōngguó.</em> - Vamos a China.",
+    "literal_translation": "去 (qù) = ir"
+  },
+  {
+    "chinese": "叫",
+    "pinyin": "jiào",
+    "spanish": "Llamarse / Llamar",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Para decir el nombre: 我叫… (me llamo). También 'llamar' a alguien o hacer sonar (llamar a la puerta). Estructura: 叫 + nombre.<br>📚 <strong>Ejemplos:</strong><br>1. 我叫小明。 <em>Wǒ jiào Xiǎomíng.</em> - Me llamo Xiaoming.<br>2. 你叫什么名字？ <em>Nǐ jiào shénme míngzi?</em> - ¿Cómo te llamas?<br>3. 他叫小明。 <em>Tā jiào Xiǎomíng.</em> - Él se llama Xiaoming.<br>4. 老师叫我。 <em>Lǎoshī jiào wǒ.</em> - El maestro me llama.<br>5. 她叫什么？ <em>Tā jiào shénme?</em> - ¿Cómo se llama ella?",
+    "literal_translation": "叫 (jiào) = llamar, llamarse"
+  },
+  {
+    "chinese": "爱",
+    "pinyin": "ài",
+    "spanish": "Amar / Querer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> Afecto profundo. Más intenso que 喜欢 (gustar). Común: 我爱妈妈. Como sustantivo: 爱 = amor.<br>📚 <strong>Ejemplos:</strong><br>1. 我爱妈妈。 <em>Wǒ ài māma.</em> - Amo a mi mamá.<br>2. 我爱爸爸。 <em>Wǒ ài bàba.</em> - Amo a mi papá.<br>3. 我爱中国。 <em>Wǒ ài Zhōngguó.</em> - Amo China.<br>4. 我爱吃苹果。 <em>Wǒ ài chī píngguǒ.</em> - Me encanta comer manzanas.<br>5. 他爱他的家。 <em>Tā ài tā de jiā.</em> - Él ama su hogar.",
+    "literal_translation": "爱 (ài) = amor, amar"
+  },
+  {
+    "chinese": "喜欢",
+    "pinyin": "xǐ huan",
+    "spanish": "Gustar / Querer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> 喜欢 = gustar. Estructura: Sujeto + 喜欢 + objeto/verbo. Menos intenso que 爱. El segundo carácter suele ser tono neutro (huan).<br>📚 <strong>Ejemplos:</strong><br>1. 我喜欢猫。 <em>Wǒ xǐhuan māo.</em> - Me gustan los gatos.<br>2. 我喜欢看书。 <em>Wǒ xǐhuan kàn shū.</em> - Me gusta leer.<br>3. 他喜欢苹果。 <em>Tā xǐhuan píngguǒ.</em> - A él le gustan las manzanas.<br>4. 你喜欢什么？ <em>Nǐ xǐhuan shénme?</em> - ¿Qué te gusta?<br>5. 我不喜欢狗。 <em>Wǒ bù xǐhuan gǒu.</em> - No me gustan los perros.",
+    "literal_translation": "喜 (xǐ) alegría + 欢 (huān) contento -> gustar"
+  },
+  {
+    "chinese": "认识",
+    "pinyin": "rèn shi",
+    "spanish": "Conocer / Reconocer",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Verbo.</strong> 认识 = conocer a alguien o algo (personas, lugares), no conocimientos académicos (eso es 会/知道). Común: 我认识他. El 2º carácter suele ser tono neutro.<br>📚 <strong>Ejemplos:</strong><br>1. 我认识他。 <em>Wǒ rènshi tā.</em> - Lo conozco.<br>2. 我认识这个老师。 <em>Wǒ rènshi zhège lǎoshī.</em> - Conozco a este maestro.<br>3. 你认识她吗？ <em>Nǐ rènshi tā ma?</em> - ¿La conoces?<br>4. 我不认识他。 <em>Wǒ bú rènshi tā.</em> - No lo conozco.<br>5. 认识你很高兴。 <em>Rènshi nǐ hěn gāoxìng.</em> - Encantado de conocerte.",
+    "literal_translation": "认 (rèn) reconocer + 识 (shí) saber -> conocer"
+  },
+  {
+    "chinese": "好",
+    "pinyin": "hǎo",
+    "spanish": "Bueno / Bien",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 女 (mujer) + 子 (hijo): idea de armonía -> bueno. Los adjetivos no llevan 是: 我很好 (no 我是好). Como saludo: 你好.<br>📚 <strong>Ejemplos:</strong><br>1. 你好！ <em>Nǐ hǎo!</em> - ¡Hola!<br>2. 我很好。 <em>Wǒ hěn hǎo.</em> - Estoy bien.<br>3. 这个苹果很好。 <em>Zhège píngguǒ hěn hǎo.</em> - Esta manzana es buena.<br>4. 老师很好。 <em>Lǎoshī hěn hǎo.</em> - El maestro es muy bueno.<br>5. 今天很好。 <em>Jīntiān hěn hǎo.</em> - Hoy está bien.",
+    "literal_translation": "好 (hǎo) = bueno, bien"
+  },
+  {
+    "chinese": "多",
+    "pinyin": "duō",
+    "spanish": "Mucho / Muchos",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 多 = mucho/muchos. Frases: 很多 (muchos), 多少钱 (cuánto cuesta). Puede ir antes de adjetivos: 多大了 (¿qué edad?).<br>📚 <strong>Ejemplos:</strong><br>1. 这里人很多。 <em>Zhèlǐ rén hěn duō.</em> - Aquí hay mucha gente.<br>2. 苹果很多。 <em>Píngguǒ hěn duō.</em> - Hay muchas manzanas.<br>3. 你有多少钱？ <em>Nǐ yǒu duōshǎo qián?</em> - ¿Cuánto dinero tienes?<br>4. 他多大了？ <em>Tā duō dà le?</em> - ¿Cuántos años tiene?<br>5. 水很多。 <em>Shuǐ hěn duō.</em> - Hay mucha agua.",
+    "literal_translation": "多 (duō) = mucho, muchos"
+  },
+  {
+    "chinese": "大",
+    "pinyin": "dà",
+    "spanish": "Grande",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 大 = grande. Antónimo 小 (xiǎo). Con 岁 se pregunta edad: 你多大了？ No lleva 是.<br>📚 <strong>Ejemplos:</strong><br>1. 苹果很大。 <em>Píngguǒ hěn dà.</em> - La manzana es grande.<br>2. 我家很大。 <em>Wǒ jiā hěn dà.</em> - Mi casa es grande.<br>3. 这个学校很大。 <em>Zhège xuéxiào hěn dà.</em> - Esta escuela es grande.<br>4. 猫的眼睛很大。 <em>Māo de yǎnjing hěn dà.</em> - Los ojos del gato son grandes.<br>5. 他的鼻子大。 <em>Tā de bízi dà.</em> - Su nariz es grande.",
+    "literal_translation": "大 (dà) = grande"
+  },
+  {
+    "chinese": "小",
+    "pinyin": "xiǎo",
+    "spanish": "Pequeño",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 小 = pequeño. Antónimo 大 (dà). Ojo: 小 antepuesto a nombres puede formar apodos (小明), no siempre 'pequeño'.<br>📚 <strong>Ejemplos:</strong><br>1. 猫很小。 <em>Māo hěn xiǎo.</em> - El gato es pequeño.<br>2. 我的手很小。 <em>Wǒ de shǒu hěn xiǎo.</em> - Mis manos son pequeñas.<br>3. 这个商店小。 <em>Zhège shāngdiàn xiǎo.</em> - Esta tienda es pequeña.<br>4. 他的口很小。 <em>Tā de kǒu hěn xiǎo.</em> - Su boca es pequeña.<br>5. 小狗很可爱。 <em>Xiǎo gǒu hěn kě'ài.</em> - El perrito es adorable.",
+    "literal_translation": "小 (xiǎo) = pequeño"
+  },
+  {
+    "chinese": "长",
+    "pinyin": "cháng",
+    "spanish": "Largo",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 长 = largo (cháng). Cuidado: también se lee zhǎng como verbo 'crecer'. Antónimo 短 (duǎn, corto). No lleva 是.<br>📚 <strong>Ejemplos:</strong><br>1. 我的头发很长。 <em>Wǒ de tóufa hěn cháng.</em> - Mi cabello es muy largo.<br>2. 姐姐的头发长。 <em>Jiějie de tóufa cháng.</em> - El cabello de mi hermana es largo.<br>3. 兔子的耳朵很长。 <em>Tùzi de ěrduo hěn cháng.</em> - Las orejas del conejo son largas.<br>4. 这条路很长。 <em>Zhè tiáo lù hěn cháng.</em> - Este camino es largo.<br>5. 面条不很长。 <em>Miàntiáo bù hěn cháng.</em> - Los fideos no son muy largos.",
+    "literal_translation": "长 (cháng) = largo"
+  },
+  {
+    "chinese": "高",
+    "pinyin": "gāo",
+    "spanish": "Alto",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 高 = alto (persona o cosa). Para estatura se usa 个子高. Antónimo 矮 (ǎi, persona) / 低 (dī, cosa). No lleva 是.<br>📚 <strong>Ejemplos:</strong><br>1. 他很高。 <em>Tā hěn gāo.</em> - Él es alto.<br>2. 我哥哥个子很高。 <em>Wǒ gēge gèzi hěn gāo.</em> - Mi hermano mayor es alto.<br>3. 这个学校很高。 <em>Zhège xuéxiào hěn gāo.</em> - Esta escuela es alta.<br>4. 老师的个子高。 <em>Lǎoshī de gèzi gāo.</em> - La estatura del maestro es alta.<br>5. 我不高。 <em>Wǒ bù gāo.</em> - No soy alto.",
+    "literal_translation": "高 (gāo) = alto"
+  },
+  {
+    "chinese": "高兴",
+    "pinyin": "gāo xìng",
+    "spanish": "Feliz / Contento",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adjetivo.</strong> 高兴 = feliz/contento. Se usa para personas, no para cosas. Frase típica: 认识你很高兴 (encantado de conocerte).<br>📚 <strong>Ejemplos:</strong><br>1. 我很高兴。 <em>Wǒ hěn gāoxìng.</em> - Estoy muy feliz.<br>2. 认识你很高兴。 <em>Rènshi nǐ hěn gāoxìng.</em> - Encantado de conocerte.<br>3. 妈妈很高兴。 <em>Māma hěn gāoxìng.</em> - Mamá está muy contenta.<br>4. 今天我很高兴。 <em>Jīntiān wǒ hěn gāoxìng.</em> - Hoy estoy muy feliz.<br>5. 他不高兴。 <em>Tā bù gāoxìng.</em> - Él no está contento.",
+    "literal_translation": "高 (gāo) alto + 兴 (xìng) entusiasmo -> feliz"
+  },
+  {
+    "chinese": "我",
+    "pinyin": "wǒ",
+    "spanish": "Yo / Me",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre personal.</strong> 1ª persona singular. No distingue género. 对/给 se usan para el objeto, pero 我 como objeto es igual. Plural: 我们.<br>📚 <strong>Ejemplos:</strong><br>1. 我是学生。 <em>Wǒ shì xuésheng.</em> - Soy estudiante.<br>2. 我喝水。 <em>Wǒ hē shuǐ.</em> - Bebo agua.<br>3. 我很好。 <em>Wǒ hěn hǎo.</em> - Estoy bien.<br>4. 我有一个姐姐。 <em>Wǒ yǒu yí gè jiějie.</em> - Tengo una hermana mayor.<br>5. 这是我的手。 <em>Zhè shì wǒ de shǒu.</em> - Esta es mi mano.",
+    "literal_translation": "我 (wǒ) = yo, me"
+  },
+  {
+    "chinese": "你",
+    "pinyin": "nǐ",
+    "spanish": "Tú / Usted",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre personal.</strong> 2ª persona singular. Sirve para tú y usted. Plural: 你们. Saludo: 你好.<br>📚 <strong>Ejemplos:</strong><br>1. 你好！ <em>Nǐ hǎo!</em> - ¡Hola!<br>2. 你是老师。 <em>Nǐ shì lǎoshī.</em> - Eres maestro.<br>3. 你叫什么名字？ <em>Nǐ jiào shénme míngzi?</em> - ¿Cómo te llamas?<br>4. 你喝水吗？ <em>Nǐ hē shuǐ ma?</em> - ¿Bebes agua?<br>5. 你喜欢猫吗？ <em>Nǐ xǐhuan māo ma?</em> - ¿Te gustan los gatos?",
+    "literal_translation": "你 (nǐ) = tú, usted"
+  },
+  {
+    "chinese": "他",
+    "pinyin": "tā",
+    "spanish": "Él / Él (objeto)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre personal.</strong> 3ª persona singular masculino. Plural: 他们. En chino 他, 她 y 它 suenan igual (tā); el carácter marca el género.<br>📚 <strong>Ejemplos:</strong><br>1. 他是老师。 <em>Tā shì lǎoshī.</em> - Él es maestro.<br>2. 他是中国人。 <em>Tā shì Zhōngguórén.</em> - Él es chino.<br>3. 他不喝水。 <em>Tā bù hē shuǐ.</em> - Él no bebe agua.<br>4. 他喜欢看书。 <em>Tā xǐhuan kàn shū.</em> - A él le gusta leer.<br>5. 我认识他。 <em>Wǒ rènshi tā.</em> - Lo conozco.",
+    "literal_translation": "他 (tā) = él"
+  },
+  {
+    "chinese": "她",
+    "pinyin": "tā",
+    "spanish": "Ella",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre personal.</strong> 3ª persona singular femenino. El radical 女 marca el género. Plural: 她们. Suena igual que 他 (tā).<br>📚 <strong>Ejemplos:</strong><br>1. 她是老师。 <em>Tā shì lǎoshī.</em> - Ella es maestra.<br>2. 她是中国人。 <em>Tā shì Zhōngguórén.</em> - Ella es china.<br>3. 她的眼睛很大。 <em>Tā de yǎnjing hěn dà.</em> - Sus ojos son grandes.<br>4. 她喜欢苹果。 <em>Tā xǐhuan píngguǒ.</em> - A ella le gustan las manzanas.<br>5. 我认识她。 <em>Wǒ rènshi tā.</em> - La conozco.",
+    "literal_translation": "她 (tā) = ella"
+  },
+  {
+    "chinese": "我们",
+    "pinyin": "wǒ men",
+    "spanish": "Nosotros / Nosotras",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre personal.</strong> 我 + 们 (sufijo de plural). Puede incluir o no al oyente según contexto. 咱们 (zánmen) incluye al oyente.<br>📚 <strong>Ejemplos:</strong><br>1. 我们是学生。 <em>Wǒmen shì xuésheng.</em> - Somos estudiantes.<br>2. 我们去学校。 <em>Wǒmen qù xuéxiào.</em> - Vamos a la escuela.<br>3. 我们喝水。 <em>Wǒmen hē shuǐ.</em> - Bebemos agua.<br>4. 我们学校很大。 <em>Wǒmen xuéxiào hěn dà.</em> - Nuestra escuela es grande.<br>5. 我们高兴。 <em>Wǒmen hěn gāoxìng.</em> - Estamos contentos.",
+    "literal_translation": "我 (wǒ) yo + 们 (men) plural -> nosotros"
+  },
+  {
+    "chinese": "这",
+    "pinyin": "zhè",
+    "spanish": "Este / Esta / Esto",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre demostrativo.</strong> 这 = este/esto (cerca). Se usa con clasificador: 这个人 (esta persona). Contraste con 那 (aquello).<br>📚 <strong>Ejemplos:</strong><br>1. 这是苹果。 <em>Zhè shì píngguǒ.</em> - Esto es una manzana.<br>2. 这是我的老师。 <em>Zhè shì wǒ de lǎoshī.</em> - Este es mi maestro.<br>3. 这个人是我爸爸。 <em>Zhège rén shì wǒ bàba.</em> - Esta persona es mi papá.<br>4. 这个学校很大。 <em>Zhège xuéxiào hěn dà.</em> - Esta escuela es grande.<br>5. 这是水。 <em>Zhè shì shuǐ.</em> - Esto es agua.",
+    "literal_translation": "这 (zhè) = este, esto"
+  },
+  {
+    "chinese": "那",
+    "pinyin": "nà",
+    "spanish": "Ese / Aquel / Eso",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre demostrativo.</strong> 那 = ese/aquel (lejos). Contraste con 这 (cerca). También puede ser conjunción 'entonces' (nà) en otros niveles.<br>📚 <strong>Ejemplos:</strong><br>1. 那是什么？ <em>Nà shì shénme?</em> - ¿Qué es eso?<br>2. 那是我的猫。 <em>Nà shì wǒ de māo.</em> - Ese es mi gato.<br>3. 那个人是老师。 <em>Nàge rén shì lǎoshī.</em> - Esa persona es el maestro.<br>4. 那个商店很小。 <em>Nàge shāngdiàn hěn xiǎo.</em> - Esa tienda es pequeña.<br>5. 那是苹果。 <em>Nà shì píngguǒ.</em> - Eso es una manzana.",
+    "literal_translation": "那 (nà) = ese, aquel"
+  },
+  {
+    "chinese": "哪",
+    "pinyin": "nǎ",
+    "spanish": "Cuál / Qué",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre interrogativo.</strong> 哪 = cuál. Siempre va con clasificador o sustantivo: 哪个 (cuál), 哪个学校. No confundir con 那 (nà, aquel): solo cambia el tono.<br>📚 <strong>Ejemplos:</strong><br>1. 你是哪国人？ <em>Nǐ shì nǎ guó rén?</em> - ¿De qué país eres?<br>2. 哪个是你的？ <em>Nǎge shì nǐ de?</em> - ¿Cuál es el tuyo?<br>3. 哪个老师是中国人？ <em>Nǎge lǎoshī shì Zhōngguórén?</em> - ¿Qué maestro es chino?<br>4. 你要哪个苹果？ <em>Nǐ yào nǎge píngguǒ?</em> - ¿Qué manzana quieres?<br>5. 他在哪个学校？ <em>Tā zài nǎge xuéxiào?</em> - ¿En qué escuela está?",
+    "literal_translation": "哪 (nǎ) = cuál"
+  },
+  {
+    "chinese": "谁",
+    "pinyin": "shéi",
+    "spanish": "Quién",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre interrogativo.</strong> 谁 = quién (también se admite shuí). Como sujeto va antes del verbo: 谁是你老师？<br>📚 <strong>Ejemplos:</strong><br>1. 他是谁？ <em>Tā shì shéi?</em> - ¿Quién es él?<br>2. 谁是你的老师？ <em>Shéi shì nǐ de lǎoshī?</em> - ¿Quién es tu maestro?<br>3. 这是谁的书？ <em>Zhè shì shéi de shū?</em> - ¿De quién es este libro?<br>4. 谁喜欢猫？ <em>Shéi xǐhuan māo?</em> - ¿A quién le gustan los gatos?<br>5. 你认识谁？ <em>Nǐ rènshi shéi?</em> - ¿A quién conoces?",
+    "literal_translation": "谁 (shéi) = quién"
+  },
+  {
+    "chinese": "什么",
+    "pinyin": "shén me",
+    "spanish": "Qué",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre interrogativo.</strong> 什么 = qué. Va antes o después según la función: 这是什么？ (qué es esto) / 你叫什么名字？ (cómo te llamas). Suelen ser tono neutro.<br>📚 <strong>Ejemplos:</strong><br>1. 这是什么？ <em>Zhè shì shénme?</em> - ¿Qué es esto?<br>2. 你叫什么名字？ <em>Nǐ jiào shénme míngzi?</em> - ¿Cómo te llamas?<br>3. 你喜欢什么？ <em>Nǐ xǐhuan shénme?</em> - ¿Qué te gusta?<br>4. 你喝什么？ <em>Nǐ hē shénme?</em> - ¿Qué bebes?<br>5. 那是什么？ <em>Nà shì shénme?</em> - ¿Qué es eso?",
+    "literal_translation": "什 (shén) + 么 (me) -> qué"
+  },
+  {
+    "chinese": "几",
+    "pinyin": "jǐ",
+    "spanish": "Cuántos",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre interrogativo.</strong> 几 = cuántos, para números pequeños (normalmente <10). Siempre va con clasificador o unidad: 几个, 几点, 几号, 星期几. Para cantidades grandes se usa 多少.<br>📚 <strong>Ejemplos:</strong><br>1. 你有几个苹果？ <em>Nǐ yǒu jǐ gè píngguǒ?</em> - ¿Cuántas manzanas tienes?<br>2. 现在几点？ <em>Xiànzài jǐ diǎn?</em> - ¿Qué hora es?<br>3. 今天几号？ <em>Jīntiān jǐ hào?</em> - ¿Qué fecha es hoy?<br>4. 今天星期几？ <em>Jīntiān xīngqī jǐ?</em> - ¿Qué día de la semana es?<br>5. 你家有几个人？ <em>Nǐ jiā yǒu jǐ gè rén?</em> - ¿Cuántas personas hay en tu casa?",
+    "literal_translation": "几 (jǐ) = cuántos (número pequeño)"
+  },
+  {
+    "chinese": "一",
+    "pinyin": "yī",
+    "spanish": "Uno",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 一 = uno. Cambia de tono: yī ante pausa, yí ante 4º tono, yì ante 1/2/3. Con clasificador: 一个 (yí gè).<br>📚 <strong>Ejemplos:</strong><br>1. 一个苹果。 <em>yí gè píngguǒ</em> - una manzana<br>2. 我有一个人。 <em>Wǒ yǒu yí gè rén.</em> - Tengo una persona.<br>3. 一，二，三。 <em>yī, èr, sān</em> - uno, dos, tres<br>4. 今天一号。 <em>Jīntiān yī hào.</em> - Hoy es el 1.<br>5. 我有猫一只。 <em>Wǒ yǒu māo yì zhī.</em> - Tengo un gato.",
+    "literal_translation": "一 (yī) = uno"
+  },
+  {
+    "chinese": "二",
+    "pinyin": "èr",
+    "spanish": "Dos",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 二 = dos (uso como cifra). Ante clasificador se usa 两 (liǎng): 两个, no 二个. En números compuestos: 十二, 二十.<br>📚 <strong>Ejemplos:</strong><br>1. 二加一是三。 <em>èr jiā yī shì sān</em> - dos más uno es tres<br>2. 我有两个哥哥。 <em>Wǒ yǒu liǎng gè gēge.</em> - Tengo dos hermanos mayores.<br>3. 现在两点。 <em>Xiànzài liǎng diǎn.</em> - Ahora son las dos.<br>4. 十二。 <em>shí'èr</em> - doce<br>5. 星期二。 <em>xīngqī'èr</em> - martes",
+    "literal_translation": "二 (èr) = dos"
+  },
+  {
+    "chinese": "三",
+    "pinyin": "sān",
+    "spanish": "Tres",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 三 = tres. Frecuente en fechas y horas: 三点 (las tres), 三月 (marzo). Se combina: 十三, 三十.<br>📚 <strong>Ejemplos:</strong><br>1. 三加二是五。 <em>sān jiā èr shì wǔ</em> - tres más dos es cinco<br>2. 现在三点。 <em>Xiànzài sān diǎn.</em> - Ahora son las tres.<br>3. 我有三个苹果。 <em>Wǒ yǒu sān gè píngguǒ.</em> - Tengo tres manzanas.<br>4. 三月。 <em>sān yuè</em> - marzo<br>5. 星期三。 <em>xīngqīsān</em> - miércoles",
+    "literal_translation": "三 (sān) = tres"
+  },
+  {
+    "chinese": "四",
+    "pinyin": "sì",
+    "spanish": "Cuatro",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 四 = cuatro. Cuidado: 四 (sì) y 十 (shí) se confunden; por eso se añade 号/个. En fechas: 四月(abril), 星期四(jueves).<br>📚 <strong>Ejemplos:</strong><br>1. 我家有四个人。 <em>Wǒ jiā yǒu sì gè rén.</em> - Mi familia tiene cuatro personas.<br>2. 现在四点。 <em>Xiànzài sì diǎn.</em> - Ahora son las cuatro.<br>3. 四月。 <em>sì yuè</em> - abril<br>4. 星期四。 <em>xīngqīsì</em> - jueves<br>5. 四个苹果。 <em>sì gè píngguǒ</em> - cuatro manzanas",
+    "literal_translation": "四 (sì) = cuatro"
+  },
+  {
+    "chinese": "五",
+    "pinyin": "wǔ",
+    "spanish": "Cinco",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 五 = cinco. Fechas: 五月(mayo), 星期五(viernes). Se combina: 十五, 五十.<br>📚 <strong>Ejemplos:</strong><br>1. 我有五本书。 <em>Wǒ yǒu wǔ běn shū.</em> - Tengo cinco libros.<br>2. 现在五点。 <em>Xiànzài wǔ diǎn.</em> - Ahora son las cinco.<br>3. 五月。 <em>wǔ yuè</em> - mayo<br>4. 星期五。 <em>xīngqīwǔ</em> - viernes<br>5. 五个苹果。 <em>wǔ gè píngguǒ</em> - cinco manzanas",
+    "literal_translation": "五 (wǔ) = cinco"
+  },
+  {
+    "chinese": "六",
+    "pinyin": "liù",
+    "spanish": "Seis",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 六 = seis. Fechas: 六月(junio), 星期六(sábado). Se combina: 十六, 六十.<br>📚 <strong>Ejemplos:</strong><br>1. 六个苹果。 <em>liù gè píngguǒ</em> - seis manzanas<br>2. 现在六点。 <em>Xiànzài liù diǎn.</em> - Ahora son las seis.<br>3. 六月。 <em>liù yuè</em> - junio<br>4. 星期六。 <em>xīngqīliù</em> - sábado<br>5. 我有六个人。 <em>Wǒ yǒu liù gè rén.</em> - Tengo seis personas.",
+    "literal_translation": "六 (liù) = seis"
+  },
+  {
+    "chinese": "七",
+    "pinyin": "qī",
+    "spanish": "Siete",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 七 = siete. Fechas: 七月(julio), 星期七(no se usa; el domingo es 星期日/天). Se combina: 十七, 七十.<br>📚 <strong>Ejemplos:</strong><br>1. 七天。 <em>qī tiān</em> - siete días<br>2. 现在七点。 <em>Xiànzài qī diǎn.</em> - Ahora son las siete.<br>3. 七月。 <em>qī yuè</em> - julio<br>4. 七个苹果。 <em>qī gè píngguǒ</em> - siete manzanas<br>5. 一个星期有七天。 <em>Yí gè xīngqī yǒu qī tiān.</em> - Una semana tiene siete días.",
+    "literal_translation": "七 (qī) = siete"
+  },
+  {
+    "chinese": "八",
+    "pinyin": "bā",
+    "spanish": "Ocho",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 八 = ocho. Fechas: 八月(agosto). Se suele preferir 八 sobre 七/九 en números de teléfono por sonoridad. Se combina: 十八, 八十.<br>📚 <strong>Ejemplos:</strong><br>1. 八个苹果。 <em>bā gè píngguǒ</em> - ocho manzanas<br>2. 现在八点。 <em>Xiànzài bā diǎn.</em> - Ahora son las ocho.<br>3. 八月。 <em>bā yuè</em> - agosto<br>4. 我八点上学。 <em>Wǒ bā diǎn shàngxué.</em> - Voy a la escuela a las ocho.<br>5. 八号。 <em>bā hào</em> - el día 8",
+    "literal_translation": "八 (bā) = ocho"
+  },
+  {
+    "chinese": "九",
+    "pinyin": "jiǔ",
+    "spanish": "Nueve",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 九 = nueve. Fechas: 九月(septiembre). Cuidado con 九 (jiǔ, 3er tono) y 酒 (jiǔ, alcohol): mismo sonido. Se combina: 十九, 九十.<br>📚 <strong>Ejemplos:</strong><br>1. 九个苹果。 <em>jiǔ gè píngguǒ</em> - nueve manzanas<br>2. 现在九点。 <em>Xiànzài jiǔ diǎn.</em> - Ahora son las nueve.<br>3. 九月。 <em>jiǔ yuè</em> - septiembre<br>4. 九号。 <em>jiǔ hào</em> - el día 9<br>5. 我有九个人。 <em>Wǒ yǒu jiǔ gè rén.</em> - Tengo nueve personas.",
+    "literal_translation": "九 (jiǔ) = nueve"
+  },
+  {
+    "chinese": "十",
+    "pinyin": "shí",
+    "spanish": "Diez",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Numeral.</strong> 十 = diez; base del sistema: 十一 (11), 二十 (20). Confusión con 四 (sì): 十四 (14) vs 四十 (40). En fechas 十月(octubre).<br>📚 <strong>Ejemplos:</strong><br>1. 十个苹果。 <em>shí gè píngguǒ</em> - diez manzanas<br>2. 现在十点。 <em>Xiànzài shí diǎn.</em> - Ahora son las diez.<br>3. 十月。 <em>shí yuè</em> - octubre<br>4. 我有十个人。 <em>Wǒ yǒu shí gè rén.</em> - Tengo diez personas.<br>5. 十号。 <em>shí hào</em> - el día 10",
+    "literal_translation": "十 (shí) = diez"
+  },
+  {
+    "chinese": "个",
+    "pinyin": "gè",
+    "spanish": "Clasificador general",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Clasificador.</strong> El más usado; sirve cuando no hay clasificador específico: 一个人, 一个苹果, 一个学校. Va entre el número y el sustantivo. Error común: usar 个 con animales (mejor 只) o cosas alargadas (条).<br>📚 <strong>Ejemplos:</strong><br>1. 一个苹果。 <em>yí gè píngguǒ</em> - una manzana<br>2. 一个人。 <em>yí gè rén</em> - una persona<br>3. 一个学校。 <em>yí gè xuéxiào</em> - una escuela<br>4. 我有两个姐姐。 <em>Wǒ yǒu liǎng gè jiějie.</em> - Tengo dos hermanas mayores.<br>5. 几个？ <em>jǐ gè?</em> - ¿cuántos?",
+    "literal_translation": "个 (gè) = clasificador genérico de objetos/personas"
+  },
+  {
+    "chinese": "岁",
+    "pinyin": "suì",
+    "spanish": "Años (de edad)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Clasificador.</strong> 岁 cuenta años de edad (de personas o animales). Estructura: Sujeto + 几岁/数字 + 岁. Pregunta: 你几岁了？ No se usa 个 con 岁.<br>📚 <strong>Ejemplos:</strong><br>1. 我七岁。 <em>Wǒ qī suì.</em> - Tengo siete años.<br>2. 你几岁了？ <em>Nǐ jǐ suì le?</em> - ¿Cuántos años tienes?<br>3. 他十岁。 <em>Tā shí suì.</em> - Él tiene diez años.<br>4. 我弟弟五岁。 <em>Wǒ dìdi wǔ suì.</em> - Mi hermano menor tiene cinco años.<br>5. 姐姐十五岁。 <em>Jiějie shíwǔ suì.</em> - Mi hermana mayor tiene quince años.",
+    "literal_translation": "岁 (suì) = años de edad"
+  },
+  {
+    "chinese": "不",
+    "pinyin": "bù",
+    "spanish": "No / (negación)",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adverbio.</strong> Niega verbos y adjetivos en presente/futuro: 不是, 不喜欢, 不大. Cambia a bú ante 4º tono (不是 -> bú shì). Nunca niega 有 (se usa 没有).<br>📚 <strong>Ejemplos:</strong><br>1. 我不是老师。 <em>Wǒ bú shì lǎoshī.</em> - No soy maestro.<br>2. 我不喜欢猫。 <em>Wǒ bù xǐhuan māo.</em> - No me gustan los gatos.<br>3. 他不大。 <em>Tā bú dà.</em> - Él no es grande.<br>4. 我不喝水。 <em>Wǒ bù hē shuǐ.</em> - No bebo agua.<br>5. 不，谢谢。 <em>Bù, xièxie.</em> - No, gracias.",
+    "literal_translation": "不 (bù) = no (negación general)"
+  },
+  {
+    "chinese": "很",
+    "pinyin": "hěn",
+    "spanish": "Muy",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Adverbio.</strong> 很 = muy; va antes del adjetivo. En chino los adjetivos casi siempre llevan 很 cuando no hay comparación: 我很好. Con negación: 不很… o 很不….<br>📚 <strong>Ejemplos:</strong><br>1. 我很好。 <em>Wǒ hěn hǎo.</em> - Estoy muy bien.<br>2. 苹果很大。 <em>Píngguǒ hěn dà.</em> - La manzana es muy grande.<br>3. 他很高。 <em>Tā hěn gāo.</em> - Él es muy alto.<br>4. 老师很高兴。 <em>Lǎoshī hěn gāoxìng.</em> - El maestro está muy contento.<br>5. 这里人很多。 <em>Zhèlǐ rén hěn duō.</em> - Aquí hay mucha gente.",
+    "literal_translation": "很 (hěn) = muy"
+  },
+  {
+    "chinese": "和",
+    "pinyin": "hé",
+    "spanish": "Y",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Conjunción.</strong> 和 une sustantivos o pronombres: A 和 B. No une oraciones completas (para eso 也/还). Ej.: 爸爸和妈妈 = papá y mamá.<br>📚 <strong>Ejemplos:</strong><br>1. 爸爸和妈妈。 <em>bàba hé māma</em> - papá y mamá<br>2. 我和你是老师。 <em>Wǒ hé nǐ shì lǎoshī.</em> - Tú y yo somos maestros.<br>3. 猫和狗。 <em>māo hé gǒu</em> - gato y perro<br>4. 我喝茶和牛奶。 <em>Wǒ hē chá hé niúnǎi.</em> - Bebo té y leche.<br>5. 苹果和面条。 <em>píngguǒ hé miàntiáo</em> - manzana y fideos",
+    "literal_translation": "和 (hé) = y (une sustantivos)"
+  },
+  {
+    "chinese": "在",
+    "pinyin": "zài",
+    "spanish": "En / Estar en",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Preposición / verbo.</strong> Como verbo: 我在家 (estoy en casa). Como preposición: 我在学校吃饭 (como en la escuela). Estructura: 在 + lugar + verbo.<br>📚 <strong>Ejemplos:</strong><br>1. 我在家。 <em>Wǒ zài jiā.</em> - Estoy en casa.<br>2. 他在学校。 <em>Tā zài xuéxiào.</em> - Él está en la escuela.<br>3. 猫在桌子上。 <em>Māo zài zhuōzi shàng.</em> - El gato está sobre la mesa.<br>4. 我在学校吃饭。 <em>Wǒ zài xuéxiào chīfàn.</em> - Como en la escuela.<br>5. 你在哪儿？ <em>Nǐ zài nǎr?</em> - ¿Dónde estás?",
+    "literal_translation": "在 (zài) = estar en, en"
+  },
+  {
+    "chinese": "的",
+    "pinyin": "de",
+    "spanish": "Partícula posesiva / de",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Partícula.</strong> Marca posesión: 我的书 (mi libro), 老师的猫 (el gato del maestro). Puede omitirse con familiares cercanos: 我妈妈. También forma relativos. Tono neutro.<br>📚 <strong>Ejemplos:</strong><br>1. 我的书。 <em>wǒ de shū</em> - mi libro<br>2. 老师的猫。 <em>lǎoshī de māo</em> - el gato del maestro<br>3. 我的头发很长。 <em>Wǒ de tóufa hěn cháng.</em> - Mi cabello es largo.<br>4. 这是谁的？ <em>Zhè shì shéi de?</em> - ¿De quién es esto?<br>5. 中国的苹果。 <em>Zhōngguó de píngguǒ</em> - manzanas de China",
+    "literal_translation": "的 (de) = partícula que marca posesión o atributo"
+  },
+  {
+    "chinese": "吗",
+    "pinyin": "ma",
+    "spanish": "Partícula interrogativa",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Partícula.</strong> Se coloca al final de una oración afirmativa para convertirla en pregunta de sí/no: 你是老师吗？ No se usa junto con 什么/谁 (ya son preguntas). Tono neutro.<br>📚 <strong>Ejemplos:</strong><br>1. 你是老师吗？ <em>Nǐ shì lǎoshī ma?</em> - ¿Eres maestro?<br>2. 你喝水吗？ <em>Nǐ hē shuǐ ma?</em> - ¿Bebes agua?<br>3. 你好吗？ <em>Nǐ hǎo ma?</em> - ¿Estás bien?<br>4. 他喜欢猫吗？ <em>Tā xǐhuan māo ma?</em> - ¿A él le gustan los gatos?<br>5. 你是中国人吗？ <em>Nǐ shì Zhōngguórén ma?</em> - ¿Eres chino?",
+    "literal_translation": "吗 (ma) = partícula de pregunta sí/no"
+  },
+  {
+    "chinese": "这儿",
+    "pinyin": "zhè r",
+    "spanish": "Aquí / Acá",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre local.</strong> 这儿 (zhèr) = aquí. Forma oral de 这里 (zhèlǐ). Se escribe 这儿 pero se pronuncia en una sola sílaba (zhèr).<br>📚 <strong>Ejemplos:</strong><br>1. 这儿是我的家。 <em>Zhèr shì wǒ de jiā.</em> - Aquí está mi casa.<br>2. 你在这儿吗？ <em>Nǐ zài zhèr ma?</em> - ¿Estás aquí?<br>3. 老师在这儿。 <em>Lǎoshī zài zhèr.</em> - El maestro está aquí.<br>4. 苹果在这儿。 <em>Píngguǒ zài zhèr.</em> - La manzana está aquí.<br>5. 来这儿。 <em>Lái zhèr.</em> - Ven aquí.",
+    "literal_translation": "这 (zhè) este + 儿 (r) sufijo local -> aquí"
+  },
+  {
+    "chinese": "那儿",
+    "pinyin": "nà r",
+    "spanish": "Allí / Allá",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre local.</strong> 那儿 (nàr) = allí. Forma oral de 那里 (nàlǐ). Se escribe 那儿 pero se pronuncia en una sola sílaba (nàr).<br>📚 <strong>Ejemplos:</strong><br>1. 猫在那儿。 <em>Māo zài nàr.</em> - El gato está allí.<br>2. 那儿是学校。 <em>Nàr shì xuéxiào.</em> - Allí está la escuela.<br>3. 你去那儿吗？ <em>Nǐ qù nàr ma?</em> - ¿Vas allí?<br>4. 他在那儿。 <em>Tā zài nàr.</em> - Él está allí.<br>5. 那不是我的。 <em>Nàr bú shì wǒ de.</em> - Eso de allí no es mío.",
+    "literal_translation": "那 (nà) aquel + 儿 (r) sufijo local -> allí"
+  },
+  {
+    "chinese": "哪儿",
+    "pinyin": "nǎ r",
+    "spanish": "Dónde",
+    "category": "YCT Nivel 1",
+    "explanation": "<strong>Pronombre interrogativo.</strong> 哪儿 (nǎr) = dónde. Forma oral de 哪里 (nǎlǐ). Se escribe 哪儿 pero se pronuncia en una sola sílaba (nǎr). Pregunta: 你在哪儿？<br>📚 <strong>Ejemplos:</strong><br>1. 你在哪儿？ <em>Nǐ zài nǎr?</em> - ¿Dónde estás?<br>2. 他去哪儿？ <em>Tā qù nǎr?</em> - ¿A dónde va?<br>3. 厕所在哪儿？ <em>Cèsuǒ zài nǎr?</em> - ¿Dónde está el baño?<br>4. 学校在哪儿？ <em>Xuéxiào zài nǎr?</em> - ¿Dónde está la escuela?<br>5. 你家在哪儿？ <em>Nǐ jiā zài nǎr?</em> - ¿Dónde está tu casa?",
+    "literal_translation": "哪 (nǎ) cuál + 儿 (r) sufijo local -> dónde"
+  }
+]

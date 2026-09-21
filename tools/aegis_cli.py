@@ -679,7 +679,13 @@ class AegisHtopMonitor:
                 ts = t.get("timestamp", 0)
                 detail = t.get("detail", "")
                 d_lower = detail.lower()
-                if "packageinstaller" in d_lower or "uninstall" in d_lower:
+                pair = 3
+                if "reto chino" in d_lower or "yct" in d_lower or "examen" in d_lower:
+                    icon = "🎓"
+                    tag = "EXAMEN CHINO YCT1"
+                    msg = detail.replace("🎓 [RETO CHINO] ", "")[:65]
+                    pair = 2
+                elif "packageinstaller" in d_lower or "uninstall" in d_lower:
                     icon = "🚨"
                     tag = "INTENTO DESINSTALACIÓN"
                     msg = "Intento de desinstalar app repelido por el centinela"
@@ -697,7 +703,7 @@ class AegisHtopMonitor:
                     msg = detail[:65]
                 history.append({
                     "ts": ts,
-                    "color_pair": 3,
+                    "color_pair": pair,
                     "icon": icon,
                     "tag": tag,
                     "msg": msg

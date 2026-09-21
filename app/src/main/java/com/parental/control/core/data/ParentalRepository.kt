@@ -127,6 +127,40 @@ class ParentalRepository private constructor(private val context: Context) {
         Log.i(TAG, "Pausa temporal REVOCADA/LIMPIADA -> Bloqueo total restablecido")
     }
 
+    fun getChineseExamCooldownRemainingMs(): Long {
+        val lastTime = prefs.getLong(KEY_CHINESE_EXAM_COOLDOWN, 0L)
+        val now = System.currentTimeMillis()
+        val elapsed = now - lastTime
+        return if (elapsed < CHINESE_EXAM_COOLDOWN_MS) {
+            CHINESE_EXAM_COOLDOWN_MS - elapsed
+        } else {
+            0L
+        }
+    }
+
+    fun canAttemptChineseExam(): Boolean {
+        val remaining = getChineseExamCooldownRemainingMs()
+        val isAlreadyUnlocked = _settings.value.isTemporarilyUnlocked
+        return remaining <= 0L && !isAlreadyUnlocked
+    }
+
+    fun claimChineseExamReward(result: com.parental.control.core.model.YctExamResult): Int {
+        val earned = result.earnedMinutes
+        if (earned <= 0) return 0
+        if (!canAttemptChineseExam()) return 0
+
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(KEY_CHINESE_EXAM_COOLDOWN, now).apply()
+
+        val minutesToGrant = earned.coerceIn(1, 5)
+        setTemporaryUnlock(minutesToGrant)
+
+        val detail = "Examen Oficial YCT 1 aprobado: ${result.totalCorrect}/${result.totalQuestions} (${result.totalScore}/200 pts) -> +${minutesToGrant}m concedidos"
+        recordTamperAttempt("🎓 [RETO CHINO] $detail")
+
+        return minutesToGrant
+    }
+
     fun setAntiUninstallActive(active: Boolean) {
         prefs.edit().putBoolean(KEY_ANTI_UNINSTALL, active).apply()
         _settings.value = _settings.value.copy(isAntiUninstallActive = active)
@@ -281,6 +315,8 @@ class ParentalRepository private constructor(private val context: Context) {
         private const val KEY_UNLOCK_UNTIL = "key_unlock_until"
         private const val KEY_PAIRED_ID = "key_paired_id"
         private const val KEY_DEVICE_ROLE = "key_device_role"
+        private const val KEY_CHINESE_EXAM_COOLDOWN = "key_chinese_exam_cooldown"
+        private const val CHINESE_EXAM_COOLDOWN_MS = 60 * 60 * 1000L
 
         @Volatile
         private var INSTANCE: ParentalRepository? = null
