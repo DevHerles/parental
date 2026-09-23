@@ -501,8 +501,8 @@ def cmd_stats(args):
 
     # Ranking Top Apps
     print(f"{BOLD}{WHITE}─── 🏆 RANKING DE APLICACIONES MÁS CONSUMIDAS HOY (TOP {min(len(usage_rows), top_n)}) ──────────────────────────────{RESET}")
-    print(f" {BOLD}{'#':<3} {'ESTADO':<14} {'APLICACIÓN':<24} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}{RESET}")
-    print(f" {DIM}{'─'*90}{RESET}")
+    print(f"  {BOLD}{'#':<5} {'ESTADO':<15} {'APLICACIÓN':<23} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}{RESET}")
+    print(f" {DIM}{'─'*94}{RESET}")
 
     cat_map_icon = {
         "GAMES": ("🎮", "Juegos"),
@@ -522,33 +522,34 @@ def cmd_stats(args):
         pkg = r.get("package_name", "")
         name = r.get("app_name") or pkg
         raw_cat = r.get("category", "OTHER")
-        cat_icon, cat_name = cat_map_icon.get(raw_cat, ("📦", raw_cat))
+        _, cat_name = cat_map_icon.get(raw_cat, ("📦", raw_cat))
         category_totals[cat_name] = category_totals.get(cat_name, 0) + mins
         is_b = r.get("is_blocked") == 1
 
-        bar_len = 22
-        filled = int((mins / max_mins) * bar_len)
-        empty = bar_len - filled
+        bar_len = 20
+        filled = int((mins / max_mins) * bar_len) if max_mins else 0
+        empty = max(0, bar_len - filled)
         bar_color = RED if is_b else (CYAN if raw_cat == "GAMES" else (GREEN if raw_cat == "EDUCATIONAL" else YELLOW))
         bar_str = f"{bar_color}{'█'*filled}{DIM}{'░'*empty}{RESET}"
 
-        status_str = f"{RED}🚫 BLOQUEADA{RESET}" if is_b else f"{GREEN}✅ PERMITIDA{RESET}"
+        raw_status = "BLOQUEADA" if is_b else "PERMITIDA"
+        status_col = f"{RED}🚫 {raw_status:<10}{RESET}" if is_b else f"{GREEN}✅ {raw_status:<10}{RESET}"
         time_str = fmt_time(mins)
         badge_tag = f" {RED}{BOLD}[BLOQUEADA]{RESET}" if is_b else ""
 
-        print(f" {idx+1:<2}. {status_str:<23} {BOLD}{name[:23]:<24}{RESET} {cat_icon} {cat_name:<13} {BOLD}{time_str:<8}{RESET} {pct:>2}%  {bar_str}{badge_tag}")
+        print(f"  {idx+1:>2}.  {status_col} {BOLD}{name[:21]:<23}{RESET} {cat_name[:14]:<16} {BOLD}{time_str:>7} {RESET}{pct:>3}%  {bar_str}{badge_tag}")
 
-    print(f" {DIM}{'─'*90}{RESET}")
+    print(f" {DIM}{'─'*94}{RESET}")
     print(f" {BOLD}Total Consumo Activo:{RESET} {GREEN}{BOLD}{kpi_time}{RESET} (100%)\n")
 
     # Distribución por Categorías
     print(f"{BOLD}{WHITE}─── 📊 DISTRIBUCIÓN POR CATEGORÍAS ──────────────────────────────────────────────────────{RESET}")
     for cat_name, cat_mins in sorted(category_totals.items(), key=lambda x: x[1], reverse=True):
         cpct = int((cat_mins / total_screen_time * 100)) if total_screen_time else 0
-        cbar_filled = int((cpct / 100) * 32)
-        cbar_empty = 32 - cbar_filled
+        cbar_filled = int((cpct / 100) * 28)
+        cbar_empty = 28 - cbar_filled
         cbar = f"{CYAN}{'█'*cbar_filled}{DIM}{'░'*cbar_empty}{RESET}"
-        print(f"  {cat_name:<20} : {fmt_time(cat_mins):>7} ({cpct:>2}%) {cbar}")
+        print(f"  {cat_name:<16} : {fmt_time(cat_mins):>7} ({cpct:>2}%) {cbar}")
     print()
 
     # Curva Horaria
@@ -557,10 +558,10 @@ def cmd_stats(args):
     eve = metrics.get("evening_minutes", 32)
     nig = metrics.get("night_minutes", 0)
     hourly = [
-        ("00h - 06h (Madrugada)", nig, "[En descanso]"),
-        ("06h - 12h (Mañana)   ", morn, ""),
-        ("12h - 18h (Tarde)    ", aft, "[Horario pico]"),
-        ("18h - 24h (Noche)    ", eve, "")
+        ("00-06h Madrugada", nig, "[En descanso]"),
+        ("06-12h Mañana", morn, ""),
+        ("12-18h Tarde (Pico)", aft, "[Horario pico]"),
+        ("18-24h Noche", eve, "")
     ]
     max_h = max([h[1] for h in hourly] or [1])
     print(f"{BOLD}{WHITE}─── 📈 CURVA HORARIA DE ACTIVIDAD ───────────────────────────────────────────────────────{RESET}")
@@ -569,7 +570,7 @@ def cmd_stats(args):
         hfilled = int((hmins / max_h) * 24) if max_h else 0
         hempty = 24 - hfilled
         hbar = f"{YELLOW}{'█'*hfilled}{DIM}{'░'*hempty}{RESET}"
-        print(f"  {lbl} : {fmt_time(hmins):>7} ({hpct:>2}%) {hbar} {CYAN}{note}{RESET}")
+        print(f"  {lbl:<20} : {fmt_time(hmins):>7} ({hpct:>2}%) {hbar} {CYAN}{note}{RESET}")
 
     print(f"{BOLD}{CYAN}══════════════════════════════════════════════════════════════════════════════════════════{RESET}\n")
 
@@ -601,9 +602,13 @@ class AegisHtopMonitor:
         self.is_operating = False
         self.show_help = False
 
-        # Navegación en tabla de apps
+        # Navegación en tabla de apps (vista MAIN)
         self.selected_idx = 0
         self.scroll_offset = 0
+
+        # Navegación en ranking de apps (vista STATS)
+        self.stats_selected_idx = 0
+        self.stats_scroll_offset = 0
 
         self.stop_event = threading.Event()
         self.worker_thread = None
@@ -910,17 +915,7 @@ class AegisHtopMonitor:
         else:
             self.set_status("⚠️ Reanudación registrada en Turso Cloud")
 
-    def action_toggle_selected_app(self):
-        with self.lock:
-            if not self.apps or self.selected_idx >= len(self.apps):
-                return
-            app = self.apps[self.selected_idx]
-            pkg = app.get("package_name")
-            name = app.get("app_name") or pkg
-            curr_blocked = app.get("is_blocked") == 1
-            new_blocked = not curr_blocked
-            app["is_blocked"] = 1 if new_blocked else 0
-
+    def _execute_toggle_app(self, pkg, name, new_blocked):
         now = int(time.time() * 1000)
         cmd_id = f"cmd_{now}"
         action_str = "BLOQUEAR" if new_blocked else "PERMITIR"
@@ -940,6 +935,52 @@ class AegisHtopMonitor:
             [self.dev_id, pkg, name, 1 if new_blocked else 0, now]
         )
         self.set_status(f"✅ App {name} ahora está {'BLOQUEADA' if new_blocked else 'PERMITIDA'}")
+
+    def action_toggle_selected_app(self):
+        with self.lock:
+            if not self.apps or self.selected_idx >= len(self.apps):
+                return
+            app = self.apps[self.selected_idx]
+            pkg = app.get("package_name")
+            name = app.get("app_name") or pkg
+            curr_blocked = app.get("is_blocked") == 1
+            new_blocked = not curr_blocked
+            app["is_blocked"] = 1 if new_blocked else 0
+
+            # Sincronizar en memoria con la lista stats_usage
+            for u in self.stats_usage:
+                if u.get("package_name") == pkg:
+                    u["is_blocked"] = 1 if new_blocked else 0
+
+        self._execute_toggle_app(pkg, name, new_blocked)
+
+    def action_toggle_selected_stats_app(self):
+        with self.lock:
+            if not self.stats_usage or self.stats_selected_idx >= len(self.stats_usage):
+                return
+            app = self.stats_usage[self.stats_selected_idx]
+            pkg = app.get("package_name")
+            name = app.get("app_name") or pkg
+            curr_blocked = app.get("is_blocked") == 1
+            new_blocked = not curr_blocked
+            app["is_blocked"] = 1 if new_blocked else 0
+
+            # Sincronizar en memoria con la lista self.apps
+            found = False
+            for a in self.apps:
+                if a.get("package_name") == pkg:
+                    a["is_blocked"] = 1 if new_blocked else 0
+                    found = True
+                    break
+            if not found:
+                self.apps.append({
+                    "package_name": pkg,
+                    "app_name": name,
+                    "is_blocked": 1 if new_blocked else 0
+                })
+                self.apps.sort(key=lambda x: (x.get("app_name") or x.get("package_name")).lower())
+
+        self._execute_toggle_app(pkg, name, new_blocked)
 
     def action_ping(self):
         now = int(time.time() * 1000)
@@ -1042,42 +1083,69 @@ class AegisHtopMonitor:
 
                 if ch in (curses.KEY_RESIZE,):
                     stdscr.clear()
-                elif ch in (ord('q'), ord('Q'), 27, curses.KEY_F10):
+                elif ch in (ord('q'), ord('Q'), ord('0'), 27, curses.KEY_F10):
                     break
-                elif ch in (ord('h'), ord('H'), curses.KEY_F1):
+                elif ch in (ord('h'), ord('H'), ord('1'), curses.KEY_F1):
                     self.show_help = not self.show_help
                 elif self.show_help:
                     # Cualquier tecla cierra la ayuda
                     self.show_help = False
                 elif ch in (curses.KEY_UP, ord('k'), ord('K')):
-                    self.selected_idx = max(0, self.selected_idx - 1)
+                    if self.view_mode == "STATS":
+                        self.stats_selected_idx = max(0, self.stats_selected_idx - 1)
+                    else:
+                        self.selected_idx = max(0, self.selected_idx - 1)
                 elif ch in (curses.KEY_DOWN, ord('j'), ord('J')):
-                    with self.lock:
-                        num_apps = len(self.apps)
-                    self.selected_idx = min(max(0, num_apps - 1), self.selected_idx + 1)
+                    if self.view_mode == "STATS":
+                        with self.lock:
+                            num_items = len(self.stats_usage)
+                        self.stats_selected_idx = min(max(0, num_items - 1), self.stats_selected_idx + 1)
+                    else:
+                        with self.lock:
+                            num_apps = len(self.apps)
+                        self.selected_idx = min(max(0, num_apps - 1), self.selected_idx + 1)
                 elif ch in (curses.KEY_PPAGE,):
-                    self.selected_idx = max(0, self.selected_idx - 5)
+                    if self.view_mode == "STATS":
+                        self.stats_selected_idx = max(0, self.stats_selected_idx - 5)
+                    else:
+                        self.selected_idx = max(0, self.selected_idx - 5)
                 elif ch in (curses.KEY_NPAGE,):
-                    with self.lock:
-                        num_apps = len(self.apps)
-                    self.selected_idx = min(max(0, num_apps - 1), self.selected_idx + 5)
+                    if self.view_mode == "STATS":
+                        with self.lock:
+                            num_items = len(self.stats_usage)
+                        self.stats_selected_idx = min(max(0, num_items - 1), self.stats_selected_idx + 5)
+                    else:
+                        with self.lock:
+                            num_apps = len(self.apps)
+                        self.selected_idx = min(max(0, num_apps - 1), self.selected_idx + 5)
                 elif ch in (curses.KEY_HOME,):
-                    self.selected_idx = 0
+                    if self.view_mode == "STATS":
+                        self.stats_selected_idx = 0
+                    else:
+                        self.selected_idx = 0
                 elif ch in (curses.KEY_END,):
-                    with self.lock:
-                        num_apps = len(self.apps)
-                    self.selected_idx = max(0, num_apps - 1)
-                elif ch in (ord(' '), ord('a'), ord('A'), curses.KEY_F6):
-                    self.trigger_async_action(self.action_toggle_selected_app)
-                elif ch in (ord('l'), ord('L'), curses.KEY_F2):
+                    if self.view_mode == "STATS":
+                        with self.lock:
+                            num_items = len(self.stats_usage)
+                        self.stats_selected_idx = max(0, num_items - 1)
+                    else:
+                        with self.lock:
+                            num_apps = len(self.apps)
+                        self.selected_idx = max(0, num_apps - 1)
+                elif ch in (ord(' '), ord('a'), ord('A'), ord('6'), curses.KEY_F6, ord('\n'), 10, 13):
+                    if self.view_mode == "STATS":
+                        self.trigger_async_action(self.action_toggle_selected_stats_app)
+                    else:
+                        self.trigger_async_action(self.action_toggle_selected_app)
+                elif ch in (ord('l'), ord('L'), ord('2'), curses.KEY_F2):
                     self.trigger_async_action(self.action_lock)
-                elif ch in (ord('u'), ord('U'), curses.KEY_F3):
+                elif ch in (ord('u'), ord('U'), ord('3'), curses.KEY_F3):
                     self.trigger_async_action(self.action_unlock, 15)
-                elif ch in (ord('r'), ord('R'), curses.KEY_F4):
+                elif ch in (ord('r'), ord('R'), ord('4'), curses.KEY_F4):
                     self.trigger_async_action(self.action_resume)
-                elif ch in (ord('p'), ord('P'), curses.KEY_F5):
+                elif ch in (ord('p'), ord('P'), ord('5'), curses.KEY_F5):
                     self.trigger_async_action(self.action_ping)
-                elif ch in (ord('s'), ord('S'), curses.KEY_F7):
+                elif ch in (ord('s'), ord('S'), ord('7'), curses.KEY_F7):
                     self.trigger_async_action(self._single_fetch)
                 elif ch in (ord('8'), ord('t'), ord('T'), curses.KEY_F8):
                     self.view_mode = "STATS" if self.view_mode == "MAIN" else "MAIN"
@@ -1170,10 +1238,14 @@ class AegisHtopMonitor:
 
         # 3. RANKING DE APPS MÁS CONSUMIDAS (Top Apps)
         self._safe_addstr(stdscr, 6, 0, "│ ", curses.color_pair(1))
-        self._safe_addstr(stdscr, 6, 2, "🏆 RANKING DE APLICACIONES MÁS CONSUMIDAS HOY (TOP APPS):", curses.color_pair(1) | curses.A_BOLD)
+        title_top_apps = "🏆 RANKING DE APLICACIONES MÁS CONSUMIDAS HOY (TOP APPS):"
+        self._safe_addstr(stdscr, 6, 2, title_top_apps, curses.color_pair(1) | curses.A_BOLD)
+        if max_x >= 105:
+            hint_top_apps = "[↑/↓ Mover | Espacio: Toggle]"
+            self._safe_addstr(stdscr, 6, max_x - len(hint_top_apps) - 2, hint_top_apps, curses.color_pair(4) | curses.A_BOLD)
         self._safe_addstr(stdscr, 6, max_x - 1, "│", curses.color_pair(1))
 
-        header_stats = f"│  {'#':<3} {'ESTADO':<14} {'APLICACIÓN':<24} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}"
+        header_stats = f"│  {'#':<5} {'ESTADO':<15} {'APLICACIÓN':<22} {'CATEGORÍA':<16} {'TIEMPO':<8} {'%':<5} {'DISTRIBUCIÓN VISUAL'}"
         self._safe_addstr(stdscr, 7, 0, header_stats, curses.color_pair(1) | curses.A_BOLD, max_x - 1)
         self._safe_addstr(stdscr, 7, max_x - 1, "│", curses.color_pair(1))
 
@@ -1194,37 +1266,74 @@ class AegisHtopMonitor:
         }
 
         cat_totals = {}
+        for u in usage:
+            u_cat = u.get("category", "OTHER")
+            _, c_name = cat_map.get(u_cat, ("📦", u_cat))
+            cat_totals[c_name] = cat_totals.get(c_name, 0) + u.get("usage_minutes", 0)
+
+        num_stats = len(usage)
+        if num_stats > 0:
+            self.stats_selected_idx = max(0, min(num_stats - 1, self.stats_selected_idx))
+            if self.stats_selected_idx < self.stats_scroll_offset:
+                self.stats_scroll_offset = self.stats_selected_idx
+            elif self.stats_selected_idx >= self.stats_scroll_offset + avail_stats_rows:
+                self.stats_scroll_offset = self.stats_selected_idx - avail_stats_rows + 1
+        else:
+            self.stats_selected_idx = 0
+            self.stats_scroll_offset = 0
 
         for i in range(avail_stats_rows):
             curr_y = stats_rows_start_y + i
+            app_idx = self.stats_scroll_offset + i
             self._safe_addstr(stdscr, curr_y, 0, "│ ", curses.color_pair(1))
-            if i < len(usage):
-                u_item = usage[i]
+            if app_idx < num_stats:
+                u_item = usage[app_idx]
                 u_pkg = u_item.get("package_name", "")
                 u_name = u_item.get("app_name") or u_pkg
+                for alias, alias_pkg in APP_ALIASES.items():
+                    if alias_pkg == u_pkg and not u_item.get("app_name"):
+                        u_name = alias.capitalize()
+                        break
                 u_mins = u_item.get("usage_minutes", 0)
                 u_cat = u_item.get("category", "OTHER")
                 u_is_b = u_item.get("is_blocked") == 1
-                c_icon, c_name = cat_map.get(u_cat, ("📦", u_cat))
-                cat_totals[c_name] = cat_totals.get(c_name, 0) + u_mins
+                _, c_name = cat_map.get(u_cat, ("📦", u_cat))
 
                 pct = int((u_mins / total_time_mins * 100)) if total_time_mins else 0
                 time_str = fmt_time(u_mins)
-                status_lbl = "🚫 BLOQUEADA" if u_is_b else "✅ PERMITIDA"
+                st_icon = "🚫" if u_is_b else "✅"
+                st_text = "BLOQUEADA" if u_is_b else "PERMITIDA"
+                status_lbl = f"{st_icon} {st_text:<10}"
                 status_pair = 3 if u_is_b else 2
 
-                bar_w = min(20, max(6, max_x - 80))
-                filled = int((u_mins / max_usage_mins) * bar_w)
-                empty = bar_w - filled
+                bar_w = min(20, max(4, max_x - 84))
+                filled = int((u_mins / max_usage_mins) * bar_w) if max_usage_mins else 0
+                empty = max(0, bar_w - filled)
                 bar_ch = "█" * filled + "░" * empty
 
-                self._safe_addstr(stdscr, curr_y, 2, f"{i+1:<2}.", curses.A_DIM)
-                self._safe_addstr(stdscr, curr_y, 6, f"{status_lbl:<14}", curses.color_pair(status_pair) | curses.A_BOLD)
-                self._safe_addstr(stdscr, curr_y, 21, f"{u_name[:22]:<23}", curses.A_BOLD)
-                self._safe_addstr(stdscr, curr_y, 45, f"{c_icon} {c_name:<13}", curses.color_pair(7))
-                self._safe_addstr(stdscr, curr_y, 62, f"{time_str:<8}", curses.color_pair(2) | curses.A_BOLD)
-                self._safe_addstr(stdscr, curr_y, 71, f"{pct:>2}% ", curses.color_pair(4))
-                self._safe_addstr(stdscr, curr_y, 76, bar_ch, curses.color_pair(3 if u_is_b else 1), max_x - 1)
+                is_selected = (app_idx == self.stats_selected_idx)
+                prefix = "> " if is_selected else "  "
+                pair_line = curses.color_pair(5) | curses.A_BOLD if is_selected else None
+
+                if is_selected:
+                    self._safe_addstr(stdscr, curr_y, 2, " " * (max_x - 4), curses.color_pair(5))
+                    self._safe_addstr(stdscr, curr_y, 2, f"{prefix}{app_idx + 1:>2}. ", pair_line)
+                    self._safe_addstr(stdscr, curr_y, 9, status_lbl, pair_line)
+                    self._safe_addstr(stdscr, curr_y, 25, f"{u_name[:20]:<22}", pair_line)
+                    self._safe_addstr(stdscr, curr_y, 48, f"{c_name[:14]:<16}", pair_line)
+                    self._safe_addstr(stdscr, curr_y, 65, f"{time_str:>7} ", pair_line)
+                    self._safe_addstr(stdscr, curr_y, 74, f"{pct:>3}% ", pair_line)
+                    self._safe_addstr(stdscr, curr_y, 80, bar_ch, pair_line, max_x - 1)
+                else:
+                    self._safe_addstr(stdscr, curr_y, 2, f"{prefix}{app_idx + 1:>2}. ", curses.A_DIM)
+                    self._safe_addstr(stdscr, curr_y, 9, status_lbl, curses.color_pair(status_pair) | curses.A_BOLD)
+                    self._safe_addstr(stdscr, curr_y, 25, f"{u_name[:20]:<22}", curses.A_BOLD)
+                    self._safe_addstr(stdscr, curr_y, 48, f"{c_name[:14]:<16}", curses.color_pair(7))
+                    self._safe_addstr(stdscr, curr_y, 65, f"{time_str:>7} ", curses.color_pair(2) | curses.A_BOLD)
+                    self._safe_addstr(stdscr, curr_y, 74, f"{pct:>3}% ", curses.color_pair(4))
+                    self._safe_addstr(stdscr, curr_y, 80, bar_ch, curses.color_pair(3 if u_is_b else 1), max_x - 1)
+            elif num_stats == 0 and i == 0:
+                self._safe_addstr(stdscr, curr_y, 2, "ℹ️  Sin registros de uso de aplicaciones reportados para hoy.", curses.color_pair(4))
             else:
                 self._safe_addstr(stdscr, curr_y, 2, " " * (max_x - 4))
             self._safe_addstr(stdscr, curr_y, max_x - 1, "│", curses.color_pair(1))
@@ -1245,10 +1354,10 @@ class AegisHtopMonitor:
         eve = metrics.get("evening_minutes", 32)
         nig = metrics.get("night_minutes", 0)
         hourly = [
-            ("00-06h Madrugada", nig),
-            ("06-12h Mañana    ", morn),
-            ("12-18h Tarde (Pico)", aft),
-            ("18-24h Noche     ", eve)
+            ("00-06h Madrugada", nig, False),
+            ("06-12h Mañana", morn, False),
+            ("12-18h Tarde (Pico)", aft, True),
+            ("18-24h Noche", eve, False)
         ]
         max_h = max([h[1] for h in hourly] or [1])
         sorted_cats = sorted(cat_totals.items(), key=lambda x: x[1], reverse=True)
@@ -1262,25 +1371,25 @@ class AegisHtopMonitor:
             if li < len(sorted_cats):
                 cn, cm = sorted_cats[li]
                 cpct = int((cm / total_time_mins * 100)) if total_time_mins else 0
-                cbar_w = min(12, max(4, mid_x - 30))
+                cbar_w = min(12, max(4, mid_x - 36))
                 cfilled = int((cpct / 100) * cbar_w)
-                cempty = cbar_w - cfilled
+                cempty = max(0, cbar_w - cfilled)
                 cbar_s = "█" * cfilled + "░" * cempty
-                c_str = f"  {cn:<13} : {fmt_time(cm):>6} ({cpct:>2}%) {cbar_s}"
+                c_str = f"  {cn:<16} : {fmt_time(cm):>7} ({cpct:>2}%) {cbar_s}"
                 self._safe_addstr(stdscr, iy, 2, c_str[:mid_x - 4], curses.color_pair(7))
             else:
                 self._safe_addstr(stdscr, iy, 2, " " * (mid_x - 4))
 
             # Columna derecha: Horas
             if li < len(hourly):
-                hlbl, hmin = hourly[li]
+                hlbl, hmin, is_pico = hourly[li]
                 hpct = int((hmin / total_time_mins * 100)) if total_time_mins else 0
-                hbar_w = min(12, max(4, max_x - mid_x - 30))
+                hbar_w = min(12, max(4, max_x - mid_x - 36))
                 hfilled = int((hmin / max_h) * hbar_w) if max_h else 0
-                hempty = hbar_w - hfilled
+                hempty = max(0, hbar_w - hfilled)
                 hbar_s = "█" * hfilled + "░" * hempty
-                h_str = f"  {hlbl} : {fmt_time(hmin):>6} ({hpct:>2}%) {hbar_s}"
-                self._safe_addstr(stdscr, iy, mid_x, h_str[:max_x - mid_x - 2], curses.color_pair(4 if "Pico" in hlbl else 7))
+                h_str = f"  {hlbl:<20} : {fmt_time(hmin):>7} ({hpct:>2}%) {hbar_s}"
+                self._safe_addstr(stdscr, iy, mid_x, h_str[:max_x - mid_x - 2], curses.color_pair(4 if is_pico else 7))
             else:
                 self._safe_addstr(stdscr, iy, mid_x, " " * (max_x - mid_x - 2))
 
@@ -1318,6 +1427,10 @@ class AegisHtopMonitor:
             lbl_str = f"{label} "
             self._safe_addstr(stdscr, footer_y, curr_x, lbl_str, curses.color_pair(7), max_x)
             curr_x += len(lbl_str)
+
+        # 7. POPUP MODAL DE AYUDA (Si está activo)
+        if self.show_help:
+            self._render_help_modal(stdscr, max_y, max_x)
 
     def _render(self, stdscr, max_y, max_x):
         if self.view_mode == "STATS":
@@ -1531,33 +1644,36 @@ class AegisHtopMonitor:
 
         # 6. POPUP MODAL DE AYUDA (Si está activo)
         if self.show_help:
-            box_w = min(68, max_x - 4)
-            box_h = 17
-            start_x = (max_x - box_w) // 2
-            start_y = (max_y - box_h) // 2
+            self._render_help_modal(stdscr, max_y, max_x)
 
-            help_lines = [
-                "┌" + "─" * (box_w - 2) + "┐",
-                "│" + " AYUDA Y ATAJOS DE TECLADO (AEGIS TUI) ".center(box_w - 2) + "│",
-                "├" + "─" * (box_w - 2) + "┤",
-                "│  ↑ / ↓ o j / k     : Navegar por la lista de aplicaciones".ljust(box_w - 2) + "│",
-                "│  PgUp / PgDn       : Desplazamiento rápido por páginas".ljust(box_w - 2) + "│",
-                "│  Espacio / A / F6 : Conmutar Bloqueo/Permiso de app".ljust(box_w - 2) + "│",
-                "│  L / F2            : Bloqueo total inmediato de la tablet".ljust(box_w - 2) + "│",
-                "│  U / F3            : Conceder 15 minutos de recreo temporal".ljust(box_w - 2) + "│",
-                "│  R / F4            : Reanudar protección (cancelar pausas)".ljust(box_w - 2) + "│",
-                "│  P / F5            : Probar latencia de red en vivo (Ping)".ljust(box_w - 2) + "│",
-                "│  S / F7            : Forzar sincronización con Turso Cloud".ljust(box_w - 2) + "│",
-                "│  T / 8 / F8        : Alternar entre Monitor y Estadísticas PRO".ljust(box_w - 2) + "│",
-                "│  H / F1            : Mostrar / ocultar esta ventana".ljust(box_w - 2) + "│",
-                "│  Q / F10 / ESC     : Salir del monitor".ljust(box_w - 2) + "│",
-                "├" + "─" * (box_w - 2) + "┤",
-                "│" + " Presiona cualquier tecla para cerrar ".center(box_w - 2) + "│",
-                "└" + "─" * (box_w - 2) + "┘"
-            ]
+    def _render_help_modal(self, stdscr, max_y, max_x):
+        box_w = min(68, max_x - 4)
+        box_h = 17
+        start_x = (max_x - box_w) // 2
+        start_y = (max_y - box_h) // 2
 
-            for hy, hline in enumerate(help_lines):
-                self._safe_addstr(stdscr, start_y + hy, start_x, hline, curses.color_pair(1) | curses.A_BOLD, max_x)
+        help_lines = [
+            "┌" + "─" * (box_w - 2) + "┐",
+            "│" + " AYUDA Y ATAJOS DE TECLADO (AEGIS TUI) ".center(box_w - 2) + "│",
+            "├" + "─" * (box_w - 2) + "┤",
+            "│  ↑ / ↓ o j / k     : Navegar por la lista / ranking de apps".ljust(box_w - 2) + "│",
+            "│  PgUp / PgDn       : Desplazamiento rápido por páginas".ljust(box_w - 2) + "│",
+            "│  Espacio / A / F6 : Conmutar Bloqueo/Permiso de app".ljust(box_w - 2) + "│",
+            "│  L / F2            : Bloqueo total inmediato de la tablet".ljust(box_w - 2) + "│",
+            "│  U / F3            : Conceder 15 minutos de recreo temporal".ljust(box_w - 2) + "│",
+            "│  R / F4            : Reanudar protección (cancelar pausas)".ljust(box_w - 2) + "│",
+            "│  P / F5            : Probar latencia de red en vivo (Ping)".ljust(box_w - 2) + "│",
+            "│  S / F7            : Forzar sincronización con Turso Cloud".ljust(box_w - 2) + "│",
+            "│  T / 8 / F8        : Alternar entre Monitor y Estadísticas PRO".ljust(box_w - 2) + "│",
+            "│  H / F1            : Mostrar / ocultar esta ventana".ljust(box_w - 2) + "│",
+            "│  Q / F10 / ESC     : Salir del monitor".ljust(box_w - 2) + "│",
+            "├" + "─" * (box_w - 2) + "┤",
+            "│" + " Presiona cualquier tecla para cerrar ".center(box_w - 2) + "│",
+            "└" + "─" * (box_w - 2) + "┘"
+        ]
+
+        for hy, hline in enumerate(help_lines):
+            self._safe_addstr(stdscr, start_y + hy, start_x, hline, curses.color_pair(1) | curses.A_BOLD, max_x)
 
 
 def cmd_live(args):
