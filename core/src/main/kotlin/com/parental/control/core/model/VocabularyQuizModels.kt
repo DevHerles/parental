@@ -39,15 +39,24 @@ data class VocabQuizQuestion(
 )
 
 /**
- * Resultado y evaluación del Quiz de Vocabulario de 15 preguntas.
+ * Resultado de generación del quiz con estado del mazo persistente.
+ */
+data class VocabQuizGeneration(
+    val questions: List<VocabQuizQuestion>,
+    val updatedSeenKeys: Set<String>,
+    val cycleCompleted: Boolean = false
+)
+
+/**
+ * Resultado y evaluación del Quiz de Vocabulario de 45 preguntas.
  */
 data class VocabQuizResult(
-    val totalQuestions: Int = 15,
+    val totalQuestions: Int = 45,
     val correctCount: Int,
     val scorePercentage: Double,
     val stars: Int,                 // 0 a 5 estrellas
-    val earnedMinutes: Int,         // 0 a 5 minutos
-    val passed: Boolean,            // >= 9 aciertos (60%)
+    val earnedMinutes: Int,         // 0 a 15 minutos proporcionales
+    val passed: Boolean,            // >= 27 aciertos (60%)
     val durationSeconds: Int,
     val completedAtMs: Long = System.currentTimeMillis()
 )

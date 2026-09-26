@@ -38,11 +38,13 @@ fun LockOverlayContent(
     var showFlashcards by remember { mutableStateOf(false) }
     var cooldownRemainingMs by remember { mutableStateOf(repository.getChineseExamCooldownRemainingMs()) }
     var canAttemptExam by remember { mutableStateOf(repository.canAttemptChineseExam()) }
+    var isBedtime by remember { mutableStateOf(repository.isBedtimeCurfewActive()) }
 
     LaunchedEffect(Unit) {
         while (true) {
             cooldownRemainingMs = repository.getChineseExamCooldownRemainingMs()
             canAttemptExam = repository.canAttemptChineseExam()
+            isBedtime = repository.isBedtimeCurfewActive()
             kotlinx.coroutines.delay(1000L)
         }
     }
@@ -84,28 +86,32 @@ fun LockOverlayContent(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Círculo con Icono Motivacional
+            // Círculo con Icono Motivacional (Luna en la noche, Libro en el día)
             Box(
                 modifier = Modifier
                     .size(100.dp)
                     .background(
-                        color = AegisPrimary.copy(alpha = 0.2f),
+                        color = if (isBedtime) Color(0xFF6366F1).copy(alpha = 0.25f) else AegisPrimary.copy(alpha = 0.2f),
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.MenuBook,
-                    contentDescription = "Libro de estudio",
-                    tint = Color.White,
-                    modifier = Modifier.size(54.dp)
-                )
+                if (isBedtime) {
+                    Text(text = "🌙", fontSize = 48.sp)
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.MenuBook,
+                        contentDescription = "Libro de estudio",
+                        tint = Color.White,
+                        modifier = Modifier.size(54.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(28.dp))
 
             Text(
-                text = "¡Tiempo de Concentración! 📚",
+                text = if (isBedtime) "¡Hora de Dormir y Descansar! 🌙" else "¡Tiempo de Concentración! 📚",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -115,7 +121,7 @@ fun LockOverlayContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "$blockedAppName está en pausa por tus padres.",
+                text = if (isBedtime) "Horario nocturno de descanso (20:00 a 08:00)" else "$blockedAppName está en pausa por tus padres.",
                 style = MaterialTheme.typography.titleMedium,
                 color = Color(0xFF94A3B8),
                 textAlign = TextAlign.Center
@@ -133,15 +139,23 @@ fun LockOverlayContent(
                     modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.Lightbulb,
-                        contentDescription = null,
-                        tint = AegisWarning,
-                        modifier = Modifier.size(28.dp)
-                    )
+                    if (isBedtime) {
+                        Text(text = "😴", fontSize = 26.sp)
+                    } else {
+                        Icon(
+                            Icons.Default.Lightbulb,
+                            contentDescription = null,
+                            tint = AegisWarning,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = "¿Qué tal dibujar, avanzar con la tarea o leer un rato? Tu mente te lo agradecerá. ✨",
+                        text = if (isBedtime) {
+                            "Es momento de desconectar la pantalla y dormir bien para recargar tus energías. Mañana será un gran día. ✨"
+                        } else {
+                            "¿Qué tal dibujar, avanzar con la tarea o leer un rato? Tu mente te lo agradecerá. ✨"
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFFE2E8F0)
                     )
@@ -151,7 +165,25 @@ fun LockOverlayContent(
             // SECCIÓN EDUCATIVA CHINO MANDARÍN (YCT 1)
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (canAttemptExam) {
+            if (isBedtime) {
+                // En horario nocturno no se permite rendir retos para evitar trasnochar
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = Color(0xFF1E293B),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "🌙 Retos de minutos en pausa hasta las 08:00 AM",
+                            color = Color(0xFF94A3B8),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp
+                        )
+                    }
+                }
+            } else if (canAttemptExam) {
                 Button(
                     onClick = { showVocabQuiz = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
@@ -163,16 +195,22 @@ fun LockOverlayContent(
                     Icon(Icons.Default.School, contentDescription = null, tint = Color.White)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "🎯 ¡Reto de Vocabulario (15 preguntas) y Gana 5 min!",
+                        text = "🎯 ¡Reto de Vocabulario (45 preguntas) y Gana hasta 15 min!",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         color = Color.White
                     )
                 }
             } else {
                 val totalSecs = (cooldownRemainingMs / 1000L).coerceAtLeast(0L)
-                val cMins = totalSecs / 60
+                val hours = totalSecs / 3600
+                val cMins = (totalSecs % 3600) / 60
                 val cSecs = totalSecs % 60
+                val countdownFormatted = if (hours > 0) {
+                    String.format("%02d:%02d:%02d", hours, cMins, cSecs)
+                } else {
+                    String.format("%02d:%02d", cMins, cSecs)
+                }
                 OutlinedButton(
                     onClick = { },
                     enabled = false,
@@ -184,30 +222,32 @@ fun LockOverlayContent(
                     Icon(Icons.Default.HourglassTop, contentDescription = null, tint = Color(0xFF94A3B8), modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "⏳ Próximo reto en ${String.format("%02d:%02d", cMins, cSecs)}",
+                        text = "⏳ Próximo reto en $countdownFormatted",
                         color = Color(0xFF94A3B8),
                         fontSize = 13.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (!isBedtime) {
+                Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedButton(
-                onClick = { showFlashcards = true },
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF38BDF8)),
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(44.dp)
-            ) {
-                Icon(Icons.Default.MenuBook, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "📖 Repasar Vocabulario Oficial (83 Flashcards)",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                OutlinedButton(
+                    onClick = { showFlashcards = true },
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF38BDF8)),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                ) {
+                    Icon(Icons.Default.MenuBook, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "📖 Repasar Vocabulario Oficial (83 Flashcards)",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -264,42 +304,42 @@ fun LockOverlayContent(
                     dismissOnClickOutside = false
                 ),
                 title = {
-                    Text(text = "Autorización de los Padres")
+                    Text(text = "Autorización de los Padres", fontWeight = FontWeight.Bold)
                 },
                 text = {
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Text(
-                            text = "Ingresa tu PIN de administrador para desbloquear temporalmente.",
-                            style = MaterialTheme.typography.bodyMedium
+                            text = "Ingresa tu PIN de administrador para desbloquear temporalmente:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
 
-                        OutlinedTextField(
-                            value = pinText,
-                            onValueChange = {
-                                if (it.length <= 6) {
-                                    pinText = it
-                                    pinError = false
-                                }
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Teclado numérico táctil en pantalla
+                        com.parental.control.ui.components.PinNumericKeypad(
+                            pin = pinText,
+                            onPinChange = {
+                                pinText = it
+                                pinError = false
                             },
-                            label = { Text("PIN Maestro") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            singleLine = true,
+                            maxLength = 6,
                             isError = pinError,
-                            supportingText = if (pinError) {
-                                { Text("PIN incorrecto", color = MaterialTheme.colorScheme.error) }
-                            } else null,
-                            modifier = Modifier.fillMaxWidth()
+                            errorMessage = if (pinError) "PIN incorrecto. Inténtalo de nuevo." else null
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
                         Text(
                             text = "Tiempo concedido:",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold
                         )
+
+                        Spacer(modifier = Modifier.height(6.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -325,6 +365,7 @@ fun LockOverlayContent(
                 },
                 confirmButton = {
                     Button(
+                        enabled = pinText.length >= 4,
                         onClick = {
                             val success = onParentUnlock(pinText, unlockDuration)
                             if (success) {

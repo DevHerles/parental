@@ -139,6 +139,7 @@ class ParentalRepository private constructor(private val context: Context) {
     }
 
     fun canAttemptChineseExam(): Boolean {
+        if (isBedtimeCurfewActive()) return false
         val remaining = getChineseExamCooldownRemainingMs()
         val isAlreadyUnlocked = _settings.value.isTemporarilyUnlocked
         return remaining <= 0L && !isAlreadyUnlocked
@@ -161,6 +162,14 @@ class ParentalRepository private constructor(private val context: Context) {
         return minutesToGrant
     }
 
+    fun getSeenVocabWordKeys(): Set<String> {
+        return prefs.getStringSet(KEY_SEEN_VOCAB_WORDS, emptySet()) ?: emptySet()
+    }
+
+    fun saveSeenVocabWordKeys(keys: Set<String>) {
+        prefs.edit().putStringSet(KEY_SEEN_VOCAB_WORDS, keys).apply()
+    }
+
     fun claimVocabularyQuizReward(result: com.parental.control.core.model.VocabQuizResult): Int {
         val earned = result.earnedMinutes
         if (earned <= 0) return 0
@@ -169,7 +178,7 @@ class ParentalRepository private constructor(private val context: Context) {
         val now = System.currentTimeMillis()
         prefs.edit().putLong(KEY_CHINESE_EXAM_COOLDOWN, now).apply()
 
-        val minutesToGrant = earned.coerceIn(1, 5)
+        val minutesToGrant = earned.coerceIn(1, 15)
         setTemporaryUnlock(minutesToGrant)
 
         val detail = "Quiz de Vocabulario YCT 1 aprobado: ${result.correctCount}/${result.totalQuestions} aciertos (${result.stars} ⭐) -> +${minutesToGrant}m recreativos"
@@ -223,7 +232,8 @@ class ParentalRepository private constructor(private val context: Context) {
     }
 
     private fun loadSchedules() {
-        // Horarios por defecto desactivados para evitar bloqueos involuntarios
+        val isBedtimeEnabled = prefs.getBoolean(KEY_BEDTIME_ENABLED, true)
+        // Horario nocturno (Toque de Queda) activo por defecto de 20:00 a 08:00 todos los días
         _schedules.value = listOf(
             CurfewSchedule(
                 id = "study_time",
@@ -238,14 +248,34 @@ class ParentalRepository private constructor(private val context: Context) {
             CurfewSchedule(
                 id = "bed_time",
                 name = "Hora de Dormir",
-                daysOfWeek = setOf(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY),
-                startHour = 22,
+                daysOfWeek = setOf(
+                    Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
+                    Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
+                    Calendar.SATURDAY
+                ),
+                startHour = 20,
                 startMinute = 0,
-                endHour = 7,
+                endHour = 8,
                 endMinute = 0,
-                isEnabled = false
+                isEnabled = isBedtimeEnabled // Activo por defecto de lunes a domingo
             )
         )
+    }
+
+    fun setBedtimeScheduleEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_BEDTIME_ENABLED, enabled).apply()
+        _schedules.value = _schedules.value.map {
+            if (it.id == "bed_time") it.copy(isEnabled = enabled) else it
+        }
+        Log.i(TAG, "Horario de descanso nocturno actualizado: isEnabled=$enabled")
+    }
+
+    fun isBedtimeCurfewActive(cal: Calendar = Calendar.getInstance()): Boolean {
+        return _schedules.value.any { it.isEnabled && it.id == "bed_time" && it.isCurfewActive(cal) }
+    }
+
+    fun isCurfewActive(cal: Calendar = Calendar.getInstance()): Boolean {
+        return _schedules.value.any { it.isEnabled && it.isCurfewActive(cal) }
     }
 
     fun updateTelemetry(update: (DeviceTelemetry) -> DeviceTelemetry) {
@@ -266,7 +296,7 @@ class ParentalRepository private constructor(private val context: Context) {
      * Verifica si una aplicación determinada está restringida en este instante.
      */
     fun isPackageBlocked(packageName: String): Boolean {
-        // Paquetes esenciales del sistema (teclados, launchers, llamadas, etc.) NUNCA se bloquean
+        // Paquetes esenciales del sistema (teclados, llamadas de emergencia) NUNCA se bloquean
         if (com.parental.control.core.utils.PermissionHelper.isSystemEssentialPackage(context, packageName)) {
             return false
         }
@@ -278,30 +308,36 @@ class ParentalRepository private constructor(private val context: Context) {
             return true
         }
 
-        // 2. Si hay un desbloqueo temporal activo concedido por el padre, no se bloquea
+        // 2. Horario de Descanso Nocturno (Hora de Dormir 20:00 a 08:00)
+        // Bloqueo total incondicional por defecto. Solo se puede omitir si el padre autorizó con PIN expresamente.
+        if (isBedtimeCurfewActive()) {
+            if (currentSettings.isTemporarilyUnlocked) {
+                return false
+            }
+            return true
+        }
+
+        // 3. Si hay un desbloqueo temporal activo concedido por el padre o por premio educativo diurno, no se bloquea
         if (currentSettings.isTemporarilyUnlocked) {
             return false
         }
 
-        // 1. Coincidencia difusa para TikTok
+        // 4. Coincidencias difusas para apps de alto impacto
         if (DistractionConstants.isTikTokPackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_TIKTOK]
             return restriction?.isBlocked ?: true
         }
 
-        // 2. Coincidencia difusa para YouTube
         if (DistractionConstants.isYouTubePackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_YOUTUBE]
             return restriction?.isBlocked ?: true
         }
 
-        // 3. Coincidencia difusa para Facebook
         if (DistractionConstants.isFacebookPackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_FACEBOOK]
             return restriction?.isBlocked ?: true
         }
 
-        // 4. Coincidencia difusa para Instagram
         if (DistractionConstants.isInstagramPackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_INSTAGRAM]
             return restriction?.isBlocked ?: true
@@ -312,13 +348,11 @@ class ParentalRepository private constructor(private val context: Context) {
         val isExplicitlyBlocked = restriction?.isBlocked ?: DistractionConstants.DEFAULT_BLOCKED_PACKAGES.contains(packageName)
 
         // 6. Revisar si algún horario de toque de queda está activo
-        val isCurfewNow = _schedules.value.any { it.isCurfewActive() }
-
-        return if (isCurfewNow) {
-            isExplicitlyBlocked
-        } else {
-            isExplicitlyBlocked
+        if (isCurfewActive()) {
+            return true
         }
+
+        return isExplicitlyBlocked
     }
 
     companion object {
@@ -333,7 +367,9 @@ class ParentalRepository private constructor(private val context: Context) {
         private const val KEY_PAIRED_ID = "key_paired_id"
         private const val KEY_DEVICE_ROLE = "key_device_role"
         private const val KEY_CHINESE_EXAM_COOLDOWN = "key_chinese_exam_cooldown"
-        private const val CHINESE_EXAM_COOLDOWN_MS = 60 * 60 * 1000L
+        private const val KEY_SEEN_VOCAB_WORDS = "key_seen_vocab_words"
+        private const val KEY_BEDTIME_ENABLED = "key_bedtime_enabled"
+        private const val CHINESE_EXAM_COOLDOWN_MS = 2 * 60 * 60 * 1000L // 2 horas (120 minutos)
 
         @Volatile
         private var INSTANCE: ParentalRepository? = null

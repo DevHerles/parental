@@ -29,6 +29,16 @@ class BootReceiver : BroadcastReceiver() {
                     Log.i(TAG, "Comando de prueba recibido: $action -> Desbloqueo temporal por $duration minutos")
                     repo.setTemporaryUnlock(duration)
                 }
+                "com.parental.control.ACTION_SET_BEDTIME_ENABLED" -> {
+                    val enabled = intent.getBooleanExtra("enabled", true)
+                    Log.i(TAG, "Comando administrativo recibido: $action -> enabled=$enabled")
+                    repo.setBedtimeScheduleEnabled(enabled)
+                }
+                "com.parental.control.ACTION_SET_PIN" -> {
+                    val pin = intent.getStringExtra("pin") ?: "179900"
+                    Log.i(TAG, "Comando administrativo recibido: $action -> Estableciendo PIN maestro")
+                    repo.savePin(pin)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error inicializando repositorio en arranque o broadcast", e)

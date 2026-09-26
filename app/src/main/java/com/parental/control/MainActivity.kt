@@ -429,30 +429,33 @@ fun ChildProtectedStatusScreen(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = false
                 ),
-                title = { Text("Ingresar PIN de Administrador") },
+                title = { Text("Ingresar PIN de Administrador", fontWeight = FontWeight.Bold) },
                 text = {
-                    Column {
-                        OutlinedTextField(
-                            value = pinText,
-                            onValueChange = {
-                                if (it.length <= 6) {
-                                    pinText = it
-                                    pinError = false
-                                }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Introduce tu PIN maestro para ingresar al panel de control parental:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        com.parental.control.ui.components.PinNumericKeypad(
+                            pin = pinText,
+                            onPinChange = {
+                                pinText = it
+                                pinError = false
                             },
-                            label = { Text("PIN Maestro") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                            maxLength = 6,
                             isError = pinError,
-                            supportingText = if (pinError) {
-                                { Text("PIN incorrecto", color = MaterialTheme.colorScheme.error) }
-                            } else null,
-                            modifier = Modifier.fillMaxWidth()
+                            errorMessage = if (pinError) "PIN incorrecto. Inténtalo de nuevo." else null
                         )
                     }
                 },
                 confirmButton = {
                     Button(
+                        enabled = pinText.length >= 4,
                         onClick = {
                             if (repository.verifyPin(pinText)) {
                                 showPinDialog = false
@@ -484,32 +487,33 @@ fun ChildProtectedStatusScreen(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = false
                 ),
-                title = { Text("Cancelar Pausa y Bloquear") },
+                title = { Text("Cancelar Pausa y Bloquear", fontWeight = FontWeight.Bold) },
                 text = {
-                    Column {
-                        Text("Ingresa el PIN Maestro para reactivar el bloqueo inmediato:")
-                        Spacer(modifier = Modifier.height(10.dp))
-                        OutlinedTextField(
-                            value = revokePinText,
-                            onValueChange = {
-                                if (it.length <= 6) {
-                                    revokePinText = it
-                                    revokePinError = false
-                                }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Ingresa el PIN Maestro para reactivar el bloqueo inmediato:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        com.parental.control.ui.components.PinNumericKeypad(
+                            pin = revokePinText,
+                            onPinChange = {
+                                revokePinText = it
+                                revokePinError = false
                             },
-                            label = { Text("PIN Maestro") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                            maxLength = 6,
                             isError = revokePinError,
-                            supportingText = if (revokePinError) {
-                                { Text("PIN incorrecto", color = MaterialTheme.colorScheme.error) }
-                            } else null,
-                            modifier = Modifier.fillMaxWidth()
+                            errorMessage = if (revokePinError) "PIN incorrecto. Inténtalo de nuevo." else null
                         )
                     }
                 },
                 confirmButton = {
                     Button(
+                        enabled = revokePinText.length >= 4,
                         onClick = {
                             if (repository.verifyPin(revokePinText)) {
                                 repository.clearTemporaryUnlock()

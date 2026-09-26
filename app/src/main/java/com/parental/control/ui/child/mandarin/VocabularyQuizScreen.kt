@@ -51,10 +51,15 @@ fun VocabularyQuizScreen(
         }
     }
 
-    // 2. Generar 15 preguntas ÚNICAS sin repetición
+    val repository = remember { com.parental.control.core.data.ParentalRepository.getInstance(context) }
+
+    // 2. Generar 45 preguntas ÚNICAS sin repetición integrando el mazo persistente de 83 palabras
     val questions = remember(allWords) {
         if (allWords.isNotEmpty()) {
-            VocabularyQuizEngine.generateQuiz(allWords, 15)
+            val seen = repository.getSeenVocabWordKeys()
+            val genResult = VocabularyQuizEngine.generateQuizWithPersistentDeck(allWords, seen, 45)
+            repository.saveSeenVocabWordKeys(genResult.updatedSeenKeys)
+            genResult.questions
         } else {
             emptyList()
         }
@@ -775,7 +780,7 @@ fun VocabQuizCelebrationDialog(
                     }
                 } else {
                     Text(
-                        text = "Se requieren al menos 9 de 15 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
+                        text = "Se requieren al menos 27 de 45 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
                         color = Color(0xFFCBD5E1),
                         fontSize = 13.sp,
                         textAlign = TextAlign.Center

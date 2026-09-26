@@ -216,8 +216,13 @@ def cmd_status(args):
             else:
                 mode_str = f"{BLUE}{BOLD} 🛡️  MODO PROTEGIDO ESTÁNDAR {RESET}"
 
+            local_hour = datetime.now().hour
+            is_bedtime = (local_hour >= 20 or local_hour < 8)
+            bedtime_status = f"{MAGENTA}{BOLD}🌙 EN VIGOR (BLOQUEO TOTAL 20:00 - 08:00){RESET}" if is_bedtime else f"{DIM}☀️ En reposo (Horario Diurno 08:00 - 20:00){RESET}"
+
             print(f"   {BOLD}Estado Modo:{RESET} {mode_str}")
             print(f"   {BOLD}Seguridad:{RESET}   Anti-Desinstalación: {GREEN}Activo{RESET} | Filtro Web: {GREEN}Activo{RESET}")
+            print(f"   {BOLD}Toque Nocturno:{RESET} {bedtime_status}")
 
     # Últimos logs de seguridad
     print(f"\n{BOLD}{CYAN}─── Últimos Intentos de Tampering / Evasión Interceptados ─────────────{RESET}")

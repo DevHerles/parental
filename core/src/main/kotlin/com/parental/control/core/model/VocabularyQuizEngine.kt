@@ -8,25 +8,81 @@ import kotlin.random.Random
  */
 object VocabularyQuizEngine {
 
-    const val QUIZ_QUESTIONS_COUNT = 15
-    const val PASSING_CORRECT_THRESHOLD = 9 // 60% de 15 preguntas
+    const val QUIZ_QUESTIONS_COUNT = 45
+    const val PASSING_CORRECT_THRESHOLD = 27 // 60% de 45 preguntas
 
     /**
-     * Genera un reto de 15 preguntas aleatorias y variadas a partir de la lista de 83 palabras oficiales.
+     * Selecciona palabras garantizando que NUNCA se repita ninguna hasta que TODAS las palabras
+     * del banco hayan sido evaluadas al menos una vez (Mazo Cíclico Persistente).
+     */
+    fun selectWordsWithPersistentDeck(
+        allWords: List<YctWord>,
+        seenKeys: Set<String>,
+        count: Int = QUIZ_QUESTIONS_COUNT
+    ): Pair<List<YctWord>, Set<String>> {
+        if (allWords.isEmpty()) return Pair(emptyList(), emptySet())
+
+        val targetCount = count.coerceAtMost(allWords.size)
+        val unseenWords = allWords.filter { it.chinese !in seenKeys }.shuffled()
+
+        return if (unseenWords.size >= targetCount) {
+            // Caso A: Hay suficientes palabras no vistas en el ciclo actual
+            val selected = unseenWords.take(targetCount)
+            val updatedKeys = seenKeys + selected.map { it.chinese }.toSet()
+            Pair(selected, updatedKeys)
+        } else {
+            // Caso B: Quedan menos palabras no vistas que las solicitadas.
+            // Se consumen todas las restantes para agotar el banco al 100% y se resetea el mazo.
+            val remainingUnseen = unseenWords
+            val neededFromNewCycle = targetCount - remainingUnseen.size
+            val candidatePoolForNewCycle = (allWords.filter { it !in remainingUnseen }).shuffled()
+            val pickedFromNewCycle = candidatePoolForNewCycle.take(neededFromNewCycle)
+
+            val selected = (remainingUnseen + pickedFromNewCycle).shuffled()
+            // El nuevo mazo arranca únicamente con las palabras tomadas del nuevo ciclo
+            val updatedKeys = pickedFromNewCycle.map { it.chinese }.toSet()
+            Pair(selected, updatedKeys)
+        }
+    }
+
+    /**
+     * Genera un reto de 45 preguntas variadas a partir de la lista de palabras, integrando el mazo persistente.
+     */
+    fun generateQuizWithPersistentDeck(
+        allWords: List<YctWord>,
+        seenKeys: Set<String>,
+        count: Int = QUIZ_QUESTIONS_COUNT
+    ): VocabQuizGeneration {
+        val (selectedWords, updatedKeys) = selectWordsWithPersistentDeck(allWords, seenKeys, count)
+        val questions = buildQuestionsFromWords(selectedWords, allWords)
+        val cycleCompleted = allWords.count { it.chinese !in seenKeys } < count
+        return VocabQuizGeneration(
+            questions = questions,
+            updatedSeenKeys = updatedKeys,
+            cycleCompleted = cycleCompleted
+        )
+    }
+
+    /**
+     * Genera un reto aleatorio a partir de palabras muestreadas directamente.
      */
     fun generateQuiz(allWords: List<YctWord>, count: Int = QUIZ_QUESTIONS_COUNT): List<VocabQuizQuestion> {
         if (allWords.isEmpty()) return emptyList()
-
         val actualCount = count.coerceAtMost(allWords.size)
-        // 1. Muestreo de palabras ÚNICAS sin repetición
         val sampledWords = allWords.shuffled().take(actualCount)
+        return buildQuestionsFromWords(sampledWords, allWords)
+    }
 
-        // 2. Distribución equilibrada de modos de juego
+    private fun buildQuestionsFromWords(
+        targetWords: List<YctWord>,
+        allWords: List<YctWord>
+    ): List<VocabQuizQuestion> {
+        val count = targetWords.size
         val modes = mutableListOf<VocabQuizMode>()
-        val hanziCount = 4
-        val esCount = 4
-        val listeningCount = 4
-        val tfCount = actualCount - (hanziCount + esCount + listeningCount) // Típicamente 3
+        val hanziCount = (count * 12) / 45
+        val esCount = (count * 12) / 45
+        val listeningCount = (count * 11) / 45
+        val tfCount = count - (hanziCount + esCount + listeningCount)
 
         repeat(hanziCount) { modes.add(VocabQuizMode.HANZI_TO_ES) }
         repeat(esCount) { modes.add(VocabQuizMode.ES_TO_HANZI) }
@@ -34,11 +90,10 @@ object VocabularyQuizEngine {
         repeat(tfCount.coerceAtLeast(1)) { modes.add(VocabQuizMode.TRUE_FALSE) }
 
         val shuffledModes = modes.shuffled()
-
         val questions = mutableListOf<VocabQuizQuestion>()
 
-        for (i in 0 until actualCount) {
-            val word = sampledWords[i]
+        for (i in 0 until count) {
+            val word = targetWords[i]
             val mode = shuffledModes.getOrElse(i) { VocabQuizMode.HANZI_TO_ES }
             val otherWords = allWords.filter { it.chinese != word.chinese }
 
@@ -194,20 +249,24 @@ object VocabularyQuizEngine {
         val percentage = (correctCount.toDouble() / total.toDouble()) * 100.0
         val passed = correctCount >= PASSING_CORRECT_THRESHOLD
 
+        // Calificación de estrellas (0 a 5, requiere aprobar con >= 27 aciertos)
         val stars = when {
-            correctCount >= 15 -> 5
-            correctCount >= 13 -> 4
-            correctCount >= 11 -> 3
-            correctCount >= 9 -> 2
-            correctCount >= 6 -> 1
-            else -> 0
+            !passed -> 0
+            correctCount >= 42 -> 5
+            correctCount >= 36 -> 4
+            correctCount >= 30 -> 3
+            else -> 2
         }
 
+        // Recompensa proporcional hasta 15 minutos (mínimo 27 aciertos para ganar)
         val earnedMinutes = when {
-            correctCount >= 15 -> 5
-            correctCount >= 13 -> 4
-            correctCount >= 11 -> 3
-            correctCount >= 9 -> 2
+            correctCount >= 45 -> 15
+            correctCount >= 42 -> 14
+            correctCount >= 39 -> 13
+            correctCount >= 36 -> 12
+            correctCount >= 33 -> 11
+            correctCount >= 30 -> 10
+            correctCount >= 27 -> 9
             else -> 0
         }
 
