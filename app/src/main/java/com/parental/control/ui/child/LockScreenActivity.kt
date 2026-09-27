@@ -24,6 +24,10 @@ class LockScreenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         repository = ParentalRepository.getInstance(applicationContext)
 
+        if (intent.getBooleanExtra("EXTRA_RESET_COOLDOWN", false)) {
+            repository.resetChineseExamCooldown()
+        }
+
         val packageName = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE) ?: "Aplicación"
         val customReason = intent.getStringExtra(EXTRA_BLOCK_REASON)
         val friendlyName = customReason ?: DistractionConstants.getFriendlyAppName(packageName)

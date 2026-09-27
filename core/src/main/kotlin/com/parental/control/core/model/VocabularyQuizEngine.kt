@@ -8,8 +8,8 @@ import kotlin.random.Random
  */
 object VocabularyQuizEngine {
 
-    const val QUIZ_QUESTIONS_COUNT = 45
-    const val PASSING_CORRECT_THRESHOLD = 40 // Mínimo 40 de 45 aciertos (88.9%) para ganar tiempo recreativo
+    const val QUIZ_QUESTIONS_COUNT = 83
+    const val PASSING_CORRECT_THRESHOLD = 70 // Mínimo 70 de 83 aciertos (84.3%) para ganar tiempo recreativo
 
     /**
      * Selecciona palabras garantizando que NUNCA se repita ninguna hasta que TODAS las palabras
@@ -46,7 +46,7 @@ object VocabularyQuizEngine {
     }
 
     /**
-     * Genera un reto de 45 preguntas variadas a partir de la lista de palabras, integrando el mazo persistente.
+     * Genera un reto de 83 preguntas variadas a partir de la lista de palabras, integrando el mazo persistente.
      */
     fun generateQuizWithPersistentDeck(
         allWords: List<YctWord>,
@@ -79,9 +79,9 @@ object VocabularyQuizEngine {
     ): List<VocabQuizQuestion> {
         val count = targetWords.size
         val modes = mutableListOf<VocabQuizMode>()
-        val hanziCount = (count * 12) / 45
-        val esCount = (count * 12) / 45
-        val listeningCount = (count * 11) / 45
+        val hanziCount = if (count == 83) 22 else (count * 22) / 83
+        val esCount = if (count == 83) 22 else (count * 22) / 83
+        val listeningCount = if (count == 83) 21 else (count * 21) / 83
         val tfCount = count - (hanziCount + esCount + listeningCount)
 
         repeat(hanziCount) { modes.add(VocabQuizMode.HANZI_TO_ES) }
@@ -114,14 +114,16 @@ object VocabularyQuizEngine {
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
+        // Sin pistas visuales de emojis en las alternativas del examen (Rigor YCT/HSK)
         val choices = allOptions.mapIndexed { idx, opt ->
             VocabQuizChoice(
                 label = ('A' + idx).toString(),
                 primaryText = opt.spanish,
-                emoji = YctWord.getEmojiForWord(opt.chinese)
+                emoji = null
             )
         }
 
+        val mnemonicEmoji = YctWord.getEmojiForWord(word.chinese)
         return VocabQuizQuestion(
             id = "vocab_h2e_${word.chinese}_$index",
             index = index,
@@ -130,11 +132,11 @@ object VocabularyQuizEngine {
             promptText = "¿Qué significa esta palabra?",
             displayHanzi = word.chinese,
             displayPinyin = word.pinyin,
-            displayEmoji = YctWord.getEmojiForWord(word.chinese),
+            displayEmoji = "🀄",
             audioText = word.chinese,
             choices = choices,
             correctChoiceIndex = correctIndex,
-            explanation = "${word.chinese} (${word.pinyin}) significa: ${word.spanish}"
+            explanation = "$mnemonicEmoji ${word.chinese} (${word.pinyin}) significa: ${word.spanish}"
         )
     }
 
@@ -143,15 +145,17 @@ object VocabularyQuizEngine {
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
+        // Sin pistas visuales de emojis en las alternativas del examen (Rigor YCT/HSK)
         val choices = allOptions.mapIndexed { idx, opt ->
             VocabQuizChoice(
                 label = ('A' + idx).toString(),
                 primaryText = opt.chinese,
                 secondaryText = opt.pinyin,
-                emoji = YctWord.getEmojiForWord(opt.chinese)
+                emoji = null
             )
         }
 
+        val mnemonicEmoji = YctWord.getEmojiForWord(word.chinese)
         return VocabQuizQuestion(
             id = "vocab_e2h_${word.chinese}_$index",
             index = index,
@@ -160,11 +164,11 @@ object VocabularyQuizEngine {
             promptText = "¿Cómo se dice en chino?",
             displayHanzi = null,
             displayPinyin = null,
-            displayEmoji = YctWord.getEmojiForWord(word.chinese),
+            displayEmoji = "🇨🇳",
             audioText = word.chinese,
             choices = choices,
             correctChoiceIndex = correctIndex,
-            explanation = "${word.spanish} en chino se dice: ${word.chinese} (${word.pinyin})"
+            explanation = "$mnemonicEmoji ${word.spanish} en chino se dice: ${word.chinese} (${word.pinyin})"
         )
     }
 
@@ -173,14 +177,16 @@ object VocabularyQuizEngine {
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
+        // Sin pistas visuales de emojis en las alternativas del examen (Rigor YCT/HSK)
         val choices = allOptions.mapIndexed { idx, opt ->
             VocabQuizChoice(
                 label = ('A' + idx).toString(),
                 primaryText = opt.spanish,
-                emoji = YctWord.getEmojiForWord(opt.chinese)
+                emoji = null
             )
         }
 
+        val mnemonicEmoji = YctWord.getEmojiForWord(word.chinese)
         return VocabQuizQuestion(
             id = "vocab_list_${word.chinese}_$index",
             index = index,
@@ -193,7 +199,7 @@ object VocabularyQuizEngine {
             audioText = word.chinese,
             choices = choices,
             correctChoiceIndex = correctIndex,
-            explanation = "Escuchaste: ${word.chinese} (${word.pinyin}) = ${word.spanish}"
+            explanation = "$mnemonicEmoji Escuchaste: ${word.chinese} (${word.pinyin}) = ${word.spanish}"
         )
     }
 
@@ -202,15 +208,16 @@ object VocabularyQuizEngine {
         val shownPairWord = if (isTrue || others.isEmpty()) word else others.random()
 
         val choices = listOf(
-            VocabQuizChoice(label = "√", primaryText = "¡Es Correcto!", emoji = "✅"),
-            VocabQuizChoice(label = "×", primaryText = "¡Es Incorrecto!", emoji = "❌")
+            VocabQuizChoice(label = "V", primaryText = "Verdadero", emoji = null),
+            VocabQuizChoice(label = "F", primaryText = "Falso", emoji = null)
         )
         val correctIndex = if (isTrue) 0 else 1
 
+        val mnemonicEmoji = YctWord.getEmojiForWord(word.chinese)
         val explanation = if (isTrue) {
-            "¡Correcto! ${word.chinese} (${word.pinyin}) sí significa '${word.spanish}'."
+            "¡Correcto! $mnemonicEmoji ${word.chinese} (${word.pinyin}) sí significa '${word.spanish}'."
         } else {
-            "¡Exacto! Era incorrecto. ${word.chinese} (${word.pinyin}) significa '${word.spanish}', no '${shownPairWord.spanish}'."
+            "¡Exacto! Era falso. $mnemonicEmoji ${word.chinese} (${word.pinyin}) significa '${word.spanish}', no '${shownPairWord.spanish}'."
         }
 
         return VocabQuizQuestion(
@@ -221,7 +228,7 @@ object VocabularyQuizEngine {
             promptText = "¿Es correcta esta traducción?",
             displayHanzi = "${word.chinese} = ${shownPairWord.spanish}",
             displayPinyin = word.pinyin,
-            displayEmoji = YctWord.getEmojiForWord(word.chinese),
+            displayEmoji = "⚡",
             audioText = word.chinese,
             choices = choices,
             correctChoiceIndex = correctIndex,
@@ -249,20 +256,30 @@ object VocabularyQuizEngine {
         val percentage = (correctCount.toDouble() / total.toDouble()) * 100.0
         val passed = correctCount >= PASSING_CORRECT_THRESHOLD
 
-        // Calificación de estrellas (0 a 5, requiere aprobar con >= 40 aciertos)
+        // Calificación de estrellas (0 a 5, requiere aprobar con >= 70 aciertos)
         val stars = when {
             !passed -> 0
-            correctCount >= 44 -> 5
-            correctCount >= 42 -> 4
+            correctCount >= 81 -> 5
+            correctCount >= 76 -> 4
             else -> 3
         }
 
-        // Recompensa de 5 a 15 minutos (mínimo 40 aciertos para ganar)
-        // 40 -> 5 min, 41 -> 7 min, 42 -> 9 min, 43 -> 11 min, 44 -> 13 min, 45 -> 15 min
-        val earnedMinutes = if (passed) {
-            5 + ((correctCount - PASSING_CORRECT_THRESHOLD) * 2).coerceAtMost(10)
-        } else {
-            0
+        // Recompensa de 5 a 15 minutos en 6 tramos sabios (mínimo 70 aciertos para ganar)
+        // 83 -> 15 min (100% perfecto)
+        // 81 - 82 -> 13 min
+        // 79 - 80 -> 11 min
+        // 76 - 78 -> 9 min
+        // 73 - 75 -> 7 min
+        // 70 - 72 -> 5 min
+        // < 70 -> 0 min (reintento libre)
+        val earnedMinutes = when {
+            correctCount >= 83 -> 15
+            correctCount >= 81 -> 13
+            correctCount >= 79 -> 11
+            correctCount >= 76 -> 9
+            correctCount >= 73 -> 7
+            correctCount >= 70 -> 5
+            else -> 0
         }
 
         return VocabQuizResult(
@@ -276,3 +293,4 @@ object VocabularyQuizEngine {
         )
     }
 }
+

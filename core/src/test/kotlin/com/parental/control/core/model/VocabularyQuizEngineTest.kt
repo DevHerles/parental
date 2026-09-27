@@ -28,152 +28,135 @@ class VocabularyQuizEngineTest {
     }
 
     @Test
-    fun testGenerateQuizGenerates45UniqueQuestions() {
-        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 45)
+    fun testGenerateQuizGenerates83UniqueQuestions() {
+        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 83)
 
-        assertEquals(45, questions.size)
+        assertEquals(83, questions.size)
 
-        // Verificar que las 45 palabras objetivo sean únicas (sin repetición interna)
+        // Verificar que las 83 palabras objetivo sean únicas (cubre el 100% del currículo YCT 1)
         val targetChineseWords = questions.map { it.targetWord.chinese }
         val uniqueWords = targetChineseWords.toSet()
-        assertEquals("Todas las 45 palabras deben ser únicas sin duplicados en el quiz", 45, uniqueWords.size)
+        assertEquals("Todas las 83 palabras deben ser evaluadas sin omisiones ni duplicados", 83, uniqueWords.size)
 
-        // Verificar índices
+        // Verificar opciones e índices sin pistas de emojis en las alternativas del quiz
         questions.forEachIndexed { index, q ->
             assertEquals(index, q.index)
             assertTrue("Debe tener al menos 2 opciones", q.choices.size >= 2)
             assertTrue("Índice correcto debe estar dentro de rango", q.correctChoiceIndex in q.choices.indices)
+            q.choices.forEach { choice ->
+                assertNull("Las alternativas del test no deben incluir pistas de emojis", choice.emoji)
+            }
         }
     }
 
     @Test
-    fun testPersistentDeckNeverRepeatsUntilAllWordsShown() {
+    fun testPersistentDeckWith83Words() {
         // Ronda 1: Inicio con mazo limpio (0 vistas)
-        var seenKeys = emptySet<String>()
-        val gen1 = VocabularyQuizEngine.generateQuizWithPersistentDeck(fullBank, seenKeys, 45)
-        assertEquals(45, gen1.questions.size)
-        assertEquals(45, gen1.updatedSeenKeys.size)
-        assertFalse("El ciclo no ha terminado en la primera ronda", gen1.cycleCompleted)
+        val seenKeys = emptySet<String>()
+        val gen1 = VocabularyQuizEngine.generateQuizWithPersistentDeck(fullBank, seenKeys, 83)
+        assertEquals(83, gen1.questions.size)
+        assertEquals(83, gen1.updatedSeenKeys.size)
 
         val wordsRound1 = gen1.questions.map { it.targetWord.chinese }.toSet()
-        assertEquals(45, wordsRound1.size)
+        assertEquals(83, wordsRound1.size)
+        assertEquals("La ronda 1 debe cubrir el 100% del banco de 83 palabras", 83, wordsRound1.intersect(fullBank.map { it.chinese }.toSet()).size)
 
-        // Ronda 2: Continuar con las 45 vistas de la Ronda 1
-        seenKeys = gen1.updatedSeenKeys
-        val gen2 = VocabularyQuizEngine.generateQuizWithPersistentDeck(fullBank, seenKeys, 45)
-        assertEquals(45, gen2.questions.size)
-        assertTrue("El ciclo de 83 palabras debió completarse en la ronda 2", gen2.cycleCompleted)
-
-        val wordsRound2 = gen2.questions.map { it.targetWord.chinese }.toSet()
-        assertEquals(45, wordsRound2.size)
-
-        // Las 38 palabras que no se mostraron en la Ronda 1 DEBEN estar presentes en la Ronda 2
-        val unseenAfterRound1 = fullBank.map { it.chinese }.filter { it !in wordsRound1 }
-        assertEquals("Debieron quedar exactamente 38 palabras no vistas", 38, unseenAfterRound1.size)
-        assertTrue(
-            "Todas las 38 palabras no vistas deben haber sido mostradas en la Ronda 2",
-            wordsRound2.containsAll(unseenAfterRound1)
-        )
-
-        // La unión de Ronda 1 + las 38 de la Ronda 2 cubre el 100% de las 83 palabras del banco
-        val allShownInFirstCycle = wordsRound1 + unseenAfterRound1
-        assertEquals("El 100% de las 83 palabras fueron mostradas sin omisión", 83, allShownInFirstCycle.size)
-
-        // En la Ronda 2, las palabras repetidas son exactamente 7 (45 - 38)
-        val repeatedInRound2 = wordsRound2.intersect(wordsRound1)
-        assertEquals("Solo 7 palabras del nuevo mazo rebarajado deben repetirse en la Ronda 2", 7, repeatedInRound2.size)
-
-        // Las nuevas seenKeys deben contener exactamente las 7 palabras del nuevo ciclo
-        assertEquals(7, gen2.updatedSeenKeys.size)
+        // Ronda 2: Continuar con las 83 vistas de la Ronda 1
+        val gen2 = VocabularyQuizEngine.generateQuizWithPersistentDeck(fullBank, gen1.updatedSeenKeys, 83)
+        assertEquals(83, gen2.questions.size)
+        assertTrue("El ciclo de 83 palabras debió completarse", gen2.cycleCompleted)
+        assertEquals(83, gen2.updatedSeenKeys.size)
     }
 
     @Test
     fun testModesAreDistributedEquitably() {
-        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 45)
+        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 83)
         val modes = questions.groupBy { it.mode }
 
         assertTrue("Debe incluir los 4 modos de juego", modes.size == 4)
-        assertEquals(12, modes[VocabQuizMode.HANZI_TO_ES]?.size)
-        assertEquals(12, modes[VocabQuizMode.ES_TO_HANZI]?.size)
-        assertEquals(11, modes[VocabQuizMode.LISTENING]?.size)
-        assertEquals(10, modes[VocabQuizMode.TRUE_FALSE]?.size)
+        assertEquals(22, modes[VocabQuizMode.HANZI_TO_ES]?.size)
+        assertEquals(22, modes[VocabQuizMode.ES_TO_HANZI]?.size)
+        assertEquals(21, modes[VocabQuizMode.LISTENING]?.size)
+        assertEquals(18, modes[VocabQuizMode.TRUE_FALSE]?.size)
     }
 
     @Test
     fun testEvaluationGradingScaleUpTo15Minutes() {
-        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 45)
-
-        // 45/45 -> 5 estrellas, 15 min, aprobado
+        val questions = VocabularyQuizEngine.generateQuiz(fullBank, 83)
         val perfectAnswers = questions.indices.associateWith { questions[it].correctChoiceIndex }
-        val perfectResult = VocabularyQuizEngine.evaluateQuiz(questions, perfectAnswers, 300)
-        assertEquals(45, perfectResult.correctCount)
+
+        // 83/83 -> 5 estrellas, 15 min, aprobado (100% Flawless)
+        val perfectResult = VocabularyQuizEngine.evaluateQuiz(questions, perfectAnswers, 500)
+        assertEquals(83, perfectResult.correctCount)
         assertEquals(5, perfectResult.stars)
         assertEquals(15, perfectResult.earnedMinutes)
         assertTrue(perfectResult.passed)
 
-        // 44/45 -> 5 estrellas, 13 min, aprobado
-        val answer44 = perfectAnswers.toMutableMap()
-        answer44[0] = (questions[0].correctChoiceIndex + 1) % questions[0].choices.size
-        val result44 = VocabularyQuizEngine.evaluateQuiz(questions, answer44, 290)
-        assertEquals(44, result44.correctCount)
-        assertEquals(5, result44.stars)
-        assertEquals(13, result44.earnedMinutes)
-        assertTrue(result44.passed)
-
-        // 43/45 -> 4 estrellas, 11 min, aprobado
-        val answer43 = perfectAnswers.toMutableMap()
+        // 81/83 -> 5 estrellas, 13 min, aprobado
+        val answer81 = perfectAnswers.toMutableMap()
         for (i in 0 until 2) {
-            answer43[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+            answer81[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result43 = VocabularyQuizEngine.evaluateQuiz(questions, answer43, 285)
-        assertEquals(43, result43.correctCount)
-        assertEquals(4, result43.stars)
-        assertEquals(11, result43.earnedMinutes)
-        assertTrue(result43.passed)
+        val result81 = VocabularyQuizEngine.evaluateQuiz(questions, answer81, 480)
+        assertEquals(81, result81.correctCount)
+        assertEquals(5, result81.stars)
+        assertEquals(13, result81.earnedMinutes)
+        assertTrue(result81.passed)
 
-        // 42/45 -> 4 estrellas, 9 min, aprobado
-        val answer42 = perfectAnswers.toMutableMap()
-        for (i in 0 until 3) {
-            answer42[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
-        }
-        val result42 = VocabularyQuizEngine.evaluateQuiz(questions, answer42, 280)
-        assertEquals(42, result42.correctCount)
-        assertEquals(4, result42.stars)
-        assertEquals(9, result42.earnedMinutes)
-        assertTrue(result42.passed)
-
-        // 41/45 -> 3 estrellas, 7 min, aprobado
-        val answer41 = perfectAnswers.toMutableMap()
+        // 79/83 -> 4 estrellas, 11 min, aprobado
+        val answer79 = perfectAnswers.toMutableMap()
         for (i in 0 until 4) {
-            answer41[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+            answer79[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result41 = VocabularyQuizEngine.evaluateQuiz(questions, answer41, 260)
-        assertEquals(41, result41.correctCount)
-        assertEquals(3, result41.stars)
-        assertEquals(7, result41.earnedMinutes)
-        assertTrue(result41.passed)
+        val result79 = VocabularyQuizEngine.evaluateQuiz(questions, answer79, 450)
+        assertEquals(79, result79.correctCount)
+        assertEquals(4, result79.stars)
+        assertEquals(11, result79.earnedMinutes)
+        assertTrue(result79.passed)
 
-        // 40/45 -> 3 estrellas, 5 min, aprobado mínimo (umbral de exigencia 88.9%)
-        val answer40 = perfectAnswers.toMutableMap()
-        for (i in 0 until 5) {
-            answer40[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 76/83 -> 4 estrellas, 9 min, aprobado
+        val answer76 = perfectAnswers.toMutableMap()
+        for (i in 0 until 7) {
+            answer76[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result40 = VocabularyQuizEngine.evaluateQuiz(questions, answer40, 250)
-        assertEquals(40, result40.correctCount)
-        assertEquals(3, result40.stars)
-        assertEquals(5, result40.earnedMinutes)
-        assertTrue(result40.passed)
+        val result76 = VocabularyQuizEngine.evaluateQuiz(questions, answer76, 420)
+        assertEquals(76, result76.correctCount)
+        assertEquals(4, result76.stars)
+        assertEquals(9, result76.earnedMinutes)
+        assertTrue(result76.passed)
 
-        // 39/45 -> 0 estrellas, 0 min, NO aprobado (< 40 aciertos)
-        val answer39 = perfectAnswers.toMutableMap()
-        for (i in 0 until 6) {
-            answer39[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 73/83 -> 3 estrellas, 7 min, aprobado
+        val answer73 = perfectAnswers.toMutableMap()
+        for (i in 0 until 10) {
+            answer73[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result39 = VocabularyQuizEngine.evaluateQuiz(questions, answer39, 200)
-        assertEquals(39, result39.correctCount)
-        assertEquals(0, result39.stars)
-        assertEquals(0, result39.earnedMinutes)
-        assertFalse(result39.passed)
+        val result73 = VocabularyQuizEngine.evaluateQuiz(questions, answer73, 400)
+        assertEquals(73, result73.correctCount)
+        assertEquals(3, result73.stars)
+        assertEquals(7, result73.earnedMinutes)
+        assertTrue(result73.passed)
+
+        // 70/83 -> 3 estrellas, 5 min, aprobado mínimo (umbral de exigencia 84.3%)
+        val answer70 = perfectAnswers.toMutableMap()
+        for (i in 0 until 13) {
+            answer70[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        }
+        val result70 = VocabularyQuizEngine.evaluateQuiz(questions, answer70, 380)
+        assertEquals(70, result70.correctCount)
+        assertEquals(3, result70.stars)
+        assertEquals(5, result70.earnedMinutes)
+        assertTrue(result70.passed)
+
+        // 69/83 -> 0 estrellas, 0 min, NO aprobado (< 70 aciertos)
+        val answer69 = perfectAnswers.toMutableMap()
+        for (i in 0 until 14) {
+            answer69[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        }
+        val result69 = VocabularyQuizEngine.evaluateQuiz(questions, answer69, 350)
+        assertEquals(69, result69.correctCount)
+        assertEquals(0, result69.stars)
+        assertEquals(0, result69.earnedMinutes)
+        assertFalse(result69.passed)
     }
 
     @Test

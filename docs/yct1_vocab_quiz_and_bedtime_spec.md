@@ -1,21 +1,23 @@
-# Aegis Parental Control ── Especificación Técnica: Reto de Vocabulario YCT 1 (45 Preguntas Exigente), Toque de Queda Nocturno (21h - 09h) y Exención de Spotify
+# Aegis Parental Control ── Especificación Técnica: Reto de Vocabulario YCT 1 Total (83 Preguntas), Escala Sabia de 15 Minutos, Toque de Queda (21h - 09h) y Exención de Spotify
 
 ## 1. Contexto y Objetivos
 
 Para fortalecer la pedagogía infantil y blindar los hábitos de sueño y descanso de la menor, Aegis actualiza dos subsistemas esenciales:
-1. **Reto Lúdico de Vocabulario YCT 1 de Alta Complejidad y Máxima Exigencia**:
-   - Pasa de 15 a **45 preguntas aleatorias y variadas**.
-   - **Garantía Cíclica de Cero Repetición**: Ninguna palabra de vocabulario puede volver a presentarse como objetivo en exámenes posteriores hasta que **TODAS las 83 palabras del vocabulario oficial de YCT 1 hayan sido evaluadas**.
-   - **Alto Umbral de Aprobación**: Dado que la menor domina el idioma chino mandarín, el umbral mínimo para obtener cualquier premio se eleva a **40 aciertos correctos de 45** (88.9%). Menos de 40 aciertos otorga 0 minutos.
-   - **Escala de Recompensa (5 a 15 Minutos)**:
-     - 40 aciertos: **5 minutos** (3 ⭐)
-     - 41 aciertos: **7 minutos** (3 ⭐)
-     - 42 aciertos: **9 minutos** (4 ⭐)
-     - 43 aciertos: **11 minutos** (4 ⭐)
-     - 44 aciertos: **13 minutos** (5 ⭐)
-     - 45 aciertos (perfecto 45/45): **15 minutos** (5 ⭐)
-   - **Cooldown de 2 Horas**: Tras aprobar con >= 40 aciertos y reclamar la recompensa, el reto entra en enfriamiento por 120 minutos (2 horas) sin posibilidad de acumular más tiempo recreativo.
-   - **Reintentos Libres si Reprueba**: Si no alcanza el umbral de aprobación (< 40 aciertos), recibe 0 minutos y no se activa cooldown para que pueda seguir practicando sin frustración.
+1. **Reto Lúdico de Vocabulario YCT 1 Integral (83 Preguntas - Currículo Completo)**:
+   - Evalúa **la totalidad de las 83 palabras del vocabulario oficial de YCT Nivel 1** en cada sesión.
+   - **Cero Omisiones**: Todas y cada una de las 83 palabras del banco curricular son evaluadas en cada intento, sin dejar palabras por fuera.
+   - **Rigor Académico Real (Cero Pistas de Emojis en el Reto)**: Las alternativas `A`, `B`, `C`, `D` y las preguntas no muestran emojis asociados al significado para evitar atajos de emparejamiento visual y preparar a la menor con rigor para los exámenes oficiales YCT y HSK.
+   - **Modo Aprendizaje con Emojis**: La sección de estudio ("Flashcards Oficiales YCT 1") mantiene y potencia al 100% los emojis mnemotécnicos (🍎, 🐱, 🐶, etc.) para facilitar la adquisición y memorización de vocabulario nuevo.
+   - **Umbral Sabio de Aprobación (70 Aciertos = 84.3%)**: Se requiere dominar más de 5 de cada 6 palabras para obtener minutos recreativos. Con menos de 70 aciertos se otorgan 0 minutos con reintento libre e inmediato.
+   - **Escala Sabia y Progresiva de 15 Minutos (6 Tramos)**:
+     - 70 - 72 aciertos (84.3% - 86.7%): **5 minutos** (3 ⭐)
+     - 73 - 75 aciertos (88.0% - 90.4%): **7 minutos** (3 ⭐)
+     - 76 - 78 aciertos (91.6% - 94.0%): **9 minutos** (4 ⭐)
+     - 79 - 80 aciertos (95.2% - 96.4%): **11 minutos** (4 ⭐)
+     - 81 - 82 aciertos (97.6% - 98.8%): **13 minutos** (5 ⭐)
+     - 83 / 83 aciertos (100% Perfecto): **15 minutos** (5 ⭐)
+   - **Cooldown de 2 Horas**: Tras aprobar con >= 70 aciertos y reclamar la recompensa, el reto entra en enfriamiento por 120 minutos (2 horas) sin posibilidad de acumular más tiempo recreativo.
+   - **Ergonomía Horizontal en Dos Columnas (Zero Scroll)**: Diseñado para la orientación apaisada de la tablet Lenovo (1920x1200), con columna izquierda para la pregunta/feedback y columna derecha para las 4 alternativas, visible al 100% sin scroll vertical.
 2. **Bloqueo Nocturno Total por Defecto (21:00 a 09:00 del día siguiente)**:
    - Bloqueo incondicional activo de lunes a domingo entre las **21:00 horas (9:00 PM)** y las **09:00 horas (9:00 AM)** del día siguiente.
    - Ninguna aplicación no esencial puede ser utilizada durante ese intervalo.
@@ -27,46 +29,44 @@ Para fortalecer la pedagogía infantil y blindar los hábitos de sueño y descan
 
 ---
 
-## 2. Reto de Vocabulario YCT 1 (45 Preguntas)
+## 2. Reto de Vocabulario YCT 1 Total (83 Preguntas)
 
-### 2.1 Banco Oficial y Mazo Cíclico Persistente
+### 2.1 Banco Oficial Completo (100% del Currículo)
 - **Fuente**: Las 83 palabras oficiales de YCT Nivel 1 (`app/src/main/assets/yct1_vocabulary.json`).
-- **Problema de Repetición**: Con 45 preguntas por reto, un solo quiz consume más del 54% del banco (45/83).
-- **Algoritmo de Mazo Cíclico Persistente (*Persistent Bag / Deal Without Replacement*)**:
-  1. El sistema mantiene en `SharedPreferences` un conjunto de palabras vistas en el ciclo actual: `KEY_SEEN_VOCAB_WORDS`.
-  2. Al iniciar un nuevo reto de 45 preguntas:
-     - Se calculan las palabras no vistas: `unseenWords = allWords.filter { it.chinese !in seenWords }`.
-     - **Caso A (`unseenWords.size >= 45`)**: Se toman 45 palabras al azar de `unseenWords`. Las 45 se añaden a `seenWords` persistente.
-     - **Caso B (`unseenWords.size < 45`)**: Se toman todas las palabras restantes de `unseenWords` (ej. 38 palabras). En ese momento, **el 100% de las 83 palabras ha sido mostrado**. Se resetea el mazo y el saldo faltante (`45 - unseenWords.size`, ej. 7 palabras) se toma del mazo recién rebarajado. El nuevo conjunto de `seenWords` pasa a contener únicamente esas 7 palabras del nuevo ciclo.
-  3. **Garantía Matemática**: Ninguna palabra vuelve a aparecer hasta que las 83 palabras del currículo han sido mostradas. Dentro de cada sesión de 45 preguntas, todas son 100% únicas.
+- **Cobertura Absoluta**: Cada reto toma las 83 palabras en orden aleatorio rebarajado. Cada palabra del currículo se presenta exactamente una vez como palabra objetivo.
 
-### 2.2 Modos de Juego Gamificados (45 Preguntas)
+### 2.2 Modos de Juego Gamificados (83 Preguntas)
 La distribución pedagógica por sesión es:
-- **🔤 Carácter a Español (12 preguntas)**: Hanzi + Pinyin -> Significado en español entre 4 opciones con distractores de nivel YCT 1.
-- **🇨🇳 Español a Chino (12 preguntas)**: Significado en español -> Selección de Hanzi + Pinyin entre 4 opciones.
-- **🎧 Escucha y Adivina (11 preguntas)**: Hanzi oculto para agudizar el oído, reproducción automática TTS (2x) en chino mandarín simplificado y botón táctil opcional para revelar pista de Pinyin.
-- **⚡ Verdadero o Falso (10 preguntas)**: Desafío de agilidad mental con botones grandes táctiles (*"✅ ¡Es Correcto!"* y *"❌ ¡Es Incorrecto!"*).
+- **🔤 Carácter a Español (22 preguntas)**: Hanzi + Pinyin -> Significado en español entre 4 opciones con distractores del nivel YCT 1.
+- **🇨🇳 Español a Chino (22 preguntas)**: Significado en español -> Selección de Hanzi + Pinyin entre 4 opciones.
+- **🎧 Escucha y Adivina (21 preguntas)**: Hanzi oculto para agudizar el oído, reproducción automática TTS (2x) en chino mandarín simplificado y botón táctil opcional para revelar pista de Pinyin.
+- **⚡ Verdadero o Falso (18 preguntas)**: Desafío de agilidad mental con botones grandes táctiles (*"Verdadero"* y *"Falso"*).
+- **Total**: $22 + 22 + 21 + 18 = \mathbf{83}$ preguntas.
 
-### 2.3 Escala Exigente de Calificación y Recompensas
-- Total de preguntas: **45**.
-- Umbral de aprobación educativo: **40 aciertos (88.9%)**.
+### 2.3 Escala Sabia de Calificación y Recompensas
+- Total de preguntas: **83**.
+- Umbral de aprobación educativo: **70 aciertos (84.3%)**.
 - Tabla de Concesión de Tiempo Recreativo:
   | Aciertos Correctos | Porcentaje | Estrellas | Minutos Extras Concedidos | Cooldown Activado |
   | :---: | :---: | :---: | :---: | :---: |
-  | **45 / 45** | 100% | ⭐⭐⭐⭐⭐ (5 ⭐) | **15 minutos** | 2 horas (120 min) |
-  | **44 / 45** | 97.8% | ⭐⭐⭐⭐⭐ (5 ⭐) | **13 minutos** | 2 horas (120 min) |
-  | **43 / 45** | 95.6% | ⭐⭐⭐⭐ (4 ⭐) | **11 minutos** | 2 horas (120 min) |
-  | **42 / 45** | 93.3% | ⭐⭐⭐⭐ (4 ⭐) | **9 minutos** | 2 horas (120 min) |
-  | **41 / 45** | 91.1% | ⭐⭐⭐ (3 ⭐) | **7 minutos** | 2 horas (120 min) |
-  | **40 / 45** | 88.9% | ⭐⭐⭐ (3 ⭐) | **5 minutos** | 2 horas (120 min) |
-  | **< 40** | < 88.9% | 0 ⭐ | **0 minutos** | **Ninguno** (Reintento libre) |
+  | **83 / 83** | 100% | ⭐⭐⭐⭐⭐ (5 ⭐) | **15 minutos** | 2 horas (120 min) |
+  | **81 - 82** | 97.6% - 98.8% | ⭐⭐⭐⭐⭐ (5 ⭐) | **13 minutos** | 2 horas (120 min) |
+  | **79 - 80** | 95.2% - 96.4% | ⭐⭐⭐⭐ (4 ⭐) | **11 minutos** | 2 horas (120 min) |
+  | **76 - 78** | 91.6% - 94.0% | ⭐⭐⭐⭐ (4 ⭐) | **9 minutos** | 2 horas (120 min) |
+  | **73 - 75** | 88.0% - 90.4% | ⭐⭐⭐ (3 ⭐) | **7 minutos** | 2 horas (120 min) |
+  | **70 - 72** | 84.3% - 86.7% | ⭐⭐⭐ (3 ⭐) | **5 minutos** | 2 horas (120 min) |
+  | **< 70** | < 84.3% | 0 ⭐ | **0 minutos** | **Ninguno** (Reintento libre) |
 
-- **Fórmula de cálculo**:
+- **Fórmula de cálculo en `VocabularyQuizEngine`**:
   ```kotlin
-  val earnedMinutes = if (correctCount >= 40) {
-      5 + ((correctCount - 40) * 2).coerceAtMost(10)
-  } else {
-      0
+  val earnedMinutes = when {
+      correctCount >= 83 -> 15
+      correctCount >= 81 -> 13
+      correctCount >= 79 -> 11
+      correctCount >= 76 -> 9
+      correctCount >= 73 -> 7
+      correctCount >= 70 -> 5
+      else -> 0
   }
   ```
 

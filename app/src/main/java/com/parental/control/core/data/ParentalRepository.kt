@@ -138,6 +138,10 @@ class ParentalRepository private constructor(private val context: Context) {
         }
     }
 
+    fun resetChineseExamCooldown() {
+        prefs.edit().putLong(KEY_CHINESE_EXAM_COOLDOWN, 0L).apply()
+    }
+
     fun canAttemptChineseExam(): Boolean {
         if (isBedtimeCurfewActive()) return false
         val remaining = getChineseExamCooldownRemainingMs()

@@ -48,15 +48,15 @@ data class VocabQuizGeneration(
 )
 
 /**
- * Resultado y evaluación del Quiz de Vocabulario de 45 preguntas.
+ * Resultado y evaluación del Quiz de Vocabulario Oficial YCT 1 (83 preguntas).
  */
 data class VocabQuizResult(
-    val totalQuestions: Int = 45,
+    val totalQuestions: Int = 83,
     val correctCount: Int,
     val scorePercentage: Double,
     val stars: Int,                 // 0 a 5 estrellas
     val earnedMinutes: Int,         // 0 a 15 minutos proporcionales
-    val passed: Boolean,            // >= 40 aciertos (88.9%)
+    val passed: Boolean,            // >= 70 aciertos (84.3%)
     val durationSeconds: Int,
     val completedAtMs: Long = System.currentTimeMillis()
 )

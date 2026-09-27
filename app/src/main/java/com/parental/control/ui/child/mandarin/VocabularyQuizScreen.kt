@@ -53,11 +53,11 @@ fun VocabularyQuizScreen(
 
     val repository = remember { com.parental.control.core.data.ParentalRepository.getInstance(context) }
 
-    // 2. Generar 45 preguntas ÚNICAS sin repetición integrando el mazo persistente de 83 palabras
+    // 2. Generar 83 preguntas ÚNICAS sin repetición integrando el mazo persistente de 83 palabras
     val questions = remember(allWords) {
         if (allWords.isNotEmpty()) {
             val seen = repository.getSeenVocabWordKeys()
-            val genResult = VocabularyQuizEngine.generateQuizWithPersistentDeck(allWords, seen, 45)
+            val genResult = VocabularyQuizEngine.generateQuizWithPersistentDeck(allWords, seen, 83)
             repository.saveSeenVocabWordKeys(genResult.updatedSeenKeys)
             genResult.questions
         } else {
@@ -216,139 +216,181 @@ fun VocabularyQuizScreen(
             )
 
             // ─────────────────────────────────────────────────────────────
-            // 2. CONTENIDO SCROLLABLE DE LA PREGUNTA
+            // 2. CONTENIDO EN DOS COLUMNAS (LANDSCAPE TABLET - CERO SCROLL)
             // ─────────────────────────────────────────────────────────────
-            Column(
+            Row(
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Prompt / Enunciado
-                Text(
-                    text = currentQ.promptText,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFE2E8F0),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
-
-                // TARJETA DE EXHIBICIÓN PRINCIPAL DE LA PALABRA
-                Card(
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                // COLUMNA IZQUIERDA (44%): Tarjeta de Pregunta y Banner Pedagógico
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp)
+                        .weight(0.44f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    // Prompt / Enunciado
+                    Text(
+                        text = currentQ.promptText,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFE2E8F0),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    // TARJETA DE EXHIBICIÓN PRINCIPAL DE LA PALABRA
+                    Card(
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        when (currentQ.mode) {
-                            VocabQuizMode.HANZI_TO_ES -> {
-                                Text(text = currentQ.displayEmoji, fontSize = 38.sp)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = currentQ.displayHanzi ?: "",
-                                    fontSize = 46.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                                Text(
-                                    text = currentQ.displayPinyin ?: "",
-                                    fontSize = 18.sp,
-                                    color = Color(0xFFFBBF24),
-                                    fontWeight = FontWeight.SemiBold
-                                )
-
-                                Spacer(modifier = Modifier.height(10.dp))
-                                SmallAudioButton(ttsHelper = ttsHelper, text = currentQ.audioText ?: "")
-                            }
-
-                            VocabQuizMode.ES_TO_HANZI -> {
-                                Text(text = currentQ.displayEmoji, fontSize = 42.sp)
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = currentQ.targetWord.spanish,
-                                    fontSize = 28.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
-                                )
-                                Text(
-                                    text = "YCT Nivel 1",
-                                    fontSize = 12.sp,
-                                    color = Color(0xFF94A3B8)
-                                )
-                            }
-
-                            VocabQuizMode.LISTENING -> {
-                                Text(text = "🎧", fontSize = 44.sp)
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                Button(
-                                    onClick = {
-                                        ttsHelper.speakTwice(currentQ.audioText ?: "")
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
-                                    shape = RoundedCornerShape(20.dp),
-                                    modifier = Modifier.height(50.dp)
-                                ) {
-                                    Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = null)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("🔊 Escuchar de nuevo (2x)", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            when (currentQ.mode) {
+                                VocabQuizMode.HANZI_TO_ES -> {
+                                    Text(
+                                        text = currentQ.displayHanzi ?: "",
+                                        fontSize = 46.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = currentQ.displayPinyin ?: "",
+                                        fontSize = 18.sp,
+                                        color = Color(0xFFFBBF24),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    SmallAudioButton(ttsHelper = ttsHelper, text = currentQ.audioText ?: "")
                                 }
 
-                                Spacer(modifier = Modifier.height(8.dp))
-                                TextButton(onClick = { showPinyinHint = !showPinyinHint }) {
+                                VocabQuizMode.ES_TO_HANZI -> {
+                                    Text(text = "🇨🇳", fontSize = 36.sp)
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     Text(
-                                        text = if (showPinyinHint) "Pista: ${currentQ.targetWord.pinyin}" else "💡 Ver pista de Pinyin",
-                                        color = Color(0xFF38BDF8),
-                                        fontSize = 13.sp
+                                        text = currentQ.targetWord.spanish,
+                                        fontSize = 26.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = "YCT Nivel 1",
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF94A3B8)
                                     )
                                 }
+
+                                VocabQuizMode.LISTENING -> {
+                                    Text(text = "🎧", fontSize = 38.sp)
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    Button(
+                                        onClick = {
+                                            ttsHelper.speakTwice(currentQ.audioText ?: "")
+                                        },
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
+                                        shape = RoundedCornerShape(20.dp),
+                                        modifier = Modifier.height(46.dp)
+                                    ) {
+                                        Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = null)
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("🔊 Escuchar de nuevo (2x)", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                    }
+
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    TextButton(onClick = { showPinyinHint = !showPinyinHint }) {
+                                        Text(
+                                            text = if (showPinyinHint) "Pista: ${currentQ.targetWord.pinyin}" else "💡 Ver pista de Pinyin",
+                                            color = Color(0xFF38BDF8),
+                                            fontSize = 13.sp
+                                        )
+                                    }
+                                }
+
+                                VocabQuizMode.TRUE_FALSE -> {
+                                    Text(
+                                        text = currentQ.displayHanzi ?: "",
+                                        fontSize = 26.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = currentQ.displayPinyin ?: "",
+                                        fontSize = 16.sp,
+                                        color = Color(0xFFFBBF24)
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    SmallAudioButton(ttsHelper = ttsHelper, text = currentQ.audioText ?: "")
+                                }
                             }
+                        }
+                    }
 
-                            VocabQuizMode.TRUE_FALSE -> {
-                                Text(text = currentQ.displayEmoji, fontSize = 38.sp)
-                                Spacer(modifier = Modifier.height(6.dp))
+                    // BANNER DE FEEDBACK INMEDIATO Y EXPLICACIÓN (Incluye emoji mnemotécnico pedagógico)
+                    AnimatedVisibility(visible = hasAnswered) {
+                        val isCorrect = selectedAnswer == currentQ.correctChoiceIndex
+                        Card(
+                            shape = RoundedCornerShape(14.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isCorrect) Color(0xFF064E3B) else Color(0xFF450A0A)
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
-                                    text = currentQ.displayHanzi ?: "",
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
+                                    text = if (isCorrect) "🌟" else "💡",
+                                    fontSize = 22.sp
                                 )
-                                Text(
-                                    text = currentQ.displayPinyin ?: "",
-                                    fontSize = 16.sp,
-                                    color = Color(0xFFFBBF24)
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-                                SmallAudioButton(ttsHelper = ttsHelper, text = currentQ.audioText ?: "")
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
+                                    Text(
+                                        text = if (isCorrect) "¡Excelente! Muy bien hecho." else "¡Casi! Sigue aprendiendo.",
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isCorrect) Color(0xFF6EE7B7) else Color(0xFFFCA5A5),
+                                        fontSize = 13.sp
+                                    )
+                                    Text(
+                                        text = currentQ.explanation,
+                                        color = Color(0xFFE2E8F0),
+                                        fontSize = 12.sp
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // ─────────────────────────────────────────────────────────
-                // OPCIONES DE RESPUESTA
-                // ─────────────────────────────────────────────────────────
-                if (currentQ.mode == VocabQuizMode.TRUE_FALSE) {
-                    // MODO VERDADERO O FALSO: 2 BOTONES GRANDES
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
+                // COLUMNA DERECHA (56%): Alternativas Ergonómicas (A, B, C, D o Verdadero / Falso)
+                Column(
+                    modifier = Modifier
+                        .weight(0.56f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (currentQ.mode == VocabQuizMode.TRUE_FALSE) {
+                        // MODO VERDADERO O FALSO: 2 BOTONES GRANDES VERTICALES
                         currentQ.choices.forEachIndexed { optIndex, choice ->
                             val isCorrectChoice = optIndex == currentQ.correctChoiceIndex
                             val isUserSelected = selectedAnswer == optIndex
@@ -375,168 +417,120 @@ fun VocabularyQuizScreen(
                                 shape = RoundedCornerShape(16.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .height(56.dp)
+                                    .fillMaxWidth()
+                                    .height(68.dp)
+                                    .padding(vertical = 6.dp)
                             ) {
-                                Text(text = choice.emoji ?: "", fontSize = 20.sp)
-                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = choice.primaryText,
+                                    text = if (choice.label == "V") "✅ Verdadero" else "❌ Falso",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
+                                    fontSize = 18.sp
                                 )
                             }
                         }
-                    }
-                } else {
-                    // MODO SELECCIÓN MÚLTIPLE (4 OPCIONES)
-                    currentQ.choices.forEachIndexed { optIndex, choice ->
-                        val isCorrectChoice = optIndex == currentQ.correctChoiceIndex
-                        val isUserSelected = selectedAnswer == optIndex
+                    } else {
+                        // MODO SELECCIÓN MÚLTIPLE (4 OPCIONES ERGONÓMICAS SIN EMOJIS DELATORES)
+                        currentQ.choices.forEachIndexed { optIndex, choice ->
+                            val isCorrectChoice = optIndex == currentQ.correctChoiceIndex
+                            val isUserSelected = selectedAnswer == optIndex
 
-                        val (cardBg, borderStroke) = when {
-                            !hasAnswered -> Color(0xFF1E293B) to null
-                            isCorrectChoice -> Color(0xFF065F46) to Color(0xFF34D399)
-                            isUserSelected -> Color(0xFF7F1D1D) to Color(0xFFF87171)
-                            else -> Color(0xFF1E293B).copy(alpha = 0.4f) to null
-                        }
+                            val (cardBg, borderStroke) = when {
+                                !hasAnswered -> Color(0xFF1E293B) to null
+                                isCorrectChoice -> Color(0xFF065F46) to Color(0xFF34D399)
+                                isUserSelected -> Color(0xFF7F1D1D) to Color(0xFFF87171)
+                                else -> Color(0xFF1E293B).copy(alpha = 0.4f) to null
+                            }
 
-                        Card(
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = cardBg),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 5.dp)
-                                .then(
-                                    if (borderStroke != null) Modifier.border(2.dp, borderStroke, RoundedCornerShape(16.dp))
-                                    else Modifier
-                                )
-                                .clickable(enabled = !hasAnswered) {
-                                    selectedAnswer = optIndex
-                                    hasAnswered = true
-                                    userAnswers[currentIndex] = optIndex
-                                    val qAudio = currentQ.audioText
-                                    if (choice.secondaryText != null) {
-                                        ttsHelper.speak(choice.primaryText)
-                                    } else if (qAudio != null) {
-                                        ttsHelper.speak(qAudio)
-                                    }
-                                }
-                        ) {
-                            Row(
+                            Card(
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = cardBg),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Letra A, B, C, D
-                                Surface(
-                                    shape = CircleShape,
-                                    color = when {
-                                        !hasAnswered -> Color(0xFF334155)
-                                        isCorrectChoice -> Color(0xFF10B981)
-                                        isUserSelected -> Color(0xFFEF4444)
-                                        else -> Color(0xFF334155)
-                                    },
-                                    modifier = Modifier.size(34.dp)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(
-                                            text = choice.label,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color.White,
-                                            fontSize = 14.sp
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.width(14.dp))
-
-                                // Texto principal y secundario
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        val cEmoji = choice.emoji
-                                        if (cEmoji != null) {
-                                            Text(text = cEmoji, fontSize = 20.sp)
-                                            Spacer(modifier = Modifier.width(8.dp))
+                                    .padding(vertical = 4.dp)
+                                    .then(
+                                        if (borderStroke != null) Modifier.border(2.dp, borderStroke, RoundedCornerShape(16.dp))
+                                        else Modifier
+                                    )
+                                    .clickable(enabled = !hasAnswered) {
+                                        selectedAnswer = optIndex
+                                        hasAnswered = true
+                                        userAnswers[currentIndex] = optIndex
+                                        val qAudio = currentQ.audioText
+                                        if (choice.secondaryText != null) {
+                                            ttsHelper.speak(choice.primaryText)
+                                        } else if (qAudio != null) {
+                                            ttsHelper.speak(qAudio)
                                         }
+                                    }
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    // Letra A, B, C, D
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = when {
+                                            !hasAnswered -> Color(0xFF334155)
+                                            isCorrectChoice -> Color(0xFF10B981)
+                                            isUserSelected -> Color(0xFFEF4444)
+                                            else -> Color(0xFF334155)
+                                        },
+                                        modifier = Modifier.size(34.dp)
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Text(
+                                                text = choice.label,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color.White,
+                                                fontSize = 14.sp
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.width(14.dp))
+
+                                    // Texto principal y secundario sin pistas de emojis
+                                    Column(modifier = Modifier.weight(1f)) {
                                         Text(
                                             text = choice.primaryText,
                                             fontWeight = FontWeight.SemiBold,
                                             fontSize = if (choice.secondaryText != null) 22.sp else 16.sp,
                                             color = Color.White
                                         )
+
+                                        val cSec = choice.secondaryText
+                                        if (cSec != null) {
+                                            Text(
+                                                text = cSec,
+                                                fontSize = 14.sp,
+                                                color = Color(0xFFFBBF24),
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        }
                                     }
 
-                                    val cSec = choice.secondaryText
-                                    if (cSec != null) {
-                                        Text(
-                                            text = cSec,
-                                            fontSize = 14.sp,
-                                            color = Color(0xFFFBBF24),
-                                            fontWeight = FontWeight.Medium
-                                        )
+                                    // Indicador de acierto / error
+                                    if (hasAnswered) {
+                                        if (isCorrectChoice) {
+                                            Icon(
+                                                Icons.Default.CheckCircle,
+                                                contentDescription = "Correcto",
+                                                tint = Color(0xFF34D399),
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        } else if (isUserSelected) {
+                                            Icon(
+                                                Icons.Default.Cancel,
+                                                contentDescription = "Incorrecto",
+                                                tint = Color(0xFFF87171),
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
                                     }
                                 }
-
-                                // Indicador de acierto / error
-                                if (hasAnswered) {
-                                    if (isCorrectChoice) {
-                                        Icon(
-                                            Icons.Default.CheckCircle,
-                                            contentDescription = "Correcto",
-                                            tint = Color(0xFF34D399),
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    } else if (isUserSelected) {
-                                        Icon(
-                                            Icons.Default.Cancel,
-                                            contentDescription = "Incorrecto",
-                                            tint = Color(0xFFF87171),
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // ─────────────────────────────────────────────────────────
-                // BANNER DE FEEDBACK INMEDIATO Y EXPLICACIÓN
-                // ─────────────────────────────────────────────────────────
-                AnimatedVisibility(visible = hasAnswered) {
-                    val isCorrect = selectedAnswer == currentQ.correctChoiceIndex
-                    Card(
-                        shape = RoundedCornerShape(14.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (isCorrect) Color(0xFF064E3B) else Color(0xFF450A0A)
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(14.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = if (isCorrect) "🌟" else "💡",
-                                fontSize = 24.sp
-                            )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column {
-                                Text(
-                                    text = if (isCorrect) "¡Excelente! Muy bien hecho." else "¡Casi! Sigue aprendiendo.",
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isCorrect) Color(0xFF6EE7B7) else Color(0xFFFCA5A5),
-                                    fontSize = 14.sp
-                                )
-                                Text(
-                                    text = currentQ.explanation,
-                                    color = Color(0xFFE2E8F0),
-                                    fontSize = 12.sp
-                                )
                             }
                         }
                     }
@@ -665,147 +659,160 @@ fun VocabQuizCelebrationDialog(
         Card(
             shape = RoundedCornerShape(26.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .widthIn(max = 840.dp)
+                .fillMaxWidth()
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .padding(24.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Icono central
-                val iconBg = if (result.passed) Color(0xFF059669) else Color(0xFFDC2626)
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .background(iconBg.copy(alpha = 0.2f), CircleShape),
-                    contentAlignment = Alignment.Center
+                // COLUMNA IZQUIERDA: Trofeo, Título y Estrellas
+                Column(
+                    modifier = Modifier.weight(0.42f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = if (result.passed) "🏆" else "💪",
-                        fontSize = 42.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                Text(
-                    text = if (result.passed) "¡RETO SUPERADO! 🎉" else "¡BUEN INTENTO! ✨",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-
-                Text(
-                    text = "Quiz Oficial de Vocabulario YCT Nivel 1",
-                    fontSize = 13.sp,
-                    color = Color(0xFF94A3B8),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Estrellas doradas
-                val starsText = "⭐ ".repeat(result.stars.coerceAtLeast(0)).trim()
-                if (starsText.isNotEmpty()) {
-                    Text(text = starsText, fontSize = 28.sp)
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-                // Desglose de resultados
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Aciertos correctos", color = Color(0xFF94A3B8), fontSize = 14.sp)
-                            Text("${result.correctCount} de ${result.totalQuestions}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Porcentaje de acierto", color = Color(0xFF94A3B8), fontSize = 14.sp)
-                            Text("${result.scorePercentage.toInt()}%", color = Color(0xFF38BDF8), fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Tiempo empleado", color = Color(0xFF94A3B8), fontSize = 14.sp)
-                            val mins = result.durationSeconds / 60
-                            val secs = result.durationSeconds % 60
-                            Text(String.format("%02d:%02d", mins, secs), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Recompensa obtenida
-                if (result.passed && result.earnedMinutes > 0) {
-                    Text(
-                        text = "¡Ganaste ${result.earnedMinutes} minutos extras de recreo!",
-                        color = Color(0xFF34D399),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = onClaimReward,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
-                        shape = RoundedCornerShape(16.dp),
+                    val iconBg = if (result.passed) Color(0xFF059669) else Color(0xFFDC2626)
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
+                            .size(76.dp)
+                            .background(iconBg.copy(alpha = 0.2f), CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.Celebration, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "¡Reclamar mis ${result.earnedMinutes} minutos! 🚀",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            text = if (result.passed) "🏆" else "💪",
+                            fontSize = 40.sp
                         )
                     }
-                } else {
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
-                        text = "Se requieren al menos 40 de 45 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
-                        color = Color(0xFFCBD5E1),
-                        fontSize = 13.sp,
+                        text = if (result.passed) "¡RETO SUPERADO! 🎉" else "¡BUEN INTENTO! ✨",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Vocabulario Oficial YCT 1 (83 preguntas)",
+                        fontSize = 12.sp,
+                        color = Color(0xFF94A3B8),
+                        modifier = Modifier.padding(top = 4.dp),
+                        textAlign = TextAlign.Center
+                    )
 
-                    Button(
-                        onClick = onNavigateToFlashcards,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7)),
-                        shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                    ) {
-                        Icon(Icons.Default.MenuBook, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Repasar Flashcards (83 palabras)")
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    val starsText = "⭐ ".repeat(result.stars.coerceAtLeast(0)).trim()
+                    if (starsText.isNotEmpty()) {
+                        Text(text = starsText, fontSize = 26.sp)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                // COLUMNA DERECHA: Desglose, Recompensa y Acciones
+                Column(
+                    modifier = Modifier.weight(0.58f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(14.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("Aciertos correctos", color = Color(0xFF94A3B8), fontSize = 13.sp)
+                                Text("${result.correctCount} de ${result.totalQuestions}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("Porcentaje de acierto", color = Color(0xFF94A3B8), fontSize = 13.sp)
+                                Text("${result.scorePercentage.toInt()}%", color = Color(0xFF38BDF8), fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("Tiempo empleado", color = Color(0xFF94A3B8), fontSize = 13.sp)
+                                val mins = result.durationSeconds / 60
+                                val secs = result.durationSeconds % 60
+                                Text(String.format("%02d:%02d", mins, secs), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+                            }
+                        }
+                    }
 
-                TextButton(onClick = onClose) {
-                    Text("Volver a pantalla de bloqueo", color = Color(0xFF94A3B8))
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    if (result.passed && result.earnedMinutes > 0) {
+                        Text(
+                            text = "¡Ganaste ${result.earnedMinutes} minutos extras de recreo!",
+                            color = Color(0xFF34D399),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = onClaimReward,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                        ) {
+                            Icon(Icons.Default.Celebration, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "¡Reclamar mis ${result.earnedMinutes} minutos! 🚀",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = "Se requieren al menos 70 de 83 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
+                            color = Color(0xFFCBD5E1),
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = onNavigateToFlashcards,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7)),
+                            shape = RoundedCornerShape(14.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(46.dp)
+                        ) {
+                            Icon(Icons.Default.MenuBook, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Repasar Flashcards (83 palabras)", fontSize = 14.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextButton(onClick = onClose) {
+                        Text("Volver a pantalla de bloqueo", color = Color(0xFF94A3B8), fontSize = 12.sp)
+                    }
                 }
             }
         }

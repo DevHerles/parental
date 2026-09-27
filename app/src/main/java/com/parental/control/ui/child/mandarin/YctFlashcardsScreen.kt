@@ -140,112 +140,128 @@ fun YctFlashcardsScreen(
                 val safeIndex = currentIndex.coerceIn(0, filteredWords.size - 1)
                 val word = filteredWords[safeIndex]
 
-                // TARJETA DE FLASHCARD PRINCIPAL
+                // TARJETA DE FLASHCARD PRINCIPAL (OPTIMIZADA PARA TABLET EN DOS COLUMNAS)
                 Card(
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 6.dp)
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(24.dp)
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        // Emoji y categoría
-                        Text(
-                            text = word.emoji,
-                            fontSize = 44.sp
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Hanzi Gigante
-                        Text(
-                            text = word.chinese,
-                            fontSize = 56.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
-
-                        // Pinyin
-                        Text(
-                            text = word.pinyin,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFFFBBF24),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        // Significado en español
-                        Text(
-                            text = word.spanish,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF38BDF8),
-                            textAlign = TextAlign.Center
-                        )
-
-                        if (word.literalTranslation.isNotBlank()) {
-                            Text(
-                                text = word.literalTranslation,
-                                fontSize = 12.sp,
-                                color = Color(0xFF94A3B8),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(18.dp))
-
-                        // Botón de audio para escuchar pronunciación nativa
-                        Button(
-                            onClick = {
-                                ttsHelper.speakOnce(word.chinese)
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
-                            shape = CircleShape,
-                            modifier = Modifier.size(56.dp),
-                            contentPadding = PaddingValues(0.dp)
+                        // COLUMNA IZQUIERDA (45%): Emoji Mnemotécnico, Hanzi, Pinyin y Audio
+                        Column(
+                            modifier = Modifier
+                                .weight(0.45f)
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.VolumeUp,
-                                contentDescription = "Escuchar",
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
+                            // Emoji destacado para adquisición visual en modo aprendizaje
+                            Text(
+                                text = word.emoji,
+                                fontSize = 56.sp
                             )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            // Carácter Hanzi Gigante
+                            Text(
+                                text = word.chinese,
+                                fontSize = 52.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+
+                            // Pinyin fonético
+                            Text(
+                                text = word.pinyin,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFFFBBF24),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            // Botón de audio para pronunciación nativa
+                            Button(
+                                onClick = {
+                                    ttsHelper.speakOnce(word.chinese)
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
+                                shape = CircleShape,
+                                modifier = Modifier.size(54.dp),
+                                contentPadding = PaddingValues(0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.VolumeUp,
+                                    contentDescription = "Escuchar",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                         }
 
-                        Spacer(modifier = Modifier.height(18.dp))
+                        // COLUMNA DERECHA (55%): Significado en Español, Traducción Literal y Explicación
+                        Column(
+                            modifier = Modifier
+                                .weight(0.55f)
+                                .fillMaxHeight()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            // Significado en español
+                            Text(
+                                text = word.spanish,
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF38BDF8),
+                                textAlign = TextAlign.Center
+                            )
 
-                        // Tarjeta de explicación y ejemplos
-                        if (word.explanation.isNotBlank()) {
-                            Card(
-                                shape = RoundedCornerShape(14.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column(modifier = Modifier.padding(14.dp)) {
-                                    val cleanExp = word.explanation
-                                        .replace("<br>", "\n")
-                                        .replace("<strong>", "")
-                                        .replace("</strong>", "")
-                                        .replace("<em>", "")
-                                        .replace("</em>", "")
-                                    Text(
-                                        text = cleanExp,
-                                        fontSize = 12.sp,
-                                        color = Color(0xFFE2E8F0),
-                                        lineHeight = 18.sp
-                                    )
+                            if (word.literalTranslation.isNotBlank()) {
+                                Text(
+                                    text = word.literalTranslation,
+                                    fontSize = 13.sp,
+                                    color = Color(0xFF94A3B8),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            // Tarjeta de contexto pedagógico y ejemplos
+                            if (word.explanation.isNotBlank()) {
+                                Card(
+                                    shape = RoundedCornerShape(14.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(modifier = Modifier.padding(14.dp)) {
+                                        val cleanExp = word.explanation
+                                            .replace("<br>", "\n")
+                                            .replace("<strong>", "")
+                                            .replace("</strong>", "")
+                                            .replace("<em>", "")
+                                            .replace("</em>", "")
+                                        Text(
+                                            text = cleanExp,
+                                            fontSize = 13.sp,
+                                            color = Color(0xFFE2E8F0),
+                                            lineHeight = 19.sp
+                                        )
+                                    }
                                 }
                             }
                         }
