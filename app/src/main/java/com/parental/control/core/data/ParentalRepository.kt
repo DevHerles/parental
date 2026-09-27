@@ -253,9 +253,9 @@ class ParentalRepository private constructor(private val context: Context) {
                     Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
                     Calendar.SATURDAY
                 ),
-                startHour = 20,
+                startHour = 21,
                 startMinute = 0,
-                endHour = 8,
+                endHour = 9,
                 endMinute = 0,
                 isEnabled = isBedtimeEnabled // Activo por defecto de lunes a domingo
             )
@@ -298,6 +298,11 @@ class ParentalRepository private constructor(private val context: Context) {
     fun isPackageBlocked(packageName: String): Boolean {
         // Paquetes esenciales del sistema (teclados, llamadas de emergencia) NUNCA se bloquean
         if (com.parental.control.core.utils.PermissionHelper.isSystemEssentialPackage(context, packageName)) {
+            return false
+        }
+
+        // Spotify está totalmente exento de cualquier bloqueo o restricción (música / audiolibros permitidos)
+        if (DistractionConstants.isSpotifyPackage(packageName)) {
             return false
         }
 

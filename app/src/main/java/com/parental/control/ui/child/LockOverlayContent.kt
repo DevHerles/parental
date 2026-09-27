@@ -121,7 +121,7 @@ fun LockOverlayContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = if (isBedtime) "Horario nocturno de descanso (20:00 a 08:00)" else "$blockedAppName está en pausa por tus padres.",
+                text = if (isBedtime) "Horario nocturno de descanso (21:00 a 09:00)" else "$blockedAppName está en pausa por tus padres.",
                 style = MaterialTheme.typography.titleMedium,
                 color = Color(0xFF94A3B8),
                 textAlign = TextAlign.Center
@@ -176,7 +176,7 @@ fun LockOverlayContent(
                 ) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "🌙 Retos de minutos en pausa hasta las 08:00 AM",
+                            text = "🌙 Retos de minutos en pausa hasta las 09:00 AM",
                             color = Color(0xFF94A3B8),
                             fontWeight = FontWeight.Medium,
                             fontSize = 13.sp

@@ -780,7 +780,7 @@ fun VocabQuizCelebrationDialog(
                     }
                 } else {
                     Text(
-                        text = "Se requieren al menos 27 de 45 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
+                        text = "Se requieren al menos 40 de 45 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
                         color = Color(0xFFCBD5E1),
                         fontSize = 13.sp,
                         textAlign = TextAlign.Center

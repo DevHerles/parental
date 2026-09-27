@@ -1,19 +1,29 @@
-# Aegis Parental Control ── Especificación Técnica: Reto de Vocabulario YCT 1 (45 Preguntas) y Toque de Queda Nocturno (20h - 08h)
+# Aegis Parental Control ── Especificación Técnica: Reto de Vocabulario YCT 1 (45 Preguntas Exigente), Toque de Queda Nocturno (21h - 09h) y Exención de Spotify
 
 ## 1. Contexto y Objetivos
 
 Para fortalecer la pedagogía infantil y blindar los hábitos de sueño y descanso de la menor, Aegis actualiza dos subsistemas esenciales:
-1. **Reto Lúdico de Vocabulario YCT 1 de Alta Complejidad**:
+1. **Reto Lúdico de Vocabulario YCT 1 de Alta Complejidad y Máxima Exigencia**:
    - Pasa de 15 a **45 preguntas aleatorias y variadas**.
    - **Garantía Cíclica de Cero Repetición**: Ninguna palabra de vocabulario puede volver a presentarse como objetivo en exámenes posteriores hasta que **TODAS las 83 palabras del vocabulario oficial de YCT 1 hayan sido evaluadas**.
-   - **Recompensa Proporcional**: Hasta un máximo de **15 minutos** de recreación según los aciertos logrados.
-   - **Cooldown de 2 Horas**: Tras aprobar y reclamar la recompensa, el reto entra en enfriamiento por 120 minutos (2 horas) sin posibilidad de acumular más tiempo.
-   - **Reintentos Libres si Reprueba**: Si no alcanza el umbral de aprobación (60%, 27 aciertos), no recibe minutos y no se activa cooldown para que pueda seguir practicando sin frustración.
-2. **Bloqueo Nocturno Total por Defecto (20:00 a 08:00 del día siguiente)**:
-   - Bloqueo incondicional activo de lunes a domingo.
-   - Ninguna aplicación no esencial puede ser utilizada.
-   - El botón de retos de chino y flashcards se pausa durante la noche (*"🌙 Retos disponibles a partir de las 08:00 AM"*) para evitar trasnochar.
-   - Solo se permite el desbloqueo mediante PIN del padre bajo supervisión física.
+   - **Alto Umbral de Aprobación**: Dado que la menor domina el idioma chino mandarín, el umbral mínimo para obtener cualquier premio se eleva a **40 aciertos correctos de 45** (88.9%). Menos de 40 aciertos otorga 0 minutos.
+   - **Escala de Recompensa (5 a 15 Minutos)**:
+     - 40 aciertos: **5 minutos** (3 ⭐)
+     - 41 aciertos: **7 minutos** (3 ⭐)
+     - 42 aciertos: **9 minutos** (4 ⭐)
+     - 43 aciertos: **11 minutos** (4 ⭐)
+     - 44 aciertos: **13 minutos** (5 ⭐)
+     - 45 aciertos (perfecto 45/45): **15 minutos** (5 ⭐)
+   - **Cooldown de 2 Horas**: Tras aprobar con >= 40 aciertos y reclamar la recompensa, el reto entra en enfriamiento por 120 minutos (2 horas) sin posibilidad de acumular más tiempo recreativo.
+   - **Reintentos Libres si Reprueba**: Si no alcanza el umbral de aprobación (< 40 aciertos), recibe 0 minutos y no se activa cooldown para que pueda seguir practicando sin frustración.
+2. **Bloqueo Nocturno Total por Defecto (21:00 a 09:00 del día siguiente)**:
+   - Bloqueo incondicional activo de lunes a domingo entre las **21:00 horas (9:00 PM)** y las **09:00 horas (9:00 AM)** del día siguiente.
+   - Ninguna aplicación no esencial puede ser utilizada durante ese intervalo.
+   - El botón de retos de chino y flashcards se pausa durante la noche (*"🌙 Retos de minutos en pausa hasta las 09:00 AM"*) para asegurar el descanso y evitar trasnochar.
+   - Desbloqueo general nocturno solo mediante PIN del padre bajo supervisión física.
+3. **Exención Total de Spotify (`com.spotify.music`)**:
+   - Spotify queda **completamente exento de cualquier bloqueo o restricción parental**, tanto en horario diurno como durante el toque de queda nocturno (21:00 a 09:00).
+   - La menor puede escuchar libremente música, cuentos o audiolibros en cualquier momento sin ser interrumpida por el overlay ni por el centinela de accesibilidad.
 
 ---
 
@@ -37,46 +47,56 @@ La distribución pedagógica por sesión es:
 - **🎧 Escucha y Adivina (11 preguntas)**: Hanzi oculto para agudizar el oído, reproducción automática TTS (2x) en chino mandarín simplificado y botón táctil opcional para revelar pista de Pinyin.
 - **⚡ Verdadero o Falso (10 preguntas)**: Desafío de agilidad mental con botones grandes táctiles (*"✅ ¡Es Correcto!"* y *"❌ ¡Es Incorrecto!"*).
 
-### 2.3 Escala de Calificación y Recompensas
+### 2.3 Escala Exigente de Calificación y Recompensas
 - Total de preguntas: **45**.
-- Umbral de aprobación educativo (60%): **27 aciertos**.
+- Umbral de aprobación educativo: **40 aciertos (88.9%)**.
 - Tabla de Concesión de Tiempo Recreativo:
-  | Aciertos Correctos | Porcentaje | Estrellas | Minutos Extras | Cooldown Activado |
+  | Aciertos Correctos | Porcentaje | Estrellas | Minutos Extras Concedidos | Cooldown Activado |
   | :---: | :---: | :---: | :---: | :---: |
   | **45 / 45** | 100% | ⭐⭐⭐⭐⭐ (5 ⭐) | **15 minutos** | 2 horas (120 min) |
-  | **42 - 44** | 93% - 98% | ⭐⭐⭐⭐⭐ (5 ⭐) | **14 minutos** | 2 horas (120 min) |
-  | **39 - 41** | 87% - 91% | ⭐⭐⭐⭐ (4 ⭐) | **13 minutos** | 2 horas (120 min) |
-  | **36 - 38** | 80% - 84% | ⭐⭐⭐⭐ (4 ⭐) | **12 minutos** | 2 horas (120 min) |
-  | **33 - 35** | 73% - 78% | ⭐⭐⭐ (3 ⭐) | **11 minutos** | 2 horas (120 min) |
-  | **30 - 32** | 67% - 71% | ⭐⭐⭐ (3 ⭐) | **10 minutos** | 2 horas (120 min) |
-  | **27 - 29** | 60% - 64% | ⭐⭐ (2 ⭐) | **9 minutos** | 2 horas (120 min) |
-  | **< 27** | < 60% | 0 ⭐ | **0 minutos** | **Ninguno** (Reintento libre) |
+  | **44 / 45** | 97.8% | ⭐⭐⭐⭐⭐ (5 ⭐) | **13 minutos** | 2 horas (120 min) |
+  | **43 / 45** | 95.6% | ⭐⭐⭐⭐ (4 ⭐) | **11 minutos** | 2 horas (120 min) |
+  | **42 / 45** | 93.3% | ⭐⭐⭐⭐ (4 ⭐) | **9 minutos** | 2 horas (120 min) |
+  | **41 / 45** | 91.1% | ⭐⭐⭐ (3 ⭐) | **7 minutos** | 2 horas (120 min) |
+  | **40 / 45** | 88.9% | ⭐⭐⭐ (3 ⭐) | **5 minutos** | 2 horas (120 min) |
+  | **< 40** | < 88.9% | 0 ⭐ | **0 minutos** | **Ninguno** (Reintento libre) |
+
+- **Fórmula de cálculo**:
+  ```kotlin
+  val earnedMinutes = if (correctCount >= 40) {
+      5 + ((correctCount - 40) * 2).coerceAtMost(10)
+  } else {
+      0
+  }
+  ```
 
 ---
 
-## 3. Toque de Queda Nocturno (20:00 a 08:00)
+## 3. Toque de Queda Nocturno (21:00 a 09:00)
 
 ### 3.1 Política Incondicional
-- **Horario**: Todos los días de la semana (Lunes a Domingo), de **20:00 a 08:00 del día siguiente**.
+- **Horario**: Todos los días de la semana (Lunes a Domingo), de **21:00 a 09:00 del día siguiente**.
 - **Comportamiento en `ParentalRepository`**:
-  - `isBedtimeCurfewActive(cal: Calendar)` evalúa si la hora actual cae en el intervalo nocturno.
-  - `isPackageBlocked(packageName)` retorna `true` para **cualquier paquete no esencial**, bloqueando navegadores, redes sociales, juegos, utilidades y aplicaciones del sistema.
-  - Sobrescribe cualquier tiempo de recompensa remanente ganado durante la tarde.
+  - `isBedtimeCurfewActive(cal: Calendar)` evalúa si la hora actual cae en el intervalo nocturno (>= 21 o < 9).
+  - `isPackageBlocked(packageName)` retorna `true` para cualquier aplicación no esencial, bloqueando redes sociales, juegos, navegadores y apps del sistema.
+  - **Excepción Absoluta**: Spotify (`com.spotify.music`) nunca es bloqueado, ni de día ni durante el toque de queda.
+  - Sobrescribe cualquier tiempo de recompensa remanente ganado durante el día.
 - **Comportamiento en `ParentalAccessibilityService`**:
-  - El watchdog periódico (250ms) y los interceptores de eventos expulsan cualquier app abierta al launcher y levantan inmediatamente `LockScreenActivity`.
-  - Clics en la pantalla de inicio sobre iconos de aplicaciones son pre-interceptados.
+  - Interceptores y watchdog de 250ms expulsan cualquier app no esencial al launcher y levantan inmediatamente `LockScreenActivity`.
+  - Spotify es categorizado como esencial/exento, impidiendo su cierre o interrupción.
 
 ### 3.2 Interfaz de Usuario Nocturna (`LockOverlayContent`)
 - **Modo Nocturno 🌙**:
   - Encabezado con luna creciente y estética nocturna.
   - Título: *"¡Hora de Dormir y Descansar! 🌙"*.
-  - Subtítulo: *"Horario nocturno de descanso (20:00 a 08:00)"*.
-  - Tarjeta motivacional: *"Es momento de apagar la tablet y descansar. Mañana será un gran día para seguir aprendiendo. 😴✨"*.
-  - Botón de Reto Educativo y Flashcards: Deshabilitados con la leyenda *"🌙 Retos de minutos disponibles a partir de las 08:00 AM"*.
+  - Subtítulo: *"Horario nocturno de descanso (21:00 a 09:00)"*.
+  - Tarjeta motivacional: *"Es momento de desconectar la pantalla y dormir bien para recargar tus energías. Mañana será un gran día. ✨"*.
+  - Botón de Reto Educativo y Flashcards: Deshabilitados con la leyenda *"🌙 Retos de minutos en pausa hasta las 09:00 AM"*.
   - Botón de Acceso Padres: Permite ingresar el PIN parental si el padre requiere usar el dispositivo.
 
 ### 3.3 Consola Linux (`tools/aegis_cli.py`)
 - El comando `./aegis status` refleja en tiempo real:
   ```text
-  🌙 Horario Nocturno: [🌙 EN VIGOR (20:00 - 08:00)] / [☀️ EN REPOSO]
+  🌙 Horario Nocturno: [🌙 EN VIGOR (21:00 - 09:00)] / [☀️ EN REPOSO]
   ```
+

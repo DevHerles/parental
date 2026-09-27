@@ -51,7 +51,7 @@
             android:excludeFromRecents="true"
             android:resizeableActivity="false"
             android:supportsPictureInPicture="false"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTop"
             android:noHistory="false"
             android:windowSoftInputMode="adjustResize"

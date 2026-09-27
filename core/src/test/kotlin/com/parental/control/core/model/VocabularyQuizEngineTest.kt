@@ -111,53 +111,73 @@ class VocabularyQuizEngineTest {
         assertEquals(15, perfectResult.earnedMinutes)
         assertTrue(perfectResult.passed)
 
-        // 42/45 -> 5 estrellas, 14 min, aprobado
+        // 44/45 -> 5 estrellas, 13 min, aprobado
+        val answer44 = perfectAnswers.toMutableMap()
+        answer44[0] = (questions[0].correctChoiceIndex + 1) % questions[0].choices.size
+        val result44 = VocabularyQuizEngine.evaluateQuiz(questions, answer44, 290)
+        assertEquals(44, result44.correctCount)
+        assertEquals(5, result44.stars)
+        assertEquals(13, result44.earnedMinutes)
+        assertTrue(result44.passed)
+
+        // 43/45 -> 4 estrellas, 11 min, aprobado
+        val answer43 = perfectAnswers.toMutableMap()
+        for (i in 0 until 2) {
+            answer43[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        }
+        val result43 = VocabularyQuizEngine.evaluateQuiz(questions, answer43, 285)
+        assertEquals(43, result43.correctCount)
+        assertEquals(4, result43.stars)
+        assertEquals(11, result43.earnedMinutes)
+        assertTrue(result43.passed)
+
+        // 42/45 -> 4 estrellas, 9 min, aprobado
         val answer42 = perfectAnswers.toMutableMap()
         for (i in 0 until 3) {
             answer42[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
         val result42 = VocabularyQuizEngine.evaluateQuiz(questions, answer42, 280)
         assertEquals(42, result42.correctCount)
-        assertEquals(5, result42.stars)
-        assertEquals(14, result42.earnedMinutes)
+        assertEquals(4, result42.stars)
+        assertEquals(9, result42.earnedMinutes)
         assertTrue(result42.passed)
 
-        // 36/45 -> 4 estrellas, 12 min, aprobado
-        val answer36 = perfectAnswers.toMutableMap()
-        for (i in 0 until 9) {
-            answer36[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 41/45 -> 3 estrellas, 7 min, aprobado
+        val answer41 = perfectAnswers.toMutableMap()
+        for (i in 0 until 4) {
+            answer41[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result36 = VocabularyQuizEngine.evaluateQuiz(questions, answer36, 250)
-        assertEquals(36, result36.correctCount)
-        assertEquals(4, result36.stars)
-        assertEquals(12, result36.earnedMinutes)
-        assertTrue(result36.passed)
+        val result41 = VocabularyQuizEngine.evaluateQuiz(questions, answer41, 260)
+        assertEquals(41, result41.correctCount)
+        assertEquals(3, result41.stars)
+        assertEquals(7, result41.earnedMinutes)
+        assertTrue(result41.passed)
 
-        // 27/45 -> 2 estrellas, 9 min, aprobado mínimo (60%)
-        val answer27 = perfectAnswers.toMutableMap()
-        for (i in 0 until 18) {
-            answer27[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 40/45 -> 3 estrellas, 5 min, aprobado mínimo (umbral de exigencia 88.9%)
+        val answer40 = perfectAnswers.toMutableMap()
+        for (i in 0 until 5) {
+            answer40[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result27 = VocabularyQuizEngine.evaluateQuiz(questions, answer27, 200)
-        assertEquals(27, result27.correctCount)
-        assertEquals(2, result27.stars)
-        assertEquals(9, result27.earnedMinutes)
-        assertTrue(result27.passed)
+        val result40 = VocabularyQuizEngine.evaluateQuiz(questions, answer40, 250)
+        assertEquals(40, result40.correctCount)
+        assertEquals(3, result40.stars)
+        assertEquals(5, result40.earnedMinutes)
+        assertTrue(result40.passed)
 
-        // 26/45 -> 0 estrellas, 0 min, NO aprobado (< 60%)
-        val answer26 = perfectAnswers.toMutableMap()
-        for (i in 0 until 19) {
-            answer26[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 39/45 -> 0 estrellas, 0 min, NO aprobado (< 40 aciertos)
+        val answer39 = perfectAnswers.toMutableMap()
+        for (i in 0 until 6) {
+            answer39[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result26 = VocabularyQuizEngine.evaluateQuiz(questions, answer26, 180)
-        assertEquals(26, result26.correctCount)
-        assertEquals(0, result26.stars)
-        assertEquals(0, result26.earnedMinutes)
-        assertFalse(result26.passed)
+        val result39 = VocabularyQuizEngine.evaluateQuiz(questions, answer39, 200)
+        assertEquals(39, result39.correctCount)
+        assertEquals(0, result39.stars)
+        assertEquals(0, result39.earnedMinutes)
+        assertFalse(result39.passed)
     }
 
     @Test
-    fun testBedtimeCurfewCrossingMidnight20to8() {
+    fun testBedtimeCurfewCrossingMidnight21to9() {
         val bedtimeSchedule = CurfewSchedule(
             id = "bed_time",
             name = "Hora de Dormir",
@@ -166,19 +186,19 @@ class VocabularyQuizEngineTest {
                 Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
                 Calendar.SATURDAY
             ),
-            startHour = 20,
+            startHour = 21,
             startMinute = 0,
-            endHour = 8,
+            endHour = 9,
             endMinute = 0,
             isEnabled = true
         )
 
-        // 20:00 (Noche) -> Activo
-        val cal2000 = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 20)
+        // 21:00 (Inicio de toque de queda) -> Activo
+        val cal2100 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 21)
             set(Calendar.MINUTE, 0)
         }
-        assertTrue(bedtimeSchedule.isCurfewActive(cal2000))
+        assertTrue(bedtimeSchedule.isCurfewActive(cal2100))
 
         // 23:30 (Noche) -> Activo
         val cal2330 = Calendar.getInstance().apply {
@@ -201,19 +221,19 @@ class VocabularyQuizEngineTest {
         }
         assertTrue(bedtimeSchedule.isCurfewActive(cal0415))
 
-        // 07:59 (Antes de las 8am) -> Activo
-        val cal0759 = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 7)
+        // 08:59 (Antes de las 9am) -> Activo
+        val cal0859 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 8)
             set(Calendar.MINUTE, 59)
         }
-        assertTrue(bedtimeSchedule.isCurfewActive(cal0759))
+        assertTrue(bedtimeSchedule.isCurfewActive(cal0859))
 
-        // 08:01 (Día) -> Inactivo
-        val cal0801 = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 8)
+        // 09:01 (Fin de toque de queda / Día) -> Inactivo
+        val cal0901 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 1)
         }
-        assertFalse(bedtimeSchedule.isCurfewActive(cal0801))
+        assertFalse(bedtimeSchedule.isCurfewActive(cal0901))
 
         // 14:00 (Tarde) -> Inactivo
         val cal1400 = Calendar.getInstance().apply {
@@ -222,11 +242,22 @@ class VocabularyQuizEngineTest {
         }
         assertFalse(bedtimeSchedule.isCurfewActive(cal1400))
 
-        // 19:59 (Antes de las 20h) -> Inactivo
-        val cal1959 = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 19)
+        // 20:59 (Antes de las 21h) -> Inactivo
+        val cal2059 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 20)
             set(Calendar.MINUTE, 59)
         }
-        assertFalse(bedtimeSchedule.isCurfewActive(cal1959))
+        assertFalse(bedtimeSchedule.isCurfewActive(cal2059))
+    }
+
+    @Test
+    fun testSpotifyPackageExemption() {
+        assertTrue(DistractionConstants.isSpotifyPackage("com.spotify.music"))
+        assertTrue(DistractionConstants.isSpotifyPackage("com.spotify.lite"))
+        assertTrue(DistractionConstants.isSpotifyPackage("COM.SPOTIFY.MUSIC"))
+        assertFalse(DistractionConstants.isSpotifyPackage("com.zhiliaoapp.musically"))
+        assertFalse(DistractionConstants.isSpotifyPackage("com.google.android.youtube"))
+        assertFalse(DistractionConstants.isSpotifyPackage(null))
+        assertFalse(DistractionConstants.isSpotifyPackage(""))
     }
 }

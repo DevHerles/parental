@@ -9,7 +9,7 @@ import kotlin.random.Random
 object VocabularyQuizEngine {
 
     const val QUIZ_QUESTIONS_COUNT = 45
-    const val PASSING_CORRECT_THRESHOLD = 27 // 60% de 45 preguntas
+    const val PASSING_CORRECT_THRESHOLD = 40 // Mínimo 40 de 45 aciertos (88.9%) para ganar tiempo recreativo
 
     /**
      * Selecciona palabras garantizando que NUNCA se repita ninguna hasta que TODAS las palabras
@@ -249,25 +249,20 @@ object VocabularyQuizEngine {
         val percentage = (correctCount.toDouble() / total.toDouble()) * 100.0
         val passed = correctCount >= PASSING_CORRECT_THRESHOLD
 
-        // Calificación de estrellas (0 a 5, requiere aprobar con >= 27 aciertos)
+        // Calificación de estrellas (0 a 5, requiere aprobar con >= 40 aciertos)
         val stars = when {
             !passed -> 0
-            correctCount >= 42 -> 5
-            correctCount >= 36 -> 4
-            correctCount >= 30 -> 3
-            else -> 2
+            correctCount >= 44 -> 5
+            correctCount >= 42 -> 4
+            else -> 3
         }
 
-        // Recompensa proporcional hasta 15 minutos (mínimo 27 aciertos para ganar)
-        val earnedMinutes = when {
-            correctCount >= 45 -> 15
-            correctCount >= 42 -> 14
-            correctCount >= 39 -> 13
-            correctCount >= 36 -> 12
-            correctCount >= 33 -> 11
-            correctCount >= 30 -> 10
-            correctCount >= 27 -> 9
-            else -> 0
+        // Recompensa de 5 a 15 minutos (mínimo 40 aciertos para ganar)
+        // 40 -> 5 min, 41 -> 7 min, 42 -> 9 min, 43 -> 11 min, 44 -> 13 min, 45 -> 15 min
+        val earnedMinutes = if (passed) {
+            5 + ((correctCount - PASSING_CORRECT_THRESHOLD) * 2).coerceAtMost(10)
+        } else {
+            0
         }
 
         return VocabQuizResult(

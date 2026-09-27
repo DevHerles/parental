@@ -53,6 +53,7 @@ APP_ALIASES = {
     "snapchat": "com.snapchat.android",
     "chrome": "com.android.chrome",
     "browser": "com.android.chrome",
+    "spotify": "com.spotify.music",
 }
 
 
@@ -217,8 +218,8 @@ def cmd_status(args):
                 mode_str = f"{BLUE}{BOLD} 🛡️  MODO PROTEGIDO ESTÁNDAR {RESET}"
 
             local_hour = datetime.now().hour
-            is_bedtime = (local_hour >= 20 or local_hour < 8)
-            bedtime_status = f"{MAGENTA}{BOLD}🌙 EN VIGOR (BLOQUEO TOTAL 20:00 - 08:00){RESET}" if is_bedtime else f"{DIM}☀️ En reposo (Horario Diurno 08:00 - 20:00){RESET}"
+            is_bedtime = (local_hour >= 21 or local_hour < 9)
+            bedtime_status = f"{MAGENTA}{BOLD}🌙 EN VIGOR (BLOQUEO TOTAL 21:00 - 09:00){RESET}" if is_bedtime else f"{DIM}☀️ En reposo (Horario Diurno 09:00 - 21:00){RESET}"
 
             print(f"   {BOLD}Estado Modo:{RESET} {mode_str}")
             print(f"   {BOLD}Seguridad:{RESET}   Anti-Desinstalación: {GREEN}Activo{RESET} | Filtro Web: {GREEN}Activo{RESET}")

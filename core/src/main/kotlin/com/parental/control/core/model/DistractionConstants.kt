@@ -27,6 +27,10 @@ object DistractionConstants {
     const val PKG_TWITTER_X = "com.twitter.android"
     const val PKG_DISCORD = "com.discord"
 
+    // Audio y Música Exentos de Restricción
+    const val PKG_SPOTIFY = "com.spotify.music"
+    const val PKG_SPOTIFY_LITE = "com.spotify.lite"
+
     // Conjunto de paquetes bloqueados por defecto para una niña de 11 años
     val DEFAULT_BLOCKED_PACKAGES = setOf(
         PKG_TIKTOK,
@@ -116,6 +120,15 @@ object DistractionConstants {
     fun isInstagramPackage(packageName: String): Boolean {
         val p = packageName.lowercase()
         return p.contains("instagram")
+    }
+
+    /**
+     * Comprueba si un paquete corresponde a Spotify (exento de restricciones para música / audiolibros).
+     */
+    fun isSpotifyPackage(packageName: String?): Boolean {
+        if (packageName.isNullOrBlank()) return false
+        val p = packageName.lowercase()
+        return p == PKG_SPOTIFY || p == PKG_SPOTIFY_LITE || p.contains("spotify")
     }
 
     // Paquetes de Navegadores Web comunes para inspección de URL

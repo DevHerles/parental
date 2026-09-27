@@ -82,6 +82,11 @@ object PermissionHelper {
         if (packageName == context.packageName) return true
         if (packageName == "android" || packageName == "com.android.systemui") return true
 
+        // 0. Spotify exento de cualquier bloqueo o restricción (música / audiolibros permitidos)
+        if (com.parental.control.core.model.DistractionConstants.isSpotifyPackage(packageName)) {
+            return true
+        }
+
         val p = packageName.lowercase()
 
         // 1. Teclados (Input Method Editors - IME)

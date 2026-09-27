@@ -56,7 +56,7 @@ data class VocabQuizResult(
     val scorePercentage: Double,
     val stars: Int,                 // 0 a 5 estrellas
     val earnedMinutes: Int,         // 0 a 15 minutos proporcionales
-    val passed: Boolean,            // >= 27 aciertos (60%)
+    val passed: Boolean,            // >= 40 aciertos (88.9%)
     val durationSeconds: Int,
     val completedAtMs: Long = System.currentTimeMillis()
 )
