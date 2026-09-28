@@ -9,7 +9,7 @@ import kotlin.random.Random
 object VocabularyQuizEngine {
 
     const val QUIZ_QUESTIONS_COUNT = 83
-    const val PASSING_CORRECT_THRESHOLD = 70 // Mínimo 70 de 83 aciertos (84.3%) para ganar tiempo recreativo
+    const val PASSING_CORRECT_THRESHOLD = 50 // Mínimo 50 de 83 aciertos (60.2%, estándar internacional YCT/HSK)
 
     /**
      * Selecciona palabras garantizando que NUNCA se repita ninguna hasta que TODAS las palabras
@@ -270,29 +270,27 @@ object VocabularyQuizEngine {
         val percentage = (correctCount.toDouble() / total.toDouble()) * 100.0
         val passed = correctCount >= PASSING_CORRECT_THRESHOLD
 
-        // Calificación de estrellas (0 a 5, requiere aprobar con >= 70 aciertos)
+        // Calificación de estrellas (0 a 5, requiere aprobar con >= 50 aciertos)
         val stars = when {
             !passed -> 0
-            correctCount >= 81 -> 5
-            correctCount >= 76 -> 4
+            correctCount >= 78 -> 5
+            correctCount >= 60 -> 4
             else -> 3
         }
 
-        // Recompensa de 5 a 15 minutos en 6 tramos sabios (mínimo 70 aciertos para ganar)
-        // 83 -> 15 min (100% perfecto)
-        // 81 - 82 -> 13 min
-        // 79 - 80 -> 11 min
-        // 76 - 78 -> 9 min
-        // 73 - 75 -> 7 min
-        // 70 - 72 -> 5 min
-        // < 70 -> 0 min (reintento libre)
+        // Recompensa progresiva de 10 a 30 minutos (mínimo 50 aciertos / 60% para aprobar)
+        // 83 -> 30 min (100% perfecto)
+        // 78 - 82 -> 25 min (Sobresaliente)
+        // 70 - 77 -> 20 min (Notable)
+        // 60 - 69 -> 15 min (Buen desempeño)
+        // 50 - 59 -> 10 min (Piso digno de aprobación)
+        // < 50 -> 0 min (reintento libre)
         val earnedMinutes = when {
-            correctCount >= 83 -> 15
-            correctCount >= 81 -> 13
-            correctCount >= 79 -> 11
-            correctCount >= 76 -> 9
-            correctCount >= 73 -> 7
-            correctCount >= 70 -> 5
+            correctCount >= 83 -> 30
+            correctCount >= 78 -> 25
+            correctCount >= 70 -> 20
+            correctCount >= 60 -> 15
+            correctCount >= 50 -> 10
             else -> 0
         }
 

@@ -195,7 +195,7 @@ fun LockOverlayContent(
                     Icon(Icons.Default.School, contentDescription = null, tint = Color.White)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "🎯 ¡Reto de Vocabulario (83 preguntas) y Gana hasta 15 min!",
+                        text = "🎯 ¡Reto YCT 1 (83 preguntas) • Gana de 10 a 30 min!",
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = Color.White

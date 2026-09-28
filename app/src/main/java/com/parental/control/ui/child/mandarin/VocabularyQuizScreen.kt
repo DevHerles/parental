@@ -238,12 +238,34 @@ fun VocabularyQuizScreen(
                 progress = { (currentIndex + 1).toFloat() / totalQ.toFloat() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(top = 6.dp, bottom = 2.dp)
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp)),
                 color = Color(0xFFE11D48),
                 trackColor = Color(0xFF334155),
             )
+
+            // Indicador de metas de recompensa
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🎯 Meta mínima: 50 aciertos (10 min)",
+                    fontSize = 11.sp,
+                    color = if (correctStars >= 50) Color(0xFF34D399) else Color(0xFF94A3B8),
+                    fontWeight = if (correctStars >= 50) FontWeight.Bold else FontWeight.Normal
+                )
+                Text(
+                    text = "🏆 Perfección 83 aciertos = 30 min",
+                    fontSize = 11.sp,
+                    color = Color(0xFFFBBF24),
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             // ─────────────────────────────────────────────────────────────
             // 2. CONTENIDO EN DOS COLUMNAS (LANDSCAPE TABLET - CERO SCROLL)
@@ -789,12 +811,22 @@ fun VocabQuizCelebrationDialog(
 
                     if (result.passed && result.earnedMinutes > 0) {
                         Text(
-                            text = "¡Ganaste ${result.earnedMinutes} minutos extras de recreo!",
+                            text = if (result.earnedMinutes >= 30) "🏆 ¡PERFECCIÓN TOTAL! ¡Ganaste 30 minutos de recreo!" else "¡Ganaste ${result.earnedMinutes} minutos extras de recreo!",
                             color = Color(0xFF34D399),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center
                         )
+                        if (result.earnedMinutes < 30) {
+                            Text(
+                                text = "¡A solo ${83 - result.correctCount} aciertos del Gran Premio de 30 minutos!",
+                                color = Color(0xFFFBBF24),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 2.dp)
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(12.dp))
 
@@ -816,7 +848,7 @@ fun VocabQuizCelebrationDialog(
                         }
                     } else {
                         Text(
-                            text = "Se requieren al menos 70 de 83 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
+                            text = "Se requieren al menos 50 de 83 aciertos para ganar minutos. ¡Repasa las flashcards para asegurar tu recompensa!",
                             color = Color(0xFFCBD5E1),
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center

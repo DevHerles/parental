@@ -81,82 +81,82 @@ class VocabularyQuizEngineTest {
     }
 
     @Test
-    fun testEvaluationGradingScaleUpTo15Minutes() {
+    fun testEvaluationGradingScaleUpTo30Minutes() {
         val questions = VocabularyQuizEngine.generateQuiz(fullBank, 83)
         val perfectAnswers = questions.indices.associateWith { questions[it].correctChoiceIndex }
 
-        // 83/83 -> 5 estrellas, 15 min, aprobado (100% Flawless)
+        // 83/83 -> 5 estrellas, 30 min, aprobado (100% Flawless Grand Prize)
         val perfectResult = VocabularyQuizEngine.evaluateQuiz(questions, perfectAnswers, 500)
         assertEquals(83, perfectResult.correctCount)
         assertEquals(5, perfectResult.stars)
-        assertEquals(15, perfectResult.earnedMinutes)
+        assertEquals(30, perfectResult.earnedMinutes)
         assertTrue(perfectResult.passed)
 
-        // 81/83 -> 5 estrellas, 13 min, aprobado
-        val answer81 = perfectAnswers.toMutableMap()
-        for (i in 0 until 2) {
-            answer81[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 80/83 -> 5 estrellas, 25 min, aprobado (Sobresaliente)
+        val answer80 = perfectAnswers.toMutableMap()
+        for (i in 0 until 3) {
+            answer80[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result81 = VocabularyQuizEngine.evaluateQuiz(questions, answer81, 480)
-        assertEquals(81, result81.correctCount)
-        assertEquals(5, result81.stars)
-        assertEquals(13, result81.earnedMinutes)
-        assertTrue(result81.passed)
+        val result80 = VocabularyQuizEngine.evaluateQuiz(questions, answer80, 480)
+        assertEquals(80, result80.correctCount)
+        assertEquals(5, result80.stars)
+        assertEquals(25, result80.earnedMinutes)
+        assertTrue(result80.passed)
 
-        // 79/83 -> 4 estrellas, 11 min, aprobado
-        val answer79 = perfectAnswers.toMutableMap()
-        for (i in 0 until 4) {
-            answer79[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 72/83 -> 4 estrellas, 20 min, aprobado (Notable)
+        val answer72 = perfectAnswers.toMutableMap()
+        for (i in 0 until 11) {
+            answer72[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result79 = VocabularyQuizEngine.evaluateQuiz(questions, answer79, 450)
-        assertEquals(79, result79.correctCount)
-        assertEquals(4, result79.stars)
-        assertEquals(11, result79.earnedMinutes)
-        assertTrue(result79.passed)
+        val result72 = VocabularyQuizEngine.evaluateQuiz(questions, answer72, 450)
+        assertEquals(72, result72.correctCount)
+        assertEquals(4, result72.stars)
+        assertEquals(20, result72.earnedMinutes)
+        assertTrue(result72.passed)
 
-        // 76/83 -> 4 estrellas, 9 min, aprobado
-        val answer76 = perfectAnswers.toMutableMap()
-        for (i in 0 until 7) {
-            answer76[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 65/83 -> 4 estrellas, 15 min, aprobado (Buen desempeño)
+        val answer65 = perfectAnswers.toMutableMap()
+        for (i in 0 until 18) {
+            answer65[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result76 = VocabularyQuizEngine.evaluateQuiz(questions, answer76, 420)
-        assertEquals(76, result76.correctCount)
-        assertEquals(4, result76.stars)
-        assertEquals(9, result76.earnedMinutes)
-        assertTrue(result76.passed)
+        val result65 = VocabularyQuizEngine.evaluateQuiz(questions, answer65, 420)
+        assertEquals(65, result65.correctCount)
+        assertEquals(4, result65.stars)
+        assertEquals(15, result65.earnedMinutes)
+        assertTrue(result65.passed)
 
-        // 73/83 -> 3 estrellas, 7 min, aprobado
-        val answer73 = perfectAnswers.toMutableMap()
-        for (i in 0 until 10) {
-            answer73[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 55/83 -> 3 estrellas, 10 min, aprobado (Piso Digno)
+        val answer55 = perfectAnswers.toMutableMap()
+        for (i in 0 until 28) {
+            answer55[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result73 = VocabularyQuizEngine.evaluateQuiz(questions, answer73, 400)
-        assertEquals(73, result73.correctCount)
-        assertEquals(3, result73.stars)
-        assertEquals(7, result73.earnedMinutes)
-        assertTrue(result73.passed)
+        val result55 = VocabularyQuizEngine.evaluateQuiz(questions, answer55, 400)
+        assertEquals(55, result55.correctCount)
+        assertEquals(3, result55.stars)
+        assertEquals(10, result55.earnedMinutes)
+        assertTrue(result55.passed)
 
-        // 70/83 -> 3 estrellas, 5 min, aprobado mínimo (umbral de exigencia 84.3%)
-        val answer70 = perfectAnswers.toMutableMap()
-        for (i in 0 until 13) {
-            answer70[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 50/83 -> 3 estrellas, 10 min, aprobado mínimo (umbral estándar internacional 60.2%)
+        val answer50 = perfectAnswers.toMutableMap()
+        for (i in 0 until 33) {
+            answer50[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result70 = VocabularyQuizEngine.evaluateQuiz(questions, answer70, 380)
-        assertEquals(70, result70.correctCount)
-        assertEquals(3, result70.stars)
-        assertEquals(5, result70.earnedMinutes)
-        assertTrue(result70.passed)
+        val result50 = VocabularyQuizEngine.evaluateQuiz(questions, answer50, 380)
+        assertEquals(50, result50.correctCount)
+        assertEquals(3, result50.stars)
+        assertEquals(10, result50.earnedMinutes)
+        assertTrue(result50.passed)
 
-        // 69/83 -> 0 estrellas, 0 min, NO aprobado (< 70 aciertos)
-        val answer69 = perfectAnswers.toMutableMap()
-        for (i in 0 until 14) {
-            answer69[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
+        // 49/83 -> 0 estrellas, 0 min, NO aprobado (< 50 aciertos)
+        val answer49 = perfectAnswers.toMutableMap()
+        for (i in 0 until 34) {
+            answer49[i] = (questions[i].correctChoiceIndex + 1) % questions[i].choices.size
         }
-        val result69 = VocabularyQuizEngine.evaluateQuiz(questions, answer69, 350)
-        assertEquals(69, result69.correctCount)
-        assertEquals(0, result69.stars)
-        assertEquals(0, result69.earnedMinutes)
-        assertFalse(result69.passed)
+        val result49 = VocabularyQuizEngine.evaluateQuiz(questions, answer49, 350)
+        assertEquals(49, result49.correctCount)
+        assertEquals(0, result49.stars)
+        assertEquals(0, result49.earnedMinutes)
+        assertFalse(result49.passed)
     }
 
     @Test

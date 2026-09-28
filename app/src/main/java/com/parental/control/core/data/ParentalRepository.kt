@@ -129,10 +129,11 @@ class ParentalRepository private constructor(private val context: Context) {
 
     fun getChineseExamCooldownRemainingMs(): Long {
         val lastTime = prefs.getLong(KEY_CHINESE_EXAM_COOLDOWN, 0L)
+        val cooldownDuration = prefs.getLong(KEY_CHINESE_EXAM_COOLDOWN_DURATION, CHINESE_EXAM_COOLDOWN_MS)
         val now = System.currentTimeMillis()
         val elapsed = now - lastTime
-        return if (elapsed < CHINESE_EXAM_COOLDOWN_MS) {
-            CHINESE_EXAM_COOLDOWN_MS - elapsed
+        return if (elapsed < cooldownDuration) {
+            cooldownDuration - elapsed
         } else {
             0L
         }
@@ -179,13 +180,27 @@ class ParentalRepository private constructor(private val context: Context) {
         if (earned <= 0) return 0
         if (!canAttemptChineseExam()) return 0
 
-        val now = System.currentTimeMillis()
-        prefs.edit().putLong(KEY_CHINESE_EXAM_COOLDOWN, now).apply()
-
-        val minutesToGrant = earned.coerceIn(1, 15)
+        val minutesToGrant = earned.coerceIn(1, 30)
         setTemporaryUnlock(minutesToGrant)
 
-        val detail = "Quiz de Vocabulario YCT 1 aprobado: ${result.correctCount}/${result.totalQuestions} aciertos (${result.stars} ⭐) -> +${minutesToGrant}m recreativos"
+        // Cooldown proporcional inteligente:
+        // 25 a 30 min ganados -> 3 horas de enfriamiento saludable
+        // 15 a 20 min ganados -> 2 horas de enfriamiento
+        // 10 min ganados -> 1.5 horas de enfriamiento
+        val cooldownHours = when {
+            minutesToGrant >= 25 -> 3.0
+            minutesToGrant >= 15 -> 2.0
+            else -> 1.5
+        }
+        val cooldownDurationMs = (cooldownHours * 60 * 60 * 1000L).toLong()
+
+        val now = System.currentTimeMillis()
+        prefs.edit()
+            .putLong(KEY_CHINESE_EXAM_COOLDOWN, now)
+            .putLong(KEY_CHINESE_EXAM_COOLDOWN_DURATION, cooldownDurationMs)
+            .apply()
+
+        val detail = "Quiz de Vocabulario YCT 1 aprobado: ${result.correctCount}/${result.totalQuestions} aciertos (${result.stars} ⭐) -> +${minutesToGrant}m recreativos (cooldown ${cooldownHours}h)"
         recordTamperAttempt("🎓 [RETO CHINO] $detail")
 
         return minutesToGrant
@@ -433,9 +448,10 @@ class ParentalRepository private constructor(private val context: Context) {
         private const val KEY_PAIRED_ID = "key_paired_id"
         private const val KEY_DEVICE_ROLE = "key_device_role"
         private const val KEY_CHINESE_EXAM_COOLDOWN = "key_chinese_exam_cooldown"
+        private const val KEY_CHINESE_EXAM_COOLDOWN_DURATION = "key_chinese_exam_cooldown_duration"
         private const val KEY_SEEN_VOCAB_WORDS = "key_seen_vocab_words"
         private const val KEY_BEDTIME_ENABLED = "key_bedtime_enabled"
-        private const val CHINESE_EXAM_COOLDOWN_MS = 2 * 60 * 60 * 1000L // 2 horas (120 minutos)
+        private const val CHINESE_EXAM_COOLDOWN_MS = 2 * 60 * 60 * 1000L // 2 horas base por defecto
 
         @Volatile
         private var INSTANCE: ParentalRepository? = null
