@@ -243,4 +243,21 @@ class VocabularyQuizEngineTest {
         assertFalse(DistractionConstants.isSpotifyPackage(null))
         assertFalse(DistractionConstants.isSpotifyPackage(""))
     }
+
+    @Test
+    fun testSelectPlausibleDistractorsPrioritizesCategory() {
+        val target = YctWord(chinese = "爸爸", pinyin = "bàba", spanish = "papá", category = "Familia", explanation = "", literalTranslation = "")
+        val fam1 = YctWord(chinese = "妈妈", pinyin = "māma", spanish = "mamá", category = "Familia", explanation = "", literalTranslation = "")
+        val fam2 = YctWord(chinese = "哥哥", pinyin = "gēge", spanish = "hermano mayor", category = "Familia", explanation = "", literalTranslation = "")
+        val num1 = YctWord(chinese = "一", pinyin = "yī", spanish = "uno", category = "Números", explanation = "", literalTranslation = "")
+        val num2 = YctWord(chinese = "二", pinyin = "èr", spanish = "dos", category = "Números", explanation = "", literalTranslation = "")
+
+        val pool = listOf(fam1, fam2, num1, num2)
+        val selected = VocabularyQuizEngine.selectPlausibleDistractors(target, pool, count = 2)
+
+        assertEquals(2, selected.size)
+        // Both distractors should come from the "Familia" category since 2 were available
+        assertTrue(selected.all { it.category == "Familia" })
+        assertTrue(selected.contains(fam1) && selected.contains(fam2))
+    }
 }

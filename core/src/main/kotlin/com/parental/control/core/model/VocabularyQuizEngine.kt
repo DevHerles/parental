@@ -109,8 +109,21 @@ object VocabularyQuizEngine {
         return questions
     }
 
+    /**
+     * Selecciona distractores con rigor psicométrico internacional (YCT/HSK):
+     * Prioriza opciones que compartan la misma categoría semántica/gramatical con la palabra objetivo
+     * para forzar una discriminación conceptual genuina, completando con el banco general.
+     */
+    fun selectPlausibleDistractors(word: YctWord, others: List<YctWord>, count: Int = 3): List<YctWord> {
+        val sameCategory = others.filter {
+            it.category.isNotBlank() && it.category.equals(word.category, ignoreCase = true)
+        }.shuffled()
+        val otherPool = others.filter { it !in sameCategory }.shuffled()
+        return (sameCategory + otherPool).take(count)
+    }
+
     private fun createHanziToEsQuestion(index: Int, word: YctWord, others: List<YctWord>): VocabQuizQuestion {
-        val distractors = others.shuffled().take(3)
+        val distractors = selectPlausibleDistractors(word, others, 3)
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
@@ -141,7 +154,7 @@ object VocabularyQuizEngine {
     }
 
     private fun createEsToHanziQuestion(index: Int, word: YctWord, others: List<YctWord>): VocabQuizQuestion {
-        val distractors = others.shuffled().take(3)
+        val distractors = selectPlausibleDistractors(word, others, 3)
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
@@ -173,7 +186,7 @@ object VocabularyQuizEngine {
     }
 
     private fun createListeningQuestion(index: Int, word: YctWord, others: List<YctWord>): VocabQuizQuestion {
-        val distractors = others.shuffled().take(3)
+        val distractors = selectPlausibleDistractors(word, others, 3)
         val allOptions = (distractors + word).shuffled()
         val correctIndex = allOptions.indexOfFirst { it.chinese == word.chinese }
 
@@ -205,7 +218,8 @@ object VocabularyQuizEngine {
 
     private fun createTrueFalseQuestion(index: Int, word: YctWord, others: List<YctWord>): VocabQuizQuestion {
         val isTrue = Random.nextBoolean()
-        val shownPairWord = if (isTrue || others.isEmpty()) word else others.random()
+        val falseCandidate = selectPlausibleDistractors(word, others, 1).firstOrNull() ?: others.firstOrNull() ?: word
+        val shownPairWord = if (isTrue || others.isEmpty()) word else falseCandidate
 
         val choices = listOf(
             VocabQuizChoice(label = "V", primaryText = "Verdadero", emoji = null),

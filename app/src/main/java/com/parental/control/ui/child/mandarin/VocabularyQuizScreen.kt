@@ -151,12 +151,12 @@ fun VocabularyQuizScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Badge del Modo de Juego
+                // Badge del Modo de Juego con nomenclatura estándar YCT
                 val (badgeText, badgeBg) = when (currentQ.mode) {
-                    VocabQuizMode.HANZI_TO_ES -> "🔤 Carácter a Español" to Color(0xFF0284C7)
-                    VocabQuizMode.ES_TO_HANZI -> "🇨🇳 Español a Chino" to Color(0xFF7C3AED)
-                    VocabQuizMode.LISTENING -> "🎧 Escucha y Adivina" to Color(0xFFD97706)
-                    VocabQuizMode.TRUE_FALSE -> "⚡ ¿Verdadero o Falso?" to Color(0xFF059669)
+                    VocabQuizMode.HANZI_TO_ES -> "🔤 YCT 1 · 阅读 (Carácter a Español)" to Color(0xFF0284C7)
+                    VocabQuizMode.ES_TO_HANZI -> "🇨🇳 YCT 1 · 表达 (Español a Chino)" to Color(0xFF7C3AED)
+                    VocabQuizMode.LISTENING -> "🎧 YCT 1 · 听力 (Comprensión Auditiva)" to Color(0xFFD97706)
+                    VocabQuizMode.TRUE_FALSE -> "⚡ YCT 1 · 判断 (Verdadero o Falso)" to Color(0xFF059669)
                 }
 
                 Surface(
@@ -172,28 +172,58 @@ fun VocabularyQuizScreen(
                     )
                 }
 
-                // Contador de estrellas en vivo
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFF1E293B)
+                // Indicadores CBT: Número de Pregunta Activa (Inicia siempre en 1 y se actualiza de 1 a 83)
+                // y Aciertos acumulados en vivo (separados e independientes)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    // 1. Contador de Ítem de Examen: Pregunta X de 83 (siempre reactivo a currentIndex)
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFF1E293B)
                     ) {
-                        Text(text = "⭐", fontSize = 14.sp)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "$correctStars",
-                            color = Color(0xFFFBBF24),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
-                        )
-                        Text(
-                            text = " / $totalQ",
-                            color = Color(0xFF94A3B8),
-                            fontSize = 12.sp
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "Pregunta ${currentIndex + 1}",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp
+                            )
+                            Text(
+                                text = " de $totalQ",
+                                color = Color(0xFF94A3B8),
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+
+                    // 2. Aciertos acumulados en vivo (Separado e independiente de la posición)
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFF1E293B)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
+                            Text(text = "⭐", fontSize = 13.sp)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "$correctStars",
+                                color = Color(0xFFFBBF24),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp
+                            )
+                            Text(
+                                text = if (correctStars == 1) " acierto" else " aciertos",
+                                color = Color(0xFF94A3B8),
+                                fontSize = 11.sp
+                            )
+                        }
                     }
                 }
 
@@ -590,7 +620,7 @@ fun VocabularyQuizScreen(
                     ) {
                         Icon(Icons.Default.CheckCircle, contentDescription = null)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Ver Resultados", fontWeight = FontWeight.Bold)
+                        Text("🎓 Finalizar Reto y Calificar", fontWeight = FontWeight.Bold)
                     }
                 }
             }

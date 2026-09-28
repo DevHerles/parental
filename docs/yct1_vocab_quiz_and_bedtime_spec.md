@@ -70,6 +70,18 @@ La distribución pedagógica por sesión es:
   }
   ```
 
+### 2.4 Estándares de Evaluación Internacional (YCT / HSK CBT)
+- **Numeración de Ítems en Tiempo Real**: En cumplimiento con los estándares internacionales de Computer-Based Testing (CBT), la prueba enumera reactivos en base 1 (`Pregunta 1 de 83`). Jamás inicia en 0. Al avanzar con *"Siguiente"*, actualiza inmediatamente a `Pregunta 2 de 83`, `Pregunta 3 de 83`, etc., independientemente del estado de respuesta previa.
+- **Separación de Progreso y Calificación**: La posición del ítem (`Pregunta X de 83`) se desacopla del acumulador de puntos (`⭐ X aciertos`), presentándose en chips independientes para evitar ambigüedades.
+- **Calidad Psicométrica de Distractores**: Los distractores priorizan elementos de la misma categoría semántica/gramatical (familia, números, comida, etc.) para medir discriminación conceptual genuina, completando con el banco general oficial de 83 palabras.
+- **Nomenclatura Académica Oficial YCT 1**:
+  - `🎧 YCT 1 · 听力 (Comprensión Auditiva)`
+  - `🔤 YCT 1 · 阅读 (Carácter a Significado)`
+  - `🇨🇳 YCT 1 · 表达 (Significado a Carácter)`
+  - `⚡ YCT 1 · 判断 (Verdadero o Falso)`
+- **Cierre Formal**: En el ítem 83, el botón de avance transmuta a `🎓 Finalizar Reto y Calificar`.
+
+
 ---
 
 ## 3. Toque de Queda Nocturno (21:00 a 09:00)
