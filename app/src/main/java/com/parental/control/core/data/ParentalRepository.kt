@@ -202,7 +202,7 @@ class ParentalRepository private constructor(private val context: Context) {
     }
 
     private fun loadRestrictions() {
-        // Inicializa con las apps distractoras más críticas bloqueadas
+        // 1. Cargar predeterminadas
         val map = mutableMapOf<String, AppRestriction>()
         for (pkg in DistractionConstants.DEFAULT_BLOCKED_PACKAGES) {
             val isBlocked = prefs.getBoolean("blocked_$pkg", true)
@@ -212,6 +212,21 @@ class ParentalRepository private constructor(private val context: Context) {
                 isBlocked = isBlocked,
                 category = if (pkg.contains("roblox")) AppCategory.GAMES else AppCategory.SOCIAL_VIDEO
             )
+        }
+        // 2. Cargar cualquier otra app guardada en prefs (ej. com.whatsapp, juegos, etc.)
+        for ((key, value) in prefs.all) {
+            if (key.startsWith("blocked_") && value is Boolean) {
+                val pkg = key.removePrefix("blocked_")
+                if (!map.containsKey(pkg)) {
+                    map[pkg] = AppRestriction(
+                        packageName = pkg,
+                        appName = DistractionConstants.getFriendlyAppName(pkg),
+                        isBlocked = value
+                    )
+                } else {
+                    map[pkg] = map[pkg]!!.copy(isBlocked = value)
+                }
+            }
         }
         _restrictions.value = map
     }
@@ -233,6 +248,36 @@ class ParentalRepository private constructor(private val context: Context) {
             )
         }
         _restrictions.value = current
+    }
+
+    /**
+     * Aplica sincronización de restricciones provenientes de Turso Cloud sin limpiar
+     * el desbloqueo temporal si no hay alteración manual local.
+     */
+    fun syncRestrictionsFromCloud(cloudRestrictions: Map<String, Boolean>) {
+        if (cloudRestrictions.isEmpty()) return
+        var changed = false
+        val current = _restrictions.value.toMutableMap()
+        val editor = prefs.edit()
+
+        for ((pkg, isBlocked) in cloudRestrictions) {
+            val existing = current[pkg]
+            if (existing == null || existing.isBlocked != isBlocked) {
+                changed = true
+                editor.putBoolean("blocked_$pkg", isBlocked)
+                current[pkg] = AppRestriction(
+                    packageName = pkg,
+                    appName = DistractionConstants.getFriendlyAppName(pkg),
+                    isBlocked = isBlocked
+                )
+            }
+        }
+
+        if (changed) {
+            editor.apply()
+            _restrictions.value = current
+            Log.i(TAG, "Restricciones sincronizadas desde Turso Cloud: ${cloudRestrictions.size} apps registradas")
+        }
     }
 
     private fun loadSchedules() {
@@ -350,6 +395,14 @@ class ParentalRepository private constructor(private val context: Context) {
         if (DistractionConstants.isInstagramPackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_INSTAGRAM]
             return restriction?.isBlocked ?: true
+        }
+
+        if (DistractionConstants.isWhatsAppPackage(packageName)) {
+            val restriction = _restrictions.value[DistractionConstants.PKG_WHATSAPP]
+                ?: _restrictions.value[packageName]
+            if (restriction != null) {
+                return restriction.isBlocked
+            }
         }
 
         // 5. Verificación directa en el mapa o lista predeterminada

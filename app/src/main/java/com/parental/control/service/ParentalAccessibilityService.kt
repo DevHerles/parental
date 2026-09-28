@@ -221,6 +221,12 @@ class ParentalAccessibilityService : AccessibilityService() {
                 performGlobalAction(GLOBAL_ACTION_HOME)
                 closeAndRepel(DistractionConstants.PKG_TIKTOK, null)
             }
+
+            if (clicked.contains("whatsapp") && isBlocked(DistractionConstants.PKG_WHATSAPP)) {
+                Log.i(TAG, "Pre-interceptado clic en icono WhatsApp en UI/Launcher!")
+                performGlobalAction(GLOBAL_ACTION_HOME)
+                closeAndRepel(DistractionConstants.PKG_WHATSAPP, null)
+            }
         } catch (e: Exception) {
             // ignore
         }
@@ -289,6 +295,9 @@ class ParentalAccessibilityService : AccessibilityService() {
             }
             if (lower.contains("roblox")) {
                 return DistractionConstants.PKG_ROBLOX
+            }
+            if (lower.contains("whatsapp")) {
+                return DistractionConstants.PKG_WHATSAPP
             }
             for (pkg in DistractionConstants.DEFAULT_BLOCKED_PACKAGES) {
                 val name = DistractionConstants.getFriendlyAppName(pkg)

@@ -26,6 +26,8 @@ object DistractionConstants {
     const val PKG_NETFLIX = "com.netflix.mediaclient"
     const val PKG_TWITTER_X = "com.twitter.android"
     const val PKG_DISCORD = "com.discord"
+    const val PKG_WHATSAPP = "com.whatsapp"
+    const val PKG_WHATSAPP_BUSINESS = "com.whatsapp.w4b"
 
     // Audio y Música Exentos de Restricción
     const val PKG_SPOTIFY = "com.spotify.music"
@@ -159,6 +161,14 @@ object DistractionConstants {
     )
 
     /**
+     * Comprueba si un paquete corresponde a WhatsApp.
+     */
+    fun isWhatsAppPackage(packageName: String): Boolean {
+        val p = packageName.lowercase()
+        return p.contains("whatsapp")
+    }
+
+    /**
      * Devuelve una descripción legible por humanos de una app conocida.
      */
     fun getFriendlyAppName(packageName: String): String {
@@ -167,6 +177,7 @@ object DistractionConstants {
             packageName.contains("youtube") -> "YouTube"
             packageName.contains("facebook") -> "Facebook"
             packageName.contains("instagram") -> "Instagram"
+            packageName.contains("whatsapp") -> "WhatsApp"
             packageName.contains("snapchat") -> "Snapchat"
             packageName.contains("roblox") -> "Roblox"
             packageName.contains("twitch") -> "Twitch"

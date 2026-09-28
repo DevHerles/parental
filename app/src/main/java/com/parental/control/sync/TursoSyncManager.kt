@@ -141,8 +141,14 @@ class TursoSyncManager private constructor(private val context: Context) {
             listOf(deviceId)
         )
 
+        // 4. Consultar restricciones de aplicaciones en Turso Cloud
+        val fetchRestrictionsStmt = TursoStatement(
+            "SELECT package_name, is_blocked FROM app_restrictions WHERE device_id = ?;",
+            listOf(deviceId)
+        )
+
         // Ejecutar en pipeline unificado (1 solo viaje de red)
-        val results = tursoClient.pipeline(listOf(updateDeviceStmt, fetchCommandsStmt, fetchSettingsStmt))
+        val results = tursoClient.pipeline(listOf(updateDeviceStmt, fetchCommandsStmt, fetchSettingsStmt, fetchRestrictionsStmt))
 
         // Procesar Comandos
         val commandsResult = results.getOrNull(1)
@@ -158,10 +164,23 @@ class TursoSyncManager private constructor(private val context: Context) {
             processRemoteSettings(settingsResult.rows[0])
         }
 
-        // 4. Reportar nuevos intentos de manipulación si hubieron
+        // Procesar Restricciones de Apps desde Turso Cloud
+        val restrictionsResult = results.getOrNull(3)
+        if (restrictionsResult != null && restrictionsResult.isSuccess && restrictionsResult.rows.isNotEmpty()) {
+            val restrictionsMap = mutableMapOf<String, Boolean>()
+            for (row in restrictionsResult.rows) {
+                val pkg = row["package_name"]?.toString() ?: continue
+                val rawBlocked = row["is_blocked"]
+                val isBlocked = (rawBlocked as? Number)?.toInt() == 1 || rawBlocked == true || rawBlocked == "1"
+                restrictionsMap[pkg] = isBlocked
+            }
+            repository.syncRestrictionsFromCloud(restrictionsMap)
+        }
+
+        // 5. Reportar nuevos intentos de manipulación si hubieron
         reportTamperLogsIfNeeded()
 
-        // 5. Reportar métricas de uso diario y ranking a Turso Cloud
+        // 6. Reportar métricas de uso diario y ranking a Turso Cloud
         reportDailyUsageStatsIfNeeded()
     }
 
