@@ -8,15 +8,21 @@ Para fortalecer la pedagogía infantil y blindar los hábitos de sueño y descan
    - **Cero Omisiones**: Todas y cada una de las 83 palabras del banco curricular son evaluadas en cada intento, sin dejar palabras por fuera.
    - **Rigor Académico Real (Cero Pistas de Emojis en el Reto)**: Las alternativas `A`, `B`, `C`, `D` y las preguntas no muestran emojis asociados al significado para evitar atajos de emparejamiento visual y preparar a la menor con rigor para los exámenes oficiales YCT y HSK.
    - **Modo Aprendizaje con Emojis**: La sección de estudio ("Flashcards Oficiales YCT 1") mantiene y potencia al 100% los emojis mnemotécnicos (🍎, 🐱, 🐶, etc.) para facilitar la adquisición y memorización de vocabulario nuevo.
-   - **Umbral Sabio de Aprobación (70 Aciertos = 84.3%)**: Se requiere dominar más de 5 de cada 6 palabras para obtener minutos recreativos. Con menos de 70 aciertos se otorgan 0 minutos con reintento libre e inmediato.
-   - **Escala Sabia y Progresiva de 15 Minutos (6 Tramos)**:
-     - 70 - 72 aciertos (84.3% - 86.7%): **5 minutos** (3 ⭐)
-     - 73 - 75 aciertos (88.0% - 90.4%): **7 minutos** (3 ⭐)
-     - 76 - 78 aciertos (91.6% - 94.0%): **9 minutos** (4 ⭐)
-     - 79 - 80 aciertos (95.2% - 96.4%): **11 minutos** (4 ⭐)
-     - 81 - 82 aciertos (97.6% - 98.8%): **13 minutos** (5 ⭐)
-     - 83 / 83 aciertos (100% Perfecto): **15 minutos** (5 ⭐)
-   - **Cooldown de 2 Horas**: Tras aprobar con >= 70 aciertos y reclamar la recompensa, el reto entra en enfriamiento por 120 minutos (2 horas) sin posibilidad de acumular más tiempo recreativo.
+   - **Umbral Motivacional de Aprobación (50 Aciertos = 60.2%)**: Alínea el esfuerzo al estándar internacional oficial de aprobación del YCT/HSK (60%). Con 50 aciertos se garantiza un piso digno de **10 minutos**, evitando frustración y desmotivación infantil.
+   - **Escala Motivacional y Progresiva de 10 a 30 Minutos (5 Tramos)**:
+     - 50 - 59 aciertos (60.2% - 71.1%): **10 minutos** (3 ⭐ - Meta Mínima Aprobada)
+     - 60 - 69 aciertos (72.3% - 83.1%): **15 minutos** (4 ⭐ - Buen Desempeño)
+     - 70 - 77 aciertos (84.3% - 92.8%): **20 minutos** (4 ⭐ - Notable)
+     - 78 - 82 aciertos (94.0% - 98.8%): **25 minutos** (5 ⭐ - Sobresaliente)
+     - 83 / 83 aciertos (100% Perfecto): **30 minutos** (5 ⭐ - Gran Premio de Perfección Total)
+     - < 50 aciertos (< 60.2%): **0 minutos** (Sin penalización, reintento libre)
+   - **Cooldown Proporcional Inteligente (Salud Digital y Autocontrol)**:
+     - Tras ganar 25 a 30 min: Cooldown de **3 horas (180 min)**.
+     - Tras ganar 15 a 20 min: Cooldown de **2 horas (120 min)**.
+     - Tras ganar 10 min: Cooldown de **1.5 horas (90 min)**.
+   - **Ventana Inicial en Dos Columnas (LockOverlayContent Landscape)**:
+     - Columna izquierda: Estado, sugerencia de pausas constructivas y acciones (Comenzar Reto YCT 1, Flashcards, Volver a Inicio, PIN Padres).
+     - Columna derecha: Apartado clarísimo de Calificación Psicológica con tarjetas por nivel de logro, estrellas, minutos equivalentes y mensaje inspirador de autoeficacia y autocontrol.
    - **Ergonomía Horizontal en Dos Columnas (Zero Scroll)**: Diseñado para la orientación apaisada de la tablet Lenovo (1920x1200), con columna izquierda para la pregunta/feedback y columna derecha para las 4 alternativas, visible al 100% sin scroll vertical.
 2. **Bloqueo Nocturno Total por Defecto (21:00 a 09:00 del día siguiente)**:
    - Bloqueo incondicional activo de lunes a domingo entre las **21:00 horas (9:00 PM)** y las **09:00 horas (9:00 AM)** del día siguiente.
@@ -43,29 +49,27 @@ La distribución pedagógica por sesión es:
 - **⚡ Verdadero o Falso (18 preguntas)**: Desafío de agilidad mental con botones grandes táctiles (*"Verdadero"* y *"Falso"*).
 - **Total**: $22 + 22 + 21 + 18 = \mathbf{83}$ preguntas.
 
-### 2.3 Escala Sabia de Calificación y Recompensas
+### 2.3 Escala Motivacional de Calificación y Recompensas
 - Total de preguntas: **83**.
-- Umbral de aprobación educativo: **70 aciertos (84.3%)**.
-- Tabla de Concesión de Tiempo Recreativo:
-  | Aciertos Correctos | Porcentaje | Estrellas | Minutos Extras Concedidos | Cooldown Activado |
-  | :---: | :---: | :---: | :---: | :---: |
-  | **83 / 83** | 100% | ⭐⭐⭐⭐⭐ (5 ⭐) | **15 minutos** | 2 horas (120 min) |
-  | **81 - 82** | 97.6% - 98.8% | ⭐⭐⭐⭐⭐ (5 ⭐) | **13 minutos** | 2 horas (120 min) |
-  | **79 - 80** | 95.2% - 96.4% | ⭐⭐⭐⭐ (4 ⭐) | **11 minutos** | 2 horas (120 min) |
-  | **76 - 78** | 91.6% - 94.0% | ⭐⭐⭐⭐ (4 ⭐) | **9 minutos** | 2 horas (120 min) |
-  | **73 - 75** | 88.0% - 90.4% | ⭐⭐⭐ (3 ⭐) | **7 minutos** | 2 horas (120 min) |
-  | **70 - 72** | 84.3% - 86.7% | ⭐⭐⭐ (3 ⭐) | **5 minutos** | 2 horas (120 min) |
-  | **< 70** | < 84.3% | 0 ⭐ | **0 minutos** | **Ninguno** (Reintento libre) |
+- Umbral de aprobación educativo: **50 aciertos (60.2%)** (Estándar YCT internacional).
+- Tabla de Concesión de Tiempo Recreativo y Cooldown:
+  | Aciertos Correctos | Porcentaje | Estrellas | Minutos Extras Concedidos | Calificación Psicológica | Cooldown Activado |
+  | :---: | :---: | :---: | :---: | :---: | :---: |
+  | **83 / 83** | 100% | ⭐⭐⭐⭐⭐ (5 ⭐) | **30 minutos** | 🏆 Perfección Total | 3 horas (180 min) |
+  | **78 - 82** | 94.0% - 98.8% | ⭐⭐⭐⭐⭐ (5 ⭐) | **25 minutos** | 🌟 Sobresaliente | 3 horas (180 min) |
+  | **70 - 77** | 84.3% - 92.8% | ⭐⭐⭐⭐ (4 ⭐) | **20 minutos** | 🎖️ Notable | 2 horas (120 min) |
+  | **60 - 69** | 72.3% - 83.1% | ⭐⭐⭐⭐ (4 ⭐) | **15 minutos** | 👍 Buen Desempeño | 2 horas (120 min) |
+  | **50 - 59** | 60.2% - 71.1% | ⭐⭐⭐ (3 ⭐) | **10 minutos** | 🎯 Piso Aprobado (Meta Mínima) | 1.5 horas (90 min) |
+  | **< 50** | < 60.2% | 0 ⭐ | **0 minutos** | 💡 Repaso Flashcards | **Ninguno** (Reintento libre) |
 
 - **Fórmula de cálculo en `VocabularyQuizEngine`**:
   ```kotlin
   val earnedMinutes = when {
-      correctCount >= 83 -> 15
-      correctCount >= 81 -> 13
-      correctCount >= 79 -> 11
-      correctCount >= 76 -> 9
-      correctCount >= 73 -> 7
-      correctCount >= 70 -> 5
+      correctCount >= 83 -> 30
+      correctCount >= 78 -> 25
+      correctCount >= 70 -> 20
+      correctCount >= 60 -> 15
+      correctCount >= 50 -> 10
       else -> 0
   }
   ```

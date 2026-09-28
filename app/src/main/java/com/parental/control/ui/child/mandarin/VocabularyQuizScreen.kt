@@ -75,6 +75,7 @@ fun VocabularyQuizScreen(
     var quizResult by remember { mutableStateOf<VocabQuizResult?>(null) }
     var elapsedSeconds by remember { mutableIntStateOf(0) }
     var showConfirmExit by remember { mutableStateOf(false) }
+    var showInfoDialog by remember { mutableStateOf(false) }
 
     // Cronómetro
     LaunchedEffect(isQuizFinished) {
@@ -227,9 +228,13 @@ fun VocabularyQuizScreen(
                     }
                 }
 
-                // Botón salir (X)
-                IconButton(onClick = { showConfirmExit = true }) {
-                    Icon(Icons.Default.Close, contentDescription = "Salir", tint = Color(0xFF94A3B8))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { showInfoDialog = true }) {
+                        Icon(Icons.Default.Info, contentDescription = "Ver Escala de Recompensas", tint = Color(0xFFFBBF24))
+                    }
+                    IconButton(onClick = { showConfirmExit = true }) {
+                        Icon(Icons.Default.Close, contentDescription = "Salir", tint = Color(0xFF94A3B8))
+                    }
                 }
             }
 
@@ -670,6 +675,31 @@ fun VocabularyQuizScreen(
             dismissButton = {
                 TextButton(onClick = { showConfirmExit = false }) {
                     Text("Continuar reto")
+                }
+            }
+        )
+    }
+
+    // Diálogo informativo de la escala psicológica y recompensas
+    if (showInfoDialog) {
+        AlertDialog(
+            onDismissRequest = { showInfoDialog = false },
+            properties = androidx.compose.ui.window.DialogProperties(
+                usePlatformDefaultWidth = false
+            ),
+            modifier = Modifier
+                .widthIn(max = 700.dp)
+                .fillMaxWidth(0.9f),
+            text = {
+                com.parental.control.ui.child.PsychologicalRewardsPanel()
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showInfoDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("¡Entendido! Continuar Reto", fontWeight = FontWeight.Bold)
                 }
             }
         )
