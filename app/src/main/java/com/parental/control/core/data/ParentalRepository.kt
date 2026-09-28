@@ -400,9 +400,13 @@ class ParentalRepository private constructor(private val context: Context) {
         if (DistractionConstants.isWhatsAppPackage(packageName)) {
             val restriction = _restrictions.value[DistractionConstants.PKG_WHATSAPP]
                 ?: _restrictions.value[packageName]
-            if (restriction != null) {
-                return restriction.isBlocked
-            }
+            return restriction?.isBlocked ?: true
+        }
+
+        if (DistractionConstants.isAmongUsPackage(packageName)) {
+            val restriction = _restrictions.value[DistractionConstants.PKG_AMONG_US]
+                ?: _restrictions.value[packageName]
+            return restriction?.isBlocked ?: true
         }
 
         // 5. Verificación directa en el mapa o lista predeterminada

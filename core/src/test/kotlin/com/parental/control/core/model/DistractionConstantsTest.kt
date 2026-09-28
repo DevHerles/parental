@@ -20,8 +20,10 @@ class DistractionConstantsTest {
         assertTrue(blocked.contains(DistractionConstants.PKG_FACEBOOK))
         assertTrue(blocked.contains(DistractionConstants.PKG_INSTAGRAM))
 
-        // Games
+        // Games & Messaging
         assertTrue(blocked.contains(DistractionConstants.PKG_ROBLOX))
+        assertTrue(blocked.contains(DistractionConstants.PKG_AMONG_US))
+        assertTrue(blocked.contains(DistractionConstants.PKG_WHATSAPP))
     }
 
     @Test
@@ -42,5 +44,7 @@ class DistractionConstantsTest {
         assertEquals("Facebook", DistractionConstants.getFriendlyAppName(DistractionConstants.PKG_FACEBOOK))
         assertEquals("Instagram", DistractionConstants.getFriendlyAppName(DistractionConstants.PKG_INSTAGRAM))
         assertEquals("Roblox", DistractionConstants.getFriendlyAppName(DistractionConstants.PKG_ROBLOX))
+        assertEquals("Among Us", DistractionConstants.getFriendlyAppName(DistractionConstants.PKG_AMONG_US))
+        assertEquals("WhatsApp", DistractionConstants.getFriendlyAppName(DistractionConstants.PKG_WHATSAPP))
     }
 }

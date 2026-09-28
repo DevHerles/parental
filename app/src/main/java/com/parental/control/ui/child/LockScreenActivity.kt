@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 class LockScreenActivity : ComponentActivity() {
 
     private lateinit var repository: ParentalRepository
+    private val blockedAppNameState = androidx.compose.runtime.mutableStateOf("Aplicación")
+    private val currentBlockedPackageState = androidx.compose.runtime.mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,20 +30,7 @@ class LockScreenActivity : ComponentActivity() {
             repository.resetChineseExamCooldown()
         }
 
-        val packageName = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE) ?: "Aplicación"
-        val customReason = intent.getStringExtra(EXTRA_BLOCK_REASON)
-        val friendlyName = customReason ?: DistractionConstants.getFriendlyAppName(packageName)
-
-        // Matar cualquier proceso remanente en segundo plano de la app bloqueada
-        val blockedPkg = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE)
-        if (!blockedPkg.isNullOrEmpty()) {
-            try {
-                val am = getSystemService(android.content.Context.ACTIVITY_SERVICE) as? android.app.ActivityManager
-                am?.killBackgroundProcesses(blockedPkg)
-            } catch (e: Exception) {
-                // Ignore
-            }
-        }
+        updateBlockedPackageFromIntent(intent)
 
         // Si la niña pulsa atrás, forzar ir al Launcher/Home
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -53,7 +42,7 @@ class LockScreenActivity : ComponentActivity() {
         // Observar en caliente si el padre autoriza o desbloquea desde Turso Cloud
         lifecycleScope.launch {
             repository.settings.collect { settings ->
-                val blockedPkg = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE) ?: ""
+                val blockedPkg = currentBlockedPackageState.value
                 if (settings.isTemporarilyUnlocked && !settings.isInstantLockActive) {
                     android.util.Log.i("LockScreen", "Autorización del padre detectada -> Cerrando pantalla de bloqueo automáticamente")
                     finish()
@@ -70,7 +59,7 @@ class LockScreenActivity : ComponentActivity() {
         setContent {
             AegisParentalTheme {
                 LockOverlayContent(
-                    blockedAppName = friendlyName,
+                    blockedAppName = blockedAppNameState.value,
                     onDismissToHome = {
                         sendToHome()
                     },
@@ -84,6 +73,30 @@ class LockScreenActivity : ComponentActivity() {
                         }
                     }
                 )
+            }
+        }
+    }
+
+    override fun onNewIntent(newIntent: Intent) {
+        super.onNewIntent(newIntent)
+        setIntent(newIntent)
+        updateBlockedPackageFromIntent(newIntent)
+    }
+
+    private fun updateBlockedPackageFromIntent(targetIntent: Intent) {
+        val packageName = targetIntent.getStringExtra(EXTRA_BLOCKED_PACKAGE) ?: "Aplicación"
+        val customReason = targetIntent.getStringExtra(EXTRA_BLOCK_REASON)
+        val friendlyName = customReason ?: DistractionConstants.getFriendlyAppName(packageName)
+        currentBlockedPackageState.value = packageName
+        blockedAppNameState.value = friendlyName
+
+        val blockedPkg = targetIntent.getStringExtra(EXTRA_BLOCKED_PACKAGE)
+        if (!blockedPkg.isNullOrEmpty()) {
+            try {
+                val am = getSystemService(android.content.Context.ACTIVITY_SERVICE) as? android.app.ActivityManager
+                am?.killBackgroundProcesses(blockedPkg)
+            } catch (e: Exception) {
+                // Ignore
             }
         }
     }
@@ -112,7 +125,7 @@ class LockScreenActivity : ComponentActivity() {
 
     private fun sendToHome() {
         isLockScreenVisible = false
-        val blockedPkg = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE)
+        val blockedPkg = currentBlockedPackageState.value.ifEmpty { intent.getStringExtra(EXTRA_BLOCKED_PACKAGE) }
         if (!blockedPkg.isNullOrEmpty()) {
             try {
                 val am = getSystemService(android.content.Context.ACTIVITY_SERVICE) as android.app.ActivityManager

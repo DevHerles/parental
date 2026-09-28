@@ -12,8 +12,8 @@ android {
         applicationId = "com.parental.control"
         minSdk = 26
         targetSdk = 34
-        versionCode = 19
-        versionName = "1.0.18"
+        versionCode = 21
+        versionName = "1.0.20"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

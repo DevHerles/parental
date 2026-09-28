@@ -218,14 +218,29 @@ class ParentalAccessibilityService : AccessibilityService() {
 
             if (clicked.contains("tiktok") && isBlocked(DistractionConstants.PKG_TIKTOK)) {
                 Log.i(TAG, "Pre-interceptado clic en icono TikTok en UI/Launcher!")
-                performGlobalAction(GLOBAL_ACTION_HOME)
                 closeAndRepel(DistractionConstants.PKG_TIKTOK, null)
+                return
             }
 
             if (clicked.contains("whatsapp") && isBlocked(DistractionConstants.PKG_WHATSAPP)) {
                 Log.i(TAG, "Pre-interceptado clic en icono WhatsApp en UI/Launcher!")
-                performGlobalAction(GLOBAL_ACTION_HOME)
                 closeAndRepel(DistractionConstants.PKG_WHATSAPP, null)
+                return
+            }
+
+            if ((clicked.contains("among us") || clicked.contains("spacemafia")) && isBlocked(DistractionConstants.PKG_AMONG_US)) {
+                Log.i(TAG, "Pre-interceptado clic en icono Among Us en UI/Launcher!")
+                closeAndRepel(DistractionConstants.PKG_AMONG_US, null)
+                return
+            }
+
+            for (blockedPkg in DistractionConstants.DEFAULT_BLOCKED_PACKAGES) {
+                val friendly = DistractionConstants.getFriendlyAppName(blockedPkg).lowercase()
+                if (friendly.length > 2 && clicked.contains(friendly) && isBlocked(blockedPkg)) {
+                    Log.i(TAG, "Pre-interceptado clic en icono $friendly en UI/Launcher!")
+                    closeAndRepel(blockedPkg, null)
+                    return
+                }
             }
         } catch (e: Exception) {
             // ignore
@@ -298,6 +313,9 @@ class ParentalAccessibilityService : AccessibilityService() {
             }
             if (lower.contains("whatsapp")) {
                 return DistractionConstants.PKG_WHATSAPP
+            }
+            if (lower.contains("among us") || lower.contains("spacemafia")) {
+                return DistractionConstants.PKG_AMONG_US
             }
             for (pkg in DistractionConstants.DEFAULT_BLOCKED_PACKAGES) {
                 val name = DistractionConstants.getFriendlyAppName(pkg)
@@ -602,13 +620,8 @@ class ParentalAccessibilityService : AccessibilityService() {
             } else {
                 // Modo Pantalla Completa / Split-Screen
                 Log.i(TAG, "Cierre de app a pantalla completa / split: $packageName")
-                performGlobalAction(GLOBAL_ACTION_BACK)
-                performGlobalAction(GLOBAL_ACTION_HOME)
+                launchLockScreen(packageName, customReason)
                 am?.killBackgroundProcesses(packageName)
-
-                mainHandler.postDelayed({
-                    launchLockScreen(packageName, customReason)
-                }, 120L)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error en closeAndRepel", e)
@@ -617,7 +630,6 @@ class ParentalAccessibilityService : AccessibilityService() {
 
     private fun launchLockScreen(packageName: String, customReason: String?) {
         try {
-            if (LockScreenActivity.isLockScreenVisible) return
             val activityIntent = Intent(this, LockScreenActivity::class.java).apply {
                 putExtra(LockScreenActivity.EXTRA_BLOCKED_PACKAGE, packageName)
                 if (customReason != null) {
@@ -674,7 +686,6 @@ class ParentalAccessibilityService : AccessibilityService() {
                     performGlobalAction(GLOBAL_ACTION_BACK)
                     mainHandler.postDelayed({
                         performGlobalAction(GLOBAL_ACTION_BACK)
-                        performGlobalAction(GLOBAL_ACTION_HOME)
                         launchLockScreen(targetPackage, customReason)
                     }, 50L)
                 }
@@ -695,7 +706,6 @@ class ParentalAccessibilityService : AccessibilityService() {
                 performGlobalAction(GLOBAL_ACTION_BACK)
                 mainHandler.postDelayed({
                     launchLockScreen(targetPackage, customReason)
-                    performGlobalAction(GLOBAL_ACTION_HOME)
                 }, 60L)
             }
 

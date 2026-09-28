@@ -54,6 +54,9 @@ APP_ALIASES = {
     "chrome": "com.android.chrome",
     "browser": "com.android.chrome",
     "spotify": "com.spotify.music",
+    "whatsapp": "com.whatsapp",
+    "amongus": "com.innersloth.spacemafia",
+    "among": "com.innersloth.spacemafia",
 }
 
 

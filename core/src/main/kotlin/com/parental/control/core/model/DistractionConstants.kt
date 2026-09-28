@@ -28,6 +28,7 @@ object DistractionConstants {
     const val PKG_DISCORD = "com.discord"
     const val PKG_WHATSAPP = "com.whatsapp"
     const val PKG_WHATSAPP_BUSINESS = "com.whatsapp.w4b"
+    const val PKG_AMONG_US = "com.innersloth.spacemafia"
 
     // Audio y Música Exentos de Restricción
     const val PKG_SPOTIFY = "com.spotify.music"
@@ -47,10 +48,13 @@ object DistractionConstants {
         PKG_INSTAGRAM_LITE,
         PKG_SNAPCHAT,
         PKG_ROBLOX,
+        PKG_AMONG_US,
         PKG_TWITCH,
         PKG_NETFLIX,
         PKG_TWITTER_X,
-        PKG_DISCORD
+        PKG_DISCORD,
+        PKG_WHATSAPP,
+        PKG_WHATSAPP_BUSINESS
     )
 
     // Paquetes críticos del sistema que se protegen contra desinstalación y manipulación
@@ -169,6 +173,14 @@ object DistractionConstants {
     }
 
     /**
+     * Comprueba si un paquete corresponde al juego Among Us.
+     */
+    fun isAmongUsPackage(packageName: String): Boolean {
+        val p = packageName.lowercase()
+        return p.contains("spacemafia") || p.contains("amongus")
+    }
+
+    /**
      * Devuelve una descripción legible por humanos de una app conocida.
      */
     fun getFriendlyAppName(packageName: String): String {
@@ -178,6 +190,7 @@ object DistractionConstants {
             packageName.contains("facebook") -> "Facebook"
             packageName.contains("instagram") -> "Instagram"
             packageName.contains("whatsapp") -> "WhatsApp"
+            packageName.contains("spacemafia") || packageName.contains("among") -> "Among Us"
             packageName.contains("snapchat") -> "Snapchat"
             packageName.contains("roblox") -> "Roblox"
             packageName.contains("twitch") -> "Twitch"
